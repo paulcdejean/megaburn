@@ -3,7 +3,7 @@ import { getServerList } from "./getServerList";
 import { tryNuke } from "./tryNuke";
 import { managePurchasedServers } from "./managePurchasedServers";
 
-export async function main(ns: NS): Promise<void> {
+export function manageNetwork(ns: NS): void {
   ns.disableLog("scan")
 
   const serverStrings = getServerList(ns)
@@ -20,5 +20,5 @@ export async function main(ns: NS): Promise<void> {
 
   managePurchasedServers(ns, serverList)
 
-  ns.write("data/servers.json", JSON.stringify(Object.fromEntries(serverList)), "w")
+  ns.write("data/network.json", JSON.stringify(Object.fromEntries(serverList)), "w")
 }

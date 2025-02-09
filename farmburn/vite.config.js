@@ -6,9 +6,9 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: fileURLToPath(new URL('./src/main.ts', import.meta.url)),
-      name: 'hackburn',
+      name: 'farmburn',
       // the proper extensions will be added
-      fileName: 'hackburn',
+      fileName: 'farmburn',
       formats: ['es'],
     },
     target: 'esnext',

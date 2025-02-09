@@ -14,7 +14,4 @@ A UI for selecting a hacking target. The target will be first weakened before it
 
 Nukes servers and keeps a json of the servers up to date. Also spends money to purchase or upgrade servers.
 
-### Hackburn
-
-Hacks the selected target. Weakening the target first if that's needed.
-
+Then hacks the selected target. Weakening the target first if that's needed.
