@@ -39,7 +39,7 @@ function upgradeServer(ns: NS, server : string) {
   ns.tprint(`Need $${ns.formatNumber(upgradeCost)} to upgrade ${server}`)
   return
 }
- 
+
 function purchaseServer(ns: NS, purchasedServerCount : number) : string {
   const name = `purchased-${String(purchasedServerCount).padStart(2, '0')}`
   let ram = ns.getPurchasedServerMaxRam()
