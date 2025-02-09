@@ -1,0 +1,1 @@
+It's recommended to run megaburn.js, however you can run the scripts individually if you wish.

@@ -1,0 +1,18 @@
+{
+  "name": "megaburn",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build:roulette": "cd rouletteburn && npm run build",
+    "install:roulette": "cd rouletteburn && npm install",
+    "sync": "bitburner-filesync"
+  },
+  "overrides": {
+    "semver": "^7.5.3",
+    "optionator": "^0.9.0"
+  },
+  "dependencies": {
+    "bitburner-filesync": "^1.1.5"
+  }
+}
