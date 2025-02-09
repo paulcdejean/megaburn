@@ -1,11 +1,10 @@
 {
-  "name": "rouletteburn",
+  "name": "serverburn",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "npm run build:rust && npm run build:lint && npm run build:ts && npm run build:vite",
-    "build:rust": "wasm-pack build --target bundler --release",
+    "build": "npm run build:lint && npm run build:ts && npm run build:vite",
     "build:lint": "eslint .",
     "build:ts": "tsc",
     "build:vite": "vite build --mode production"
