@@ -14,15 +14,17 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
   return ns.weaken(target)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 function simpleHWGW(ns : NS, target : string, network : Network) : void {
-  ns.tprint("Farming not implemented yet")
+  ns.tprint("Farming not implemented yet, doing weaken instead")
+  simpleWeaken(ns, target, network)
   return
 }
 
 
 function simpleWeaken(ns : NS, target : string, network : Network) : void {
   const homeReservedRam = 256
+  const execPromises = []
   for (const [serverName, serverData] of network) {
     let availableRam = serverData.maxRam
     if (serverName === "home") {
@@ -31,7 +33,13 @@ function simpleWeaken(ns : NS, target : string, network : Network) : void {
     const scriptRam = ns.getScriptRam("remotes/weaken.js", "home")
     const weakenThreads = Math.floor(availableRam / scriptRam)
     if (weakenThreads > 0) {
-      setTimeout(ns.exec.bind(null, "remotes/weaken.js", serverName, {temporary: true, threads: weakenThreads}, target, 0, false, weakenThreads))
+      execPromises.push(new Promise<void>(
+        (resolve, reject) => {
+          setTimeout(() => {
+            ns.exec()
+          })
+        }
+      ))
     }
   }
   return
