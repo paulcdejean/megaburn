@@ -1,7 +1,7 @@
 import { NS } from "@ns";
 import { Network } from "../types";
 
-export async function basicHack(ns : NS, target : string, network : Network): Promise<number> {
+export async function basicHack(ns : NS, target : string, network : Network): Promise<void> {
   // Because we don't have formulas, can't do anything what so ever, until we weaken the target to minimum security
   // Don't use optional chain, because we want it to throw an error rather than evaulting to true
 
@@ -11,7 +11,10 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
     await simpleWeaken(ns, target, network)
   }
 
-  return ns.weaken(target)
+  await ns.weaken(target)
+
+  ns.tprint(`${target} security level = ${network.get(target)!.hackDifficulty}`)
+  ns.tprint(`${target} current money = ${network.get(target)!.moneyAvailable}`)
 }
 
 
@@ -85,17 +88,28 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
     if (currentSecondWeakenServer === undefined) break
     const batchSecondWeakenServer = currentSecondWeakenServer
 
+    availableRam.set(batchHackServer, availableRam.get(batchHackServer)! - hackRequiredRam)
+    availableRam.set(batchFirstWeakenServer, availableRam.get(batchHackServer)! - firstWeakenRequiredRam)
+    availableRam.set(batchGrowServer, availableRam.get(batchHackServer)! - growRequiredRam)
+    availableRam.set(batchSecondWeakenServer, availableRam.get(batchHackServer)! - secondWeakenRequiredRam)
+
+    const hackExtraMsec = ns.getWeakenTime(target) - ns.getHackTime(target)
+    const growExtraMsec = ns.getWeakenTime(target) - ns.getGrowTime(target)
+    const weakenExtraMsec = 0
+
     execPromises.push(new Promise<void>(
       (resolve) => {
         setTimeout(() => {
-          ns.exec("remotes/hack.js", batchHackServer, {temporary: true, threads: hackThreads}, target, 0, false, hackThreads)
-          ns.exec("remotes/weaken.js", batchFirstWeakenServer, {temporary: true, threads: firstWeakenThreads}, target, 0, false, firstWeakenThreads)
-          ns.exec("remotes/grow.js", batchGrowServer, {temporary: true, threads: growThreads}, target, 0, false, growThreads)
-          ns.exec("remotes/weaken.js", batchSecondWeakenServer, {temporary: true, threads: secondWeakenThreads}, target, 0, false, secondWeakenThreads)
+          ns.exec("remotes/hack.js", batchHackServer, {temporary: true, threads: hackThreads}, target, hackExtraMsec, false, hackThreads)
+          ns.exec("remotes/weaken.js", batchFirstWeakenServer, {temporary: true, threads: firstWeakenThreads}, target, weakenExtraMsec, false, firstWeakenThreads)
+          ns.exec("remotes/grow.js", batchGrowServer, {temporary: true, threads: growThreads}, target, growExtraMsec, false, growThreads)
+          ns.exec("remotes/weaken.js", batchSecondWeakenServer, {temporary: true, threads: secondWeakenThreads}, target, weakenExtraMsec, false, secondWeakenThreads)
           resolve()
         })
       }
     ))
+
+    break
   }
 
   return Promise.all(execPromises)
