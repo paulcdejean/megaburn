@@ -14,7 +14,6 @@ export function managePurchasedServers(ns : NS, serverList : Map<string, Server>
 
   if(upgradableServer !== null) {
     upgradeServer(ns, upgradableServer)
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     serverList.get(upgradableServer)!.maxRam = ns.getServerMaxRam(upgradableServer)
   } else if(purchasedServerCount < ns.getPurchasedServerLimit()) {
     const newServer = purchaseServer(ns, purchasedServerCount)

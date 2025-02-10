@@ -59,5 +59,6 @@ export default [{
         "@stylistic/indent": ["error", 2],
         "@stylistic/no-trailing-spaces": "error",
         "@typescript-eslint/no-invalid-void-type": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
     },
 }];

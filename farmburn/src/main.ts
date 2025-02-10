@@ -1,7 +1,7 @@
 import { NS } from "@ns";
 import { manageNetwork } from "./network/manageNetwork";
-import { basicHack } from "./basicHack";
-import { formulasHack } from "./formulasHack";
+import { basicHack } from "./hack/basicHack";
+import { formulasHack } from "./hack/formulasHack";
 
 export async function main(ns: NS): Promise<void> {
   // Will create data/network.json if it doesn't already exist
