@@ -58,5 +58,6 @@ export default [{
         "@typescript-eslint/no-unused-vars": "error",
         "@stylistic/indent": ["error", 2],
         "@stylistic/no-trailing-spaces": "error",
+        "@typescript-eslint/no-invalid-void-type": "off",
     },
 }];

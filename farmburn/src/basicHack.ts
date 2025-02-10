@@ -6,41 +6,41 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
   // Don't use optional chain, because we want it to throw an error rather than evaulting to true
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   if ((network.get(target)!.hackDifficulty === network.get(target)!.minDifficulty) && ns.getHackingLevel() > 10) {
-    simpleHWGW(ns, target, network)
+    await simpleHWGW(ns, target, network)
   } else {
-    simpleWeaken(ns, target, network)
+    await simpleWeaken(ns, target, network)
   }
 
   return ns.weaken(target)
 }
 
 
-function simpleHWGW(ns : NS, target : string, network : Network) : void {
+async function simpleHWGW(ns : NS, target : string, network : Network) : Promise<void[]> {
   ns.tprint("Farming not implemented yet, doing weaken instead")
-  simpleWeaken(ns, target, network)
-  return
+  return simpleWeaken(ns, target, network)
 }
 
 
-function simpleWeaken(ns : NS, target : string, network : Network) : void {
+async function simpleWeaken(ns : NS, target : string, network : Network) : Promise<void[]> {
   const homeReservedRam = 256
   const execPromises = []
   for (const [serverName, serverData] of network) {
     let availableRam = serverData.maxRam
     if (serverName === "home") {
-      availableRam = Math.min(0, availableRam - homeReservedRam)
+      availableRam = Math.max(0, availableRam - homeReservedRam)
     }
     const scriptRam = ns.getScriptRam("remotes/weaken.js", "home")
     const weakenThreads = Math.floor(availableRam / scriptRam)
     if (weakenThreads > 0) {
       execPromises.push(new Promise<void>(
-        (resolve, reject) => {
+        (resolve) => {
           setTimeout(() => {
-            ns.exec()
+            ns.exec("remotes/weaken.js", serverName, {temporary: true, threads: weakenThreads}, target, 0, false, weakenThreads)
+            resolve()
           })
         }
       ))
     }
   }
-  return
+  return Promise.all(execPromises)
 }
