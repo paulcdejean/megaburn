@@ -26,8 +26,12 @@ function simpleWeaken(ns : NS, target : string, network : Network) : void {
   for (const [serverName, serverData] of network) {
     let availableRam = serverData.maxRam
     if (serverName === "home") {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      availableRam -= homeReservedRam
+      availableRam = Math.min(0, availableRam - homeReservedRam)
+    }
+    const scriptRam = ns.getScriptRam("remotes/weaken.js", "home")
+    const weakenThreads = Math.floor(availableRam / scriptRam)
+    if (weakenThreads > 0) {
+      ns.exec("remotes/weaken.js", serverName, {temporary: true, threads: weakenThreads}, 0, false, weakenThreads)
     }
   }
   return
