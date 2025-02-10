@@ -5,7 +5,14 @@ import { formulasHack } from "./formulasHack";
 
 export async function main(ns: NS): Promise<void> {
   // Will create data/network.json if it doesn't already exist
-  manageNetwork(ns)
+  const network = manageNetwork(ns)
+
+  // Copy HGW scripts to network
+  for (const server of network.keys()) {
+    ns.scp("remotes/hack.js", server, "home")
+    ns.scp("remotes/grow.js", server, "home")
+    ns.scp("remotes/weaken.js", server, "home")
+  }
 
   // Determine the target
   if (!ns.fileExists("data/target.txt")) {
@@ -14,8 +21,8 @@ export async function main(ns: NS): Promise<void> {
   const target = ns.read("data/target.txt")
 
   if(ns.fileExists("Formulas.exe", "home")) {
-    await formulasHack(ns, target)
+    await formulasHack(ns, target, network)
   } else {
-    await basicHack(ns, target)
+    await basicHack(ns, target, network)
   }
 }

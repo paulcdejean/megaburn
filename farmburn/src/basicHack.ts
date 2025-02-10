@@ -1,15 +1,11 @@
-import { NS, Server } from "@ns";
+import { NS } from "@ns";
+import { Network } from "./types";
 
-type Network = Map<string, Required<Server>>
-
-
-export async function basicHack(ns : NS, target : string): Promise<number> {
-  const network : Network = new Map(Object.entries(JSON.parse(ns.read("data/network.json"))))
-
+export async function basicHack(ns : NS, target : string, network : Network): Promise<number> {
   // Because we don't have formulas, can't do anything what so ever, until we weaken the target to minimum security
   // Don't use optional chain, because we want it to throw an error rather than evaulting to true
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  if (network.get(target)!.hackDifficulty === network.get(target)!.minDifficulty) {
+  if ((network.get(target)!.hackDifficulty === network.get(target)!.minDifficulty) && ns.getHackingLevel() > 10) {
     simpleHWGW(ns, target, network)
   } else {
     simpleWeaken(ns, target, network)
@@ -24,8 +20,15 @@ function simpleHWGW(ns : NS, target : string, network : Network) : void {
   return
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 function simpleWeaken(ns : NS, target : string, network : Network) : void {
-  ns.tprint("Weaken not implemented yet")
+  const homeReservedRam = 256
+  for (const [serverName, serverData] of network) {
+    let availableRam = serverData.maxRam
+    if (serverName === "home") {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      availableRam -= homeReservedRam
+    }
+  }
   return
 }

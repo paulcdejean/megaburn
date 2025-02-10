@@ -32,4 +32,6 @@ wasm-pack.log
 
 # intermediate output
 bitburner/*
+!bitburner/remotes/
+!bitburner/remotes/*
 !bitburner/megaburn.txt
