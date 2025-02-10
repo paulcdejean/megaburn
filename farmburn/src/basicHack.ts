@@ -31,7 +31,7 @@ function simpleWeaken(ns : NS, target : string, network : Network) : void {
     const scriptRam = ns.getScriptRam("remotes/weaken.js", "home")
     const weakenThreads = Math.floor(availableRam / scriptRam)
     if (weakenThreads > 0) {
-      ns.exec("remotes/weaken.js", serverName, {temporary: true, threads: weakenThreads}, 0, false, weakenThreads)
+      setTimeout(ns.exec.bind(null, "remotes/weaken.js", serverName, {temporary: true, threads: weakenThreads}, target, 0, false, weakenThreads))
     }
   }
   return
