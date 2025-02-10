@@ -4,4 +4,5 @@ export async function main(ns) {
     stock: ns.args[2],
     threads: (ns.args[3])
   })
+  ns.tprint("grow")
 }

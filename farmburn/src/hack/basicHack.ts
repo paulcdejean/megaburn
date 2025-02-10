@@ -11,7 +11,12 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
     await simpleWeaken(ns, target, network)
   }
 
-  await ns.weaken(target)
+  await ns.asleep(0)
+  await ns.weaken(target, {
+    additionalMsec: Math.ceil(ns.getWeakenTime(target)) - ns.getWeakenTime(target) + 500
+  })
+  await ns.asleep(1000)
+
 
   ns.tprint(`${target} security level = ${network.get(target)!.hackDifficulty}`)
   ns.tprint(`${target} current money = ${network.get(target)!.moneyAvailable}`)
@@ -93,9 +98,9 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
     availableRam.set(batchGrowServer, availableRam.get(batchHackServer)! - growRequiredRam)
     availableRam.set(batchSecondWeakenServer, availableRam.get(batchHackServer)! - secondWeakenRequiredRam)
 
-    const hackExtraMsec = ns.getWeakenTime(target) - ns.getHackTime(target)
-    const growExtraMsec = ns.getWeakenTime(target) - ns.getGrowTime(target)
-    const weakenExtraMsec = 0
+    const weakenExtraMsec = Math.ceil(ns.getWeakenTime(target)) - ns.getWeakenTime(target)
+    const hackExtraMsec = Math.ceil(ns.getWeakenTime(target))- ns.getHackTime(target)
+    const growExtraMsec = Math.ceil(ns.getWeakenTime(target)) - ns.getGrowTime(target)
 
     execPromises.push(new Promise<void>(
       (resolve) => {
@@ -108,8 +113,6 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
         })
       }
     ))
-
-    break
   }
 
   return Promise.all(execPromises)
