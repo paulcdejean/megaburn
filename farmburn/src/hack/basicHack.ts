@@ -53,10 +53,14 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
   let currentGrowServer = growIter.next().value
   let currentSecondWeakenServer = secondWeakenIter.next().value
 
-  const hackRequiredRam = hackThreads * ns.getScriptRam("remotes/hack.js", "home")
-  const firstWeakenRequiredRam = firstWeakenThreads * ns.getScriptRam("remotes/weaken.js", "home")
-  const growRequiredRam = growThreads * ns.getScriptRam("remotes/grow.js", "home")
-  const secondWeakenRequiredRam = secondWeakenThreads * ns.getScriptRam("remotes/weaken.js", "home")
+  const hackRamPer = ns.getScriptRam("remotes/hgw.js", "home") - ns.getFunctionRamCost("grow") - ns.getFunctionRamCost("weaken")
+  const growRamPer = ns.getScriptRam("remotes/hgw.js", "home") - ns.getFunctionRamCost("hack") - ns.getFunctionRamCost("weaken")
+  const weakenRamPer = ns.getScriptRam("remotes/hgw.js", "home") - ns.getFunctionRamCost("hack") - ns.getFunctionRamCost("grow")
+
+  const hackRequiredRam = hackThreads * hackRamPer
+  const firstWeakenRequiredRam = firstWeakenThreads * weakenRamPer
+  const growRequiredRam = growThreads * growRamPer
+  const secondWeakenRequiredRam = secondWeakenThreads * weakenRamPer
 
   const execPromises = []
 
@@ -105,10 +109,10 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
     execPromises.push(new Promise<void>(
       (resolve) => {
         setTimeout(() => {
-          ns.exec("remotes/hack.js", batchHackServer, {temporary: true, threads: hackThreads}, target, hackExtraMsec, false, hackThreads)
-          ns.exec("remotes/weaken.js", batchFirstWeakenServer, {temporary: true, threads: firstWeakenThreads}, target, weakenExtraMsec, false, firstWeakenThreads)
-          ns.exec("remotes/grow.js", batchGrowServer, {temporary: true, threads: growThreads}, target, growExtraMsec, false, growThreads)
-          ns.exec("remotes/weaken.js", batchSecondWeakenServer, {temporary: true, threads: secondWeakenThreads}, target, weakenExtraMsec, false, secondWeakenThreads)
+          ns.exec("remotes/hgw.js", batchHackServer, {temporary: true, threads: hackThreads, ramOverride: hackRamPer}, "hack", target, hackExtraMsec, false, hackThreads)
+          ns.exec("remotes/hgw.js", batchFirstWeakenServer, {temporary: true, threads: firstWeakenThreads, ramOverride: weakenRamPer}, "weaken", target, weakenExtraMsec, false, firstWeakenThreads)
+          ns.exec("remotes/hgw.js", batchGrowServer, {temporary: true, threads: growThreads, ramOverride: growRamPer}, "grow", target, growExtraMsec, false, growThreads)
+          ns.exec("remotes/hgw.js", batchSecondWeakenServer, {temporary: true, threads: secondWeakenThreads, ramOverride: weakenRamPer}, "weaken", target, weakenExtraMsec, false, secondWeakenThreads)
           resolve()
         })
       }
@@ -125,15 +129,15 @@ async function simpleWeaken(ns : NS, target : string, network : Network) : Promi
   for (const [serverName, serverData] of network) {
     let availableRam = serverData.maxRam
     if (serverName === "home") {
-      availableRam = Math.max(0, availableRam - homeReservedRam)
+      availableRam = Math.max(1, availableRam - homeReservedRam)
     }
-    const scriptRam = ns.getScriptRam("remotes/weaken.js", "home")
-    const weakenThreads = Math.floor(availableRam / scriptRam)
+    const weakenRamPer = ns.getScriptRam("remotes/hgw.js", "home") - ns.getFunctionRamCost("hack") - ns.getFunctionRamCost("grow")
+    const weakenThreads = Math.floor(availableRam / weakenRamPer)
     if (weakenThreads > 0) {
       execPromises.push(new Promise<void>(
         (resolve) => {
           setTimeout(() => {
-            ns.exec("remotes/weaken.js", serverName, {temporary: true, threads: weakenThreads}, target, 0, false, weakenThreads)
+            ns.exec("remotes/hgw.js", serverName, {temporary: true, threads: weakenThreads, ramOverride: weakenRamPer}, "weaken", target, 0, false, weakenThreads)
             resolve()
           })
         }

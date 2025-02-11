@@ -9,9 +9,7 @@ export async function main(ns: NS): Promise<void> {
 
   // Copy HGW scripts to network
   for (const server of network.keys()) {
-    ns.scp("remotes/hack.js", server, "home")
-    ns.scp("remotes/grow.js", server, "home")
-    ns.scp("remotes/weaken.js", server, "home")
+    ns.scp("remotes/hgw.js", server, "home")
   }
 
   // Determine the target
