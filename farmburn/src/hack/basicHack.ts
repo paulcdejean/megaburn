@@ -30,7 +30,7 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
 }
 
 async function simpleHWGW(ns : NS, target : string, network : Network) : Promise<void[]> {
-  const homeReservedRam = 256
+  const homeReservedRam = 32
   const amountToHack = 0.375 // Totally made up number
   const hackThreads = Math.floor(amountToHack / ns.hackAnalyze(target))
   const hackSecurityIncrease = ns.hackAnalyzeSecurity(hackThreads)
@@ -42,17 +42,19 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
   const availableRam = new Map<string, number>()
 
   for (const [serverName, serverData] of network) {
-    if (serverName !== "home") {
-      availableRam.set(serverName, serverData.maxRam)
-    } else {
-      availableRam.set(serverName, Math.max(0, serverData.maxRam - homeReservedRam))
+    if (serverData.hasAdminRights) {
+      if (serverName !== "home") {
+        availableRam.set(serverName, serverData.maxRam)
+      } else {
+        availableRam.set(serverName, Math.max(0, serverData.maxRam - homeReservedRam))
+      }
     }
   }
 
-  const hackIter = network.keys()
-  const firstWeakenIter = network.keys()
-  const growIter = network.keys()
-  const secondWeakenIter = network.keys()
+  const hackIter = availableRam.keys()
+  const firstWeakenIter = availableRam.keys()
+  const growIter = availableRam.keys()
+  const secondWeakenIter = availableRam.keys()
 
   let currentHackServer = hackIter.next().value
   let currentFirstWeakenServer = firstWeakenIter.next().value
@@ -142,7 +144,7 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
 
 
 async function simpleWeaken(ns : NS, target : string, network : Network) : Promise<void[]> {
-  const homeReservedRam = 256
+  const homeReservedRam = 32
   const execPromises = []
   for (const [serverName, serverData] of network) {
     let availableRam = serverData.maxRam

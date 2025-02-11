@@ -1,6 +1,7 @@
+import { Network } from "@/types";
 import { NS, Server } from "@ns";
 
-export function managePurchasedServers(ns : NS, serverList : Map<string, Server>) : void {
+export function managePurchasedServers(ns : NS, serverList : Network) : void {
   let upgradableServer : string | null = null
   let purchasedServerCount = 0
   for (const [server, data] of serverList) {
@@ -17,7 +18,9 @@ export function managePurchasedServers(ns : NS, serverList : Map<string, Server>
     serverList.get(upgradableServer)!.maxRam = ns.getServerMaxRam(upgradableServer)
   } else if(purchasedServerCount < ns.getPurchasedServerLimit()) {
     const newServer = purchaseServer(ns, purchasedServerCount)
-    serverList.set(newServer, ns.getServer(newServer))
+    if (newServer !== "") {
+      serverList.set(newServer, ns.getServer(newServer) as Required<Server>)
+    }
   }
   return
 }
@@ -42,8 +45,9 @@ function upgradeServer(ns: NS, server : string) {
 function purchaseServer(ns: NS, purchasedServerCount : number) : string {
   const name = `purchased-${String(purchasedServerCount).padStart(2, '0')}`
   let ram = ns.getPurchasedServerMaxRam()
+  let result = ""
   while (ram >= 2) {
-    const result = ns.purchaseServer(name, ram)
+    result = ns.purchaseServer(name, ram)
     if (result !== "") {
       ns.tprint(`Purchased server ${result} with ${ns.formatRam(ram)} of RAM`)
       break
@@ -51,5 +55,5 @@ function purchaseServer(ns: NS, purchasedServerCount : number) : string {
       ram /= 2
     }
   }
-  return name
+  return result
 }
