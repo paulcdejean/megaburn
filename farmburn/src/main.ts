@@ -35,7 +35,8 @@ export async function main(ns: NS): Promise<void> {
         purchasedServerCount++
       }
     }
-    if (purchasedServerCount >= ns.getPurchasedServerLimit()) {
+
+    if (purchasedServerCount >= ns.getPurchasedServerLimit() && ns.args[0] === "share") {
       ns.tprint("Maxed purchased servers, now sharing")
       await shareServers(ns, network)
 
