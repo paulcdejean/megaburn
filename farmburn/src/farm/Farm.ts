@@ -50,27 +50,40 @@ export class Farm {
     }
   }
 
+  private async runOperation(ns : NS, operation : Operation, runOptions : Required<RunOptions>, actionOptions : Required<BasicHGWOptions>, port: number) : Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        const result = ns.exec(farmScript, operation.server, runOptions,
+          operation.action, this.target, actionOptions.additionalMsec, actionOptions.stock, actionOptions.threads, port)
+        if (result > 0) {
+          resolve()
+        } else {
+          reject(new Error(`Failed to exec ${operation.action} on ${operation.server} with ${operation.threads} threads`))
+        }
+      })
+    })
+  }
+
   public async runBatch(ns : NS, batch : Batch) {
+    const operations : Promise<void>[] = []
     for (const operation of batch) {
-      const runOptions : RunOptions = {
+      const runOptions : Required<RunOptions> = {
         preventDuplicates: false,
         ramOverride: 2,
         temporary: true,
         threads: operation.threads,
       }
-      const actionOptions : BasicHGWOptions = {
+      const actionOptions : Required<BasicHGWOptions> = {
         additionalMsec: this.extraMsecs[operation.action],
         stock: false, // TODO
         threads: operation.threads
       }
-      // 0 is the setTimeout delay. farmScript is the first argument to exec.
-      setTimeout(ns.exec.bind(this), 0, farmScript, operation.server, runOptions,
-        // The below are the arguments passed into the script that is execed
-        operation.action, this.target, actionOptions.additionalMsec, actionOptions.stock, actionOptions.threads, this.port)
+      operations.push(this.runOperation(ns, operation, runOptions, actionOptions, this.port))
       this.nextwritePromises.push(ns.getPortHandle(this.port).nextWrite())
       this.port++
     }
-    await ns.asleep(0) // Yield, causing the batch operation to immediately start
+    // This actually runs the operations
+    await Promise.all(operations)
   }
 
   public async waitToFinish() {
