@@ -1,3 +1,4 @@
+import { farmScript } from "@/constants"
 import { BasicHGWOptions, NS, RunOptions } from "@ns"
 
 export enum Action {
@@ -25,8 +26,6 @@ type ExtraMsecs = {
   grow: number,
   weaken: number,
 }
-
-const farmScript = "remotes/hgw.js"
 
 export class Farm {
   private homeReservedRam : number = 32
