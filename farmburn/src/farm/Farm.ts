@@ -42,10 +42,12 @@ export class Farm {
       grow: (ns.getScriptRam(farmScript, "home") * 100 - ns.getFunctionRamCost(Action.hack) * 100  - ns.getFunctionRamCost(Action.weaken) * 100) / 100,
       weaken: (ns.getScriptRam(farmScript, "home") * 100 - ns.getFunctionRamCost(Action.hack) * 100 - ns.getFunctionRamCost(Action.grow) * 100) / 100,
     }
+    // Cycle time is weaken time rounded up to the nearest second
+    const cycleTime = Math.ceil(ns.getWeakenTime(target) * 1000) / 1000
     this.extraMsecs = {
-      hack: Math.ceil(ns.getWeakenTime(target))- ns.getHackTime(target),
-      grow: Math.ceil(ns.getWeakenTime(target)) - ns.getGrowTime(target),
-      weaken: Math.ceil(ns.getWeakenTime(target)) - ns.getWeakenTime(target),
+      hack: cycleTime - ns.getHackTime(target),
+      grow: cycleTime - ns.getGrowTime(target),
+      weaken: cycleTime - ns.getWeakenTime(target),
     }
   }
 
