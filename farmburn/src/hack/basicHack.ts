@@ -1,6 +1,7 @@
 
 import { NS } from "@ns";
 import { Network } from "../types";
+import { Batch, Action, Farm } from "../farm/Farm";
 
 export async function basicHack(ns : NS, target : string, network : Network): Promise<void> {
   const startTime = performance.now()
@@ -29,7 +30,8 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
   ns.tprint(`${target} current money = ${ns.formatNumber(network.get(target)!.moneyAvailable)}`)
 }
 
-async function simpleHWGW(ns : NS, target : string, network : Network) : Promise<void[]> {
+async function simpleHWGW(ns : NS, target : string, network : Network) : Promise<(true | void)[]> {
+  const farm = new Farm(ns, target)
   const homeReservedRam = 32
   const amountToHack = 0.375 // Totally made up number
   const hackThreads = Math.floor(amountToHack / ns.hackAnalyze(target))
@@ -70,8 +72,6 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
   const growRequiredRam = growThreads * growRamPer
   const secondWeakenRequiredRam = secondWeakenThreads * weakenRamPer
 
-  const execPromises = []
-
   while(true) {
     // Page through until there's one with space
     while(currentHackServer !== undefined && availableRam.get(currentHackServer)! < hackRequiredRam) {
@@ -105,41 +105,22 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
     if (currentSecondWeakenServer === undefined) break
     availableRam.set(currentSecondWeakenServer, availableRam.get(currentSecondWeakenServer)! - secondWeakenRequiredRam)
 
-    const weakenExtraMsec = Math.ceil(ns.getWeakenTime(target)) - ns.getWeakenTime(target)
-    const hackExtraMsec = Math.ceil(ns.getWeakenTime(target))- ns.getHackTime(target)
-    const growExtraMsec = Math.ceil(ns.getWeakenTime(target)) - ns.getGrowTime(target)
-
     const batchHackServer = currentHackServer
     const batchFirstWeakenServer = currentFirstWeakenServer
     const batchGrowServer = currentGrowServer
     const batchSecondWeakenServer = currentSecondWeakenServer
 
-    execPromises.push(new Promise<void>(
-      (resolve, reject) => {
-        setTimeout(() => {
-          try {
-            let execOptions = {temporary: true, threads: hackThreads, ramOverride: hackRamPer}
-            if (ns.exec("remotes/hgw.js", batchHackServer, execOptions, "hack", target, hackExtraMsec, false, hackThreads) === 0)
-              throw new Error(`Failed to exec hack on ${batchHackServer} with ${hackThreads} threads`)
-            execOptions = {temporary: true, threads: firstWeakenThreads, ramOverride: weakenRamPer}
-            if (ns.exec("remotes/hgw.js", batchFirstWeakenServer, execOptions, "weaken", target, weakenExtraMsec, false, firstWeakenThreads) === 0)
-              throw new Error(`Failed to exec weaken1 on ${batchFirstWeakenServer} with ${firstWeakenThreads} threads`)
-            execOptions = {temporary: true, threads: growThreads, ramOverride: growRamPer}
-            if (ns.exec("remotes/hgw.js", batchGrowServer, execOptions, "grow", target, growExtraMsec, false, growThreads)  === 0)
-              throw new Error(`Failed to exec grow on ${batchGrowServer} with ${growThreads} threads`)
-            execOptions = {temporary: true, threads: secondWeakenThreads, ramOverride: weakenRamPer}
-            if (ns.exec("remotes/hgw.js", batchSecondWeakenServer, execOptions, "weaken", target, weakenExtraMsec, false, secondWeakenThreads)  === 0)
-              throw new Error(`Failed to exec weaken2 on ${batchSecondWeakenServer} with ${secondWeakenThreads} threads`)
-            resolve()
-          } catch (e) {
-            reject(e)
-          }
-        })
-      }
-    ))
+    const batch : Batch = [
+      {action: Action.hack, threads: hackThreads, server: batchHackServer},
+      {action: Action.weaken, threads: firstWeakenThreads, server: batchFirstWeakenServer},
+      {action: Action.grow, threads: growThreads, server: batchGrowServer},
+      {action: Action.weaken, threads: secondWeakenThreads, server: batchSecondWeakenServer},
+    ]
+
+    await farm.runBatch(ns, batch)
   }
 
-  return Promise.all([])
+  return farm.waitToFinish()
 }
 
 
