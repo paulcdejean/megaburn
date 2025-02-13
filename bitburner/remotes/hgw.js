@@ -18,7 +18,6 @@ export async function main(ns) {
       threads: (ns.args[4])
     })
   }
-  ns.tprint(ns.args[0])
   ns.writePort(ns.args[5])
   ns.clearPort(ns.args[5])
 }

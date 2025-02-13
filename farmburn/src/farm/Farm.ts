@@ -16,23 +16,23 @@ export type Operation = {
 export type Batch = Operation[]
 
 type ScriptRamCosts = {
-  hack: number,
-  grow: number,
-  weaken: number,
+  readonly hack: number,
+  readonly grow: number,
+  readonly weaken: number,
 }
 
 type ExtraMsecs = {
-  hack: number,
-  grow: number,
-  weaken: number,
+  readonly hack: number,
+  readonly grow: number,
+  readonly weaken: number,
 }
 
 export class Farm {
-  private homeReservedRam : number = 32
+  public readonly homeReservedRam : number = 32
   private port : number = 2000
   private nextwritePromises : Promise<true | void>[] = []
-  private scriptRamCosts : ScriptRamCosts
-  private extraMsecs : ExtraMsecs
+  public readonly scriptRamCosts : ScriptRamCosts
+  private readonly extraMsecs : ExtraMsecs
   public readonly target : string
 
   constructor(ns : NS, target: string) {
@@ -43,7 +43,7 @@ export class Farm {
       weaken: (ns.getScriptRam(farmScript, "home") * 100 - ns.getFunctionRamCost(Action.hack) * 100 - ns.getFunctionRamCost(Action.grow) * 100) / 100,
     }
     // Cycle time is weaken time rounded up to the nearest second
-    const cycleTime = Math.ceil(ns.getWeakenTime(target) / 1000 + Number.EPSILON) * 1000
+    const cycleTime = Math.ceil(ns.getWeakenTime(target) / 1000) * 1000
     this.extraMsecs = {
       hack: cycleTime - ns.getHackTime(target) + Number.EPSILON,
       grow: cycleTime - ns.getGrowTime(target) + Number.EPSILON,

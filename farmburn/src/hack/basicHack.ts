@@ -57,14 +57,10 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
   let currentGrowServer = growIter.next().value
   let currentSecondWeakenServer = secondWeakenIter.next().value
 
-  const hackRamPer = (ns.getScriptRam("remotes/hgw.js", "home") * 100 - ns.getFunctionRamCost("grow") * 100 - ns.getFunctionRamCost("weaken") * 100) / 100
-  const growRamPer = (ns.getScriptRam("remotes/hgw.js", "home") * 100 - ns.getFunctionRamCost("hack") * 100  - ns.getFunctionRamCost("weaken") * 100) / 100
-  const weakenRamPer = (ns.getScriptRam("remotes/hgw.js", "home") * 100 - ns.getFunctionRamCost("hack") * 100 - ns.getFunctionRamCost("grow") * 100) / 100
-
-  const hackRequiredRam = hackThreads * hackRamPer
-  const firstWeakenRequiredRam = firstWeakenThreads * weakenRamPer
-  const growRequiredRam = growThreads * growRamPer
-  const secondWeakenRequiredRam = secondWeakenThreads * weakenRamPer
+  const hackRequiredRam = hackThreads * farm.scriptRamCosts.hack
+  const firstWeakenRequiredRam = firstWeakenThreads * farm.scriptRamCosts.weaken
+  const growRequiredRam = growThreads * farm.scriptRamCosts.grow
+  const secondWeakenRequiredRam = secondWeakenThreads * farm.scriptRamCosts.weaken
 
   while(true) {
     // Page through until there's one with space
@@ -118,26 +114,18 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
 }
 
 
-async function simpleWeaken(ns : NS, target : string, network : Network) : Promise<void[]> {
-  const homeReservedRam = 32
-  const execPromises = []
+async function simpleWeaken(ns : NS, target : string, network : Network) : Promise<(true|void)[]> {
+  const farm = new Farm(ns, target)
   for (const [serverName, serverData] of network) {
     let availableRam = serverData.maxRam
     if (serverName === "home") {
-      availableRam = Math.max(1, availableRam - homeReservedRam)
+      availableRam = Math.max(1, availableRam - farm.homeReservedRam)
     }
-    const weakenRamPer = ns.getScriptRam("remotes/hgw.js", "home") - ns.getFunctionRamCost("hack") - ns.getFunctionRamCost("grow")
-    const weakenThreads = Math.floor(availableRam / weakenRamPer)
-    if (weakenThreads > 0) {
-      execPromises.push(new Promise<void>(
-        (resolve) => {
-          setTimeout(() => {
-            ns.exec("remotes/hgw.js", serverName, {temporary: true, threads: weakenThreads, ramOverride: weakenRamPer}, "weaken", target, 0, false, weakenThreads)
-            resolve()
-          })
-        }
-      ))
+    const weakenThreads = Math.floor(availableRam / farm.scriptRamCosts.weaken)
+    if (weakenThreads > 0 && serverData.hasAdminRights) {
+      await farm.runBatch(ns, [{action: Action.weaken, threads: weakenThreads, server: serverName}])
     }
   }
-  return Promise.all(execPromises)
+  ns.tprint(`Weakening ${target}`)
+  return farm.waitToFinish()
 }
