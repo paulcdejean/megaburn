@@ -1,8 +1,8 @@
 import { NS } from "@ns";
 import { manageNetwork } from "./network/manageNetwork";
-import { basicHack } from "./hack/basicHack";
+import { basicHack, shareServers } from "./hack/basicHack";
 import { formulasHack } from "./hack/formulasHack";
-import { farmScript } from "./constants";
+import { farmScript, shareScript } from "./constants";
 
 export async function main(ns: NS): Promise<void> {
   while(true) {
@@ -12,6 +12,7 @@ export async function main(ns: NS): Promise<void> {
     // Copy HGW scripts to network
     for (const server of network.keys()) {
       ns.scp(farmScript, server, "home")
+      ns.scp(shareScript, server, "home")
     }
 
     // Determine the target
@@ -24,10 +25,25 @@ export async function main(ns: NS): Promise<void> {
     ns.atExit(() => {
       for (const server of network.keys()) {
         ns.scriptKill(farmScript, server)
+        ns.scriptKill(shareScript, server)
       }
     })
 
-    if(ns.fileExists("Formulas.exe", "home")) {
+    let purchasedServerCount = 0
+    for (const server of network.values()) {
+      if (server.purchasedByPlayer) {
+        purchasedServerCount++
+      }
+    }
+    if (purchasedServerCount >= ns.getPurchasedServerLimit()) {
+      ns.tprint("Maxed purchased servers, now sharing")
+      await shareServers(ns, network)
+
+      while (true) {
+        await ns.asleep(20000)
+      }
+    }
+    else if(ns.fileExists("Formulas.exe", "home")) {
       await formulasHack(ns, target, network)
     } else {
       await basicHack(ns, target, network)

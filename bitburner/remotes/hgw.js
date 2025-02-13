@@ -20,4 +20,8 @@ export async function main(ns) {
   }
   ns.writePort(ns.args[5])
   ns.clearPort(ns.args[5])
+
+  if (ns.args[5] <= 2020) {
+    ns.tprint(ns.args[0])
+  }
 }

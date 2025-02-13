@@ -1,5 +1,5 @@
 
-import { NS } from "@ns";
+import { NS, RunOptions } from "@ns";
 import { Network } from "../types";
 import { Batch, Action, Farm } from "../farm/Farm";
 
@@ -127,4 +127,24 @@ async function simpleWeaken(ns : NS, target : string, network : Network) : Promi
   }
   ns.tprint(`Weakening ${target}`)
   return farm.waitToFinish()
+}
+
+export async function shareServers(ns : NS, network : Network) : Promise<void> {
+  for (const [serverName, serverData] of network) {
+    const shareHomeReservedRam = 256
+    let availableRam = serverData.maxRam
+    if (serverName === "home") {
+      availableRam = Math.max(1, availableRam - shareHomeReservedRam)
+    }
+    const shareThreads = Math.floor(availableRam / ns.getScriptRam("remotes/share.js", "home"))
+    if (shareThreads > 0 && serverData.hasAdminRights) {
+      const runOptions : RunOptions = {
+        preventDuplicates: false,
+        temporary: true,
+        threads: shareThreads
+      }
+      ns.exec("remotes/share.js", serverName, runOptions)
+      await ns.asleep(0)
+    }
+  }
 }

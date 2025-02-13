@@ -17,10 +17,13 @@ export function managePurchasedServers(ns : NS, serverList : Network) : void {
     upgradeServer(ns, upgradableServer)
     serverList.get(upgradableServer)!.maxRam = ns.getServerMaxRam(upgradableServer)
   } else if(purchasedServerCount < ns.getPurchasedServerLimit()) {
-    const newServer = purchaseServer(ns, purchasedServerCount)
-    if (newServer !== "") {
-      serverList.set(newServer, ns.getServer(newServer) as Required<Server>)
-    }
+    do {
+      const newServer = purchaseServer(ns, purchasedServerCount)
+      if (newServer !== "") {
+        serverList.set(newServer, ns.getServer(newServer) as Required<Server>)
+        purchasedServerCount++
+      }
+    } while(ns.getServerMoneyAvailable("home") > ns.getPurchasedServerCost(ns.getPurchasedServerMaxRam()) && purchasedServerCount < ns.getPurchasedServerLimit())
   }
   return
 }
