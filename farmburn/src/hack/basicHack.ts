@@ -14,12 +14,6 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
     await simpleWeaken(ns, target, network)
   }
 
-  await ns.asleep(0)
-  await ns.weaken(target, {
-    additionalMsec: Math.ceil(ns.getWeakenTime(target)) - ns.getWeakenTime(target) + 1000
-  })
-  await ns.asleep(1000)
-
   const hackingMoneyAfter = ns.getMoneySources().sinceInstall.hacking
   const profit = hackingMoneyAfter - hackingMoneyBefore
   const endTime = performance.now()
