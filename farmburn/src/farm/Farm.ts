@@ -69,7 +69,7 @@ export class Farm {
     for (const operation of batch) {
       const runOptions : Required<RunOptions> = {
         preventDuplicates: false,
-        ramOverride: 2,
+        ramOverride: this.scriptRamCosts[operation.action],
         temporary: true,
         threads: operation.threads,
       }
