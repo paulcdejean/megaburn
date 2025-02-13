@@ -113,7 +113,6 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
   return farm.waitToFinish()
 }
 
-
 async function simpleWeaken(ns : NS, target : string, network : Network) : Promise<(true|void)[]> {
   const farm = new Farm(ns, target)
   for (const [serverName, serverData] of network) {
