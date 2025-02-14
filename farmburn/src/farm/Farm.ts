@@ -32,8 +32,8 @@ export class Farm {
   private port : number = 2000
   private nextwritePromises : Promise<true | void>[] = []
   public readonly scriptRamCosts : ScriptRamCosts
-  private readonly extraMsecs : ExtraMsecs
   public readonly target : string
+  private readonly cycleTime : number
 
   constructor(ns : NS, target: string) {
     this.target = target
@@ -43,12 +43,7 @@ export class Farm {
       weaken: (ns.getScriptRam(farmScript, "home") * 100 - ns.getFunctionRamCost(Action.hack) * 100 - ns.getFunctionRamCost(Action.grow) * 100) / 100,
     }
     // Cycle time is weaken time rounded up to the nearest second
-    const cycleTime = Math.ceil(ns.getWeakenTime(target) / 1000) * 1000
-    this.extraMsecs = {
-      hack: cycleTime - ns.getHackTime(target) + 0.5,
-      grow: cycleTime - ns.getGrowTime(target) + 0.5,
-      weaken: cycleTime - ns.getWeakenTime(target) + 0.5,
-    }
+    this.cycleTime = Math.ceil(ns.getWeakenTime(target) / 1000) * 1000
   }
 
   private async runOperation(ns : NS, operation : Operation, runOptions : Required<RunOptions>, actionOptions : Required<BasicHGWOptions>, port: number) : Promise<void> {
@@ -68,6 +63,11 @@ export class Farm {
   public async runBatch(ns : NS, batch : Batch) {
     const operations : Promise<void>[] = []
     for (const operation of batch) {
+      const extraMsecs = {
+        hack: this.cycleTime - ns.getHackTime(this.target) + 0.5,
+        grow: this.cycleTime - ns.getGrowTime(this.target) + 0.5,
+        weaken: this.cycleTime - ns.getWeakenTime(this.target) + 0.5,
+      }
       const runOptions : Required<RunOptions> = {
         preventDuplicates: false,
         ramOverride: this.scriptRamCosts[operation.action],
@@ -75,7 +75,7 @@ export class Farm {
         threads: operation.threads,
       }
       const actionOptions : Required<BasicHGWOptions> = {
-        additionalMsec: this.extraMsecs[operation.action],
+        additionalMsec: extraMsecs[operation.action],
         stock: false, // TODO
         threads: operation.threads
       }
