@@ -46,9 +46,28 @@ export class Farm {
     this.cycleTime = Math.ceil(ns.getWeakenTime(target) / 1000) * 1000
   }
 
-  private async runOperation(ns : NS, operation : Operation, runOptions : Required<RunOptions>, actionOptions : Required<BasicHGWOptions>, port: number) : Promise<void> {
+  private async runOperation(ns : NS, operation : Operation, port: number) : Promise<void> {
     return new Promise<void>((resolve, reject) => {
       setTimeout(() => {
+        const extraMsecs = {
+          hack: this.cycleTime - ns.getHackTime(this.target) + 0.5,
+          grow: this.cycleTime - ns.getGrowTime(this.target) + 0.5,
+          weaken: this.cycleTime - ns.getWeakenTime(this.target) + 0.5,
+        }
+        const runOptions : Required<RunOptions> = {
+          preventDuplicates: false,
+          ramOverride: this.scriptRamCosts[operation.action],
+          temporary: true,
+          threads: operation.threads,
+        }
+        const actionOptions : Required<BasicHGWOptions> = {
+          additionalMsec: extraMsecs[operation.action],
+          stock: false, // TODO
+          threads: operation.threads
+        }
+        if(extraMsecs.weaken < 0) {
+          throw new Error(`Negative extraMsecs with cycle time ${this.cycleTime} and weaken time ${ns.getWeakenTime(this.target)}`)
+        }
         const result = ns.exec(farmScript, operation.server, runOptions,
           operation.action, this.target, actionOptions.additionalMsec, actionOptions.stock, actionOptions.threads, port)
         if (result > 0) {
@@ -63,23 +82,8 @@ export class Farm {
   public async runBatch(ns : NS, batch : Batch) {
     const operations : Promise<void>[] = []
     for (const operation of batch) {
-      const extraMsecs = {
-        hack: this.cycleTime - ns.getHackTime(this.target) + 0.5,
-        grow: this.cycleTime - ns.getGrowTime(this.target) + 0.5,
-        weaken: this.cycleTime - ns.getWeakenTime(this.target) + 0.5,
-      }
-      const runOptions : Required<RunOptions> = {
-        preventDuplicates: false,
-        ramOverride: this.scriptRamCosts[operation.action],
-        temporary: true,
-        threads: operation.threads,
-      }
-      const actionOptions : Required<BasicHGWOptions> = {
-        additionalMsec: extraMsecs[operation.action],
-        stock: false, // TODO
-        threads: operation.threads
-      }
-      operations.push(this.runOperation(ns, operation, runOptions, actionOptions, this.port))
+
+      operations.push(this.runOperation(ns, operation, this.port))
       this.nextwritePromises.push(ns.getPortHandle(this.port).nextWrite())
       this.port++
     }
