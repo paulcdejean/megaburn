@@ -45,9 +45,9 @@ export class Farm {
     // Cycle time is weaken time rounded up to the nearest second
     const cycleTime = Math.ceil(ns.getWeakenTime(target) / 1000) * 1000
     this.extraMsecs = {
-      hack: cycleTime - ns.getHackTime(target) + Number.EPSILON,
-      grow: cycleTime - ns.getGrowTime(target) + Number.EPSILON,
-      weaken: cycleTime - ns.getWeakenTime(target) + Number.EPSILON,
+      hack: cycleTime - ns.getHackTime(target) + 0.5,
+      grow: cycleTime - ns.getGrowTime(target) + 0.5,
+      weaken: cycleTime - ns.getWeakenTime(target) + 0.5,
     }
   }
 
