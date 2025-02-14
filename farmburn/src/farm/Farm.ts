@@ -65,7 +65,7 @@ export class Farm {
           stock: false, // TODO
           threads: operation.threads
         }
-        if(extraMsecs.weaken > 0) {
+        if(extraMsecs.weaken < 0) {
           reject(new Error(`Negative extraMsecs with cycle time ${this.cycleTime} and weaken time ${ns.getWeakenTime(this.target)} and security level ${ns.getServerSecurityLevel(this.target)}`))
         }
         const result = ns.exec(farmScript, operation.server, runOptions,
