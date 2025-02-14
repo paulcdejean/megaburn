@@ -49,7 +49,7 @@ export class Farm {
   private async runOperation(ns : NS, operation : Operation, port: number) : Promise<void> {
     return new Promise<void>((resolve, reject) => {
       setTimeout(() => {
-        const extraMsecs = {
+        const extraMsecs : ExtraMsecs = {
           hack: this.cycleTime - ns.getHackTime(this.target) + 0.5,
           grow: this.cycleTime - ns.getGrowTime(this.target) + 0.5,
           weaken: this.cycleTime - ns.getWeakenTime(this.target) + 0.5,
@@ -65,8 +65,8 @@ export class Farm {
           stock: false, // TODO
           threads: operation.threads
         }
-        if(extraMsecs.weaken < 0) {
-          throw new Error(`Negative extraMsecs with cycle time ${this.cycleTime} and weaken time ${ns.getWeakenTime(this.target)}`)
+        if(extraMsecs.weaken > 0) {
+          reject(new Error(`Negative extraMsecs with cycle time ${this.cycleTime} and weaken time ${ns.getWeakenTime(this.target)} and security level ${ns.getServerSecurityLevel(this.target)}`))
         }
         const result = ns.exec(farmScript, operation.server, runOptions,
           operation.action, this.target, actionOptions.additionalMsec, actionOptions.stock, actionOptions.threads, port)
