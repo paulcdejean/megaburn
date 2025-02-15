@@ -11,7 +11,7 @@ export function determineTarget(ns : NS, network : Network) {
       && serverData.requiredHackingSkill < ns.getHackingLevel()
       && serverData.moneyMax > 0) {
       const score = determineMoneyPerSecondPerThread(ns, serverName)
-      ns.tprint(`${serverName} score = ${ns.formatNumber(score * 10000)}`)
+      //ns.tprint(`${serverName} score = ${ns.formatNumber(score * 10000)}`)
       if (score > winningScore) {
         winningScore = score
         winningServer = serverName
