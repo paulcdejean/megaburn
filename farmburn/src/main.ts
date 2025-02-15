@@ -1,8 +1,8 @@
 import { NS } from "@ns";
 import { manageNetwork } from "./network/manageNetwork";
 import { basicHack, shareServers } from "./hack/basicHack";
-import { formulasHack } from "./hack/formulasHack";
 import { farmScript, shareScript } from "./constants";
+import { determineTarget } from "./target/determineTarget";
 
 export async function main(ns: NS): Promise<void> {
   while(true) {
@@ -15,11 +15,11 @@ export async function main(ns: NS): Promise<void> {
       ns.scp(shareScript, server, "home")
     }
 
+    let target = "n00dles"
     // Determine the target
-    if (!ns.fileExists("data/target.txt")) {
-      ns.write("data/target.txt", "n00dles", "w")
+    if(ns.fileExists("Formulas.exe", "home")) {
+      target = determineTarget(ns, network)
     }
-    const target = ns.read("data/target.txt")
 
     // Cleanup the farm scripts on exit
     ns.atExit(() => {
@@ -43,9 +43,6 @@ export async function main(ns: NS): Promise<void> {
       while (true) {
         await ns.asleep(20000)
       }
-    }
-    else if(ns.fileExists("Formulas.exe", "home")) {
-      await formulasHack(ns, target, network)
     } else {
       await basicHack(ns, target, network)
     }

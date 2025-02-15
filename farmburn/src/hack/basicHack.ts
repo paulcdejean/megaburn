@@ -1,7 +1,8 @@
 
 import { NS, RunOptions } from "@ns";
 import { Network } from "../types";
-import { Batch, Action, Farm } from "../farm/Farm";
+import { Batch, Action, Farm } from "./Farm";
+import { arbitraryFuzz, arbitraryHackingNumber } from "@/constants";
 
 export async function basicHack(ns : NS, target : string, network : Network): Promise<void> {
   const startTime = performance.now()
@@ -41,12 +42,12 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
 async function simpleHWGW(ns : NS, target : string, network : Network) : Promise<Farm> {
   const farm = new Farm(ns, target)
   const homeReservedRam = 32
-  const amountToHack = 0.375 // Totally made up number
+  const amountToHack = arbitraryHackingNumber // Totally made up number
   const hackThreads = Math.floor(amountToHack / ns.hackAnalyze(target))
   const hackSecurityIncrease = ns.hackAnalyzeSecurity(hackThreads)
   const firstWeakenThreads = Math.ceil(hackSecurityIncrease / ns.weakenAnalyze(1, 1))
-  // (1 - 0.375) * 1.6 = 1
-  const growThreads = Math.ceil(ns.growthAnalyze(target, 1.65, 1)) // We fuzz the math here to account for levelups, sorta?
+  // We fuzz the math here to account for levelups, sorta?
+  const growThreads = Math.ceil(ns.growthAnalyze(target, (1 / (1 - arbitraryHackingNumber)) + arbitraryFuzz, 1))
   const growSecurityIncrease = ns.growthAnalyzeSecurity(growThreads)
   const secondWeakenThreads = Math.ceil(growSecurityIncrease /  ns.weakenAnalyze(1, 1))
   const availableRam = new Map<string, number>()
