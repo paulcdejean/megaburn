@@ -18,10 +18,12 @@ export async function main(ns) {
       threads: (ns.args[4])
     })
   }
-  ns.writePort(ns.args[5])
-  ns.clearPort(ns.args[5])
-
-  if (ns.args[5] <= 2020) {
-    ns.tprint(ns.args[0])
+  if(ns.args.length >= 6) {
+    ns.writePort(ns.args[5])
+    ns.clearPort(ns.args[5])
+  
+    if (ns.args[5] <= 2020) {
+      ns.tprint(ns.args[0])
+    }
   }
 }
