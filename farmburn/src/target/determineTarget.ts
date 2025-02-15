@@ -2,12 +2,25 @@ import { arbitraryHackingNumber } from "@/constants";
 import { Network } from "@/types";
 import { NS, Server } from "@ns";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export function determineTarget(ns : NS, network : Network) {
-  const threads = determineNumberOfThreads(ns, "n00dles")
-  ns.tprint(`n00dles threads = ${threads}`)
-  return "n00dles"
+  let winningScore = 0
+  let winningServer = "n00dles"
+  for (const [serverName, serverData] of network) {
+    if(serverData.hasAdminRights
+      && serverData.requiredHackingSkill < ns.getHackingLevel()
+      && serverData.moneyMax > 0) {
+      const score = determineMoneyPerSecondPerThread(ns, serverName)
+      ns.tprint(`${serverName} score = ${ns.formatNumber(score * 10000)}`)
+      if (score > winningScore) {
+        winningScore = score
+        winningServer = serverName
+      }
+    }
+  }
+  return winningServer
 }
+
 
 function determineNumberOfThreads(ns : NS, target : string) : number {
   const server = ns.getServer(target) as Required<Server>
@@ -22,4 +35,25 @@ function determineNumberOfThreads(ns : NS, target : string) : number {
   const growSecurityIncrease = ns.growthAnalyzeSecurity(growThreads)
   const secondWeakenThreads = Math.ceil(growSecurityIncrease / weakenPerThread)
   return hackThreads + firstWeakenThreads + growThreads + secondWeakenThreads
+}
+
+function determineMoneyHacked(ns : NS, target : string) : number {
+  const server = ns.getServer(target) as Required<Server>
+  const player = ns.getPlayer()
+  server.hackDifficulty = server.minDifficulty
+  return server.moneyMax * arbitraryHackingNumber * ns.formulas.hacking.hackChance(server, player)
+}
+
+function determineTimeHeuristic(ns : NS, target : string) : number {
+  const server = ns.getServer(target) as Required<Server>
+  const player = ns.getPlayer()
+  const firstWeakenTime = ns.formulas.hacking.weakenTime(server, player)
+  server.hackDifficulty = server.minDifficulty
+  const secondWeakenTime = ns.formulas.hacking.weakenTime(server, player)
+  return (firstWeakenTime + secondWeakenTime) / 2
+}
+
+function determineMoneyPerSecondPerThread(ns : NS, target : string) : number {
+
+  return determineMoneyHacked(ns, target) / determineNumberOfThreads(ns, target) / determineTimeHeuristic(ns, target)
 }
