@@ -19,6 +19,8 @@ export async function main(ns: NS): Promise<void> {
     // Determine the target
     if(ns.fileExists("Formulas.exe", "home")) {
       target = determineTarget(ns, network)
+    } else if(ns.getHackingLevel() > 1000) {
+      target = "harakiri-sushi"
     }
 
     // Cleanup the farm scripts on exit

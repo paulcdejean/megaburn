@@ -8,7 +8,7 @@ export function determineTarget(ns : NS, network : Network) {
   let winningServer = "n00dles"
   for (const [serverName, serverData] of network) {
     if(serverData.hasAdminRights
-      && serverData.requiredHackingSkill < ns.getHackingLevel()
+      && serverData.requiredHackingSkill < (ns.getHackingLevel() / 2)
       && serverData.moneyMax > 0) {
       const score = determineMoneyPerSecondPerThread(ns, serverName)
       //ns.tprint(`${serverName} score = ${ns.formatNumber(score * 10000)}`)
@@ -41,7 +41,7 @@ function determineMoneyHacked(ns : NS, target : string) : number {
   const server = ns.getServer(target) as Required<Server>
   const player = ns.getPlayer()
   server.hackDifficulty = server.minDifficulty
-  return server.moneyMax * arbitraryHackingNumber * ns.formulas.hacking.hackChance(server, player)
+  return Math.min(server.moneyMax * arbitraryHackingNumber * ns.formulas.hacking.hackChance(server, player), ns.getServerMoneyAvailable("home"))
 }
 
 function determineTimeHeuristic(ns : NS, target : string) : number {
