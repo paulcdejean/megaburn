@@ -46,7 +46,7 @@ export class Farm {
     this.cycleTime = Math.ceil(ns.getWeakenTime(target) / 1000) * 1000
   }
 
-  public async runBatch(ns : NS, batch : Batch) : Promise<void> {
+  public runBatch(ns : NS, batch : Batch) : Promise<void> {
     return new Promise<void>((resolve, reject) => {
       setTimeout(() => {
         const extraMsecs : ExtraMsecs = {
@@ -76,7 +76,7 @@ export class Farm {
           }
           const result = ns.exec(farmScript, operation.server, runOptions,
             operation.action, this.target, actionOptions.additionalMsec, actionOptions.stock, actionOptions.threads)
-          if (result != 0) {
+          if (result === 0) {
             reject(new Error(`Failed to exec ${operation.action} on ${operation.server} with ${operation.threads} threads`))
           }
         }
@@ -94,11 +94,12 @@ export class Farm {
         }
         const result = ns.exec(farmScript, lastOperation.server, runOptions,
           lastOperation.action, this.target, actionOptions.additionalMsec, actionOptions.stock, actionOptions.threads, this.port)
-        if (result != 0) {
+        if (result === 0) {
           reject(new Error(`Failed to exec ${lastOperation.action} on ${lastOperation.server} with ${lastOperation.threads} threads`))
         }
         this.nextwritePromises.push(ns.getPortHandle(this.port).nextWrite())
         this.port++
+        resolve()
       })
     })
   }

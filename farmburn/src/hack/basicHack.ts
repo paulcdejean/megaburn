@@ -8,14 +8,16 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
   const hackingMoneyBefore = ns.getMoneySources().sinceInstall.hacking
 
   // Because we don't have formulas, can't do anything what so ever, until we weaken the target to minimum security
-  let farmPromise : Promise<true | void>[]
+  let farm : Farm
   if ((network.get(target)!.hackDifficulty === network.get(target)!.minDifficulty) && ns.getHackingLevel() > 10) {
-    farmPromise = await simpleHWGW(ns, target, network)
+    farm = await simpleHWGW(ns, target, network)
   } else {
-    farmPromise = await simpleWeaken(ns, target, network)
+    farm = await simpleWeaken(ns, target, network)
   }
 
-  await Promise.any(farmPromise)
+  await ns.asleep(ns.getWeakenTime(target))
+
+  await Promise.any(farm.nextwritePromises)
   ns.tprint("First batch completed")
   let hackingMoneyAfter = ns.getMoneySources().sinceInstall.hacking
   let profit = hackingMoneyAfter - hackingMoneyBefore
@@ -25,7 +27,7 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
   ns.tprint(`${target} security level = ${network.get(target)!.hackDifficulty}`)
   ns.tprint(`${target} current money = ${ns.formatNumber(network.get(target)!.moneyAvailable)}`)
 
-  await Promise.all(farmPromise)
+  await Promise.all(farm.nextwritePromises)
   ns.tprint("All batches completed")
   hackingMoneyAfter = ns.getMoneySources().sinceInstall.hacking
   profit = hackingMoneyAfter - hackingMoneyBefore
@@ -36,7 +38,7 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
   ns.tprint(`${target} current money = ${ns.formatNumber(network.get(target)!.moneyAvailable)}`)
 }
 
-async function simpleHWGW(ns : NS, target : string, network : Network) : Promise<Promise<true | void>[]> {
+async function simpleHWGW(ns : NS, target : string, network : Network) : Promise<Farm> {
   const farm = new Farm(ns, target)
   const homeReservedRam = 32
   const amountToHack = 0.375 // Totally made up number
@@ -119,13 +121,13 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
       {action: Action.weaken, threads: secondWeakenThreads, server: batchSecondWeakenServer},
     ]
 
-    await farm.runBatch(ns, batch)
+    void farm.runBatch(ns, batch)
   }
 
-  return farm.nextwritePromises
+  return farm
 }
 
-async function simpleWeaken(ns : NS, target : string, network : Network) : Promise<Promise<true | void>[]> {
+async function simpleWeaken(ns : NS, target : string, network : Network) : Promise<Farm> {
   const farm = new Farm(ns, target)
   for (const [serverName, serverData] of network) {
     let availableRam = serverData.maxRam
@@ -138,7 +140,7 @@ async function simpleWeaken(ns : NS, target : string, network : Network) : Promi
     }
   }
   ns.tprint(`Weakening ${target}`)
-  return farm.nextwritePromises
+  return farm
 }
 
 export async function shareServers(ns : NS, network : Network) : Promise<void> {
