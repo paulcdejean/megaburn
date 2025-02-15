@@ -123,7 +123,7 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
 
     void farm.runBatch(ns, batch)
   }
-
+  ns.tprint(`Farming ${target}`)
   return farm
 }
 
