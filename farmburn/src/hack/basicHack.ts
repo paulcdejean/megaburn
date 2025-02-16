@@ -77,7 +77,8 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
   const growRequiredRam = growThreads * farm.scriptRamCosts.grow
   const secondWeakenRequiredRam = secondWeakenThreads * farm.scriptRamCosts.weaken
 
-  while(true) {
+  let max = 100000 // For lag
+  while(max > 0) {
     // Page through until there's one with space
     while(currentHackServer !== undefined && availableRam.get(currentHackServer)! < hackRequiredRam) {
       currentHackServer = hackIter.next().value
@@ -123,6 +124,7 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
     ]
 
     void farm.runBatch(ns, batch)
+    max--
   }
   ns.tprint(`Farming ${target}`)
   return farm

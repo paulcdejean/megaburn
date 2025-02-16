@@ -19,7 +19,7 @@ export async function main(ns: NS): Promise<void> {
     // Determine the target
     if(ns.fileExists("Formulas.exe", "home")) {
       target = determineTarget(ns, network)
-    } else if(ns.getHackingLevel() > 1000) {
+    } else if(ns.getHackingLevel() > 400) {
       target = "harakiri-sushi"
     }
 
