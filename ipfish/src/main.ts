@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import GoBoard from "./ui/GoBoard";
+import RouletteHelper from "./ui/RouletteHelper";
 
 export async function main(ns: NS): Promise<void> {
   ipfish(ns)
@@ -22,5 +22,5 @@ export function ipfish(ns: NS): void {
   ns.resizeTail(750, 500)
   ns.moveTail(350, 450)
 
-  ns.printRaw(React.createElement(GoBoard))
+  ns.printRaw(React.createElement(RouletteHelper))
 }
