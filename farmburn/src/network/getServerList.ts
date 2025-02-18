@@ -1,15 +1,14 @@
 import { NS } from "@ns";
 
 export function getServerList(ns: NS) : Set<string> {
-  const unscannedServers = new Set(["home"])
+  const unscannedServers = new Array<string>("home")
   const scannedServers = new Set<string>()
-  while (unscannedServers.size > 0) {
-    const serverToScan : string = unscannedServers.values().next().value!
-    unscannedServers.delete(serverToScan)
+  while (unscannedServers.length > 0) {
+    const serverToScan : string = unscannedServers.pop()!
     scannedServers.add(serverToScan)
     for (const server of ns.scan(serverToScan)) {
       if (!scannedServers.has(server)) {
-        unscannedServers.add(server)
+        unscannedServers.push(server)
       }
     }
   }
