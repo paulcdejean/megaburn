@@ -2,7 +2,7 @@
 import { NS, RunOptions } from "@ns";
 import { Network } from "../types";
 import { Batch, Action, Farm } from "./Farm";
-import { arbitraryFuzz, arbitraryHackingNumber } from "@/constants";
+import { arbitraryFuzz, arbitraryHackingNumber, maxNumberOfScripts } from "@/constants";
 
 export async function basicHack(ns : NS, target : string, network : Network): Promise<void> {
   const startTime = performance.now()
@@ -83,7 +83,8 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
   const secondWeakenRequiredRam = secondWeakenThreads * farm.scriptRamCosts.weaken
 
   const spoolExecStartTime = performance.now()
-  let max = 100000 // For lag
+  const scriptsPerBatch = 4 // HWGW is 4 letters
+  let max = Math.floor(maxNumberOfScripts / scriptsPerBatch) // For lag
   while(max > 0) {
     // Page through until there's one with space
     while(currentHackServer !== undefined && availableRam.get(currentHackServer)! < hackRequiredRam) {
@@ -133,7 +134,7 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
     max--
   }
   const spoolExecFinishTime = performance.now()
-  ns.tprint(`Spooled up farm execs in ${ns.tFormat(spoolExecFinishTime - spoolExecStartTime)}`)
+  ns.tprint(`Spooled up farm execs in ${ns.tFormat(spoolExecFinishTime - spoolExecStartTime, true)}`)
 
   return farm
 }

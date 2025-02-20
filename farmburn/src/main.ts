@@ -20,7 +20,7 @@ export async function main(ns: NS): Promise<void> {
     if(ns.fileExists("Formulas.exe", "home")) {
       target = determineTarget(ns, network)
     } else if(ns.getHackingLevel() > 400) {
-      target = "harakiri-sushi"
+      target = "harakiri-sushi" // Doesn't require darkweb access to be a hacking target
     }
 
     // Cleanup the farm scripts on exit

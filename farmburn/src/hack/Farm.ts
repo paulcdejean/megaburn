@@ -44,12 +44,14 @@ export class Farm {
       weaken: (ns.getScriptRam(farmScript, "home") * 100 - ns.getFunctionRamCost(Action.hack) * 100 - ns.getFunctionRamCost(Action.grow) * 100) / 100,
     }
     // Cycle time is weaken time rounded up to the nearest second
-    this.cycleTime = Math.ceil(ns.getWeakenTime(target) / 1000) * 1000
+    // Minimum of 5 seconds, for performance reasons
+    this.cycleTime = Math.max(Math.ceil(ns.getWeakenTime(target) / 1000) * 1000, 5000)
   }
 
   public runBatch(ns : NS, batch : Batch) : void {
     this.startupPromises.push(new Promise<void>((resolve, reject) => {
       setTimeout(() => {
+        // Extra half a millisecond fixes a silly rounding error, thanks to big D for this suggestion!
         const extraMsecs : ExtraMsecs = {
           hack: this.cycleTime - ns.getHackTime(this.target) + 0.5,
           grow: this.cycleTime - ns.getGrowTime(this.target) + 0.5,

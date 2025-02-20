@@ -54,6 +54,5 @@ function determineTimeHeuristic(ns : NS, target : string) : number {
 }
 
 function determineMoneyPerSecondPerThread(ns : NS, target : string) : number {
-
   return determineMoneyHacked(ns, target) / determineNumberOfThreads(ns, target) / determineTimeHeuristic(ns, target)
 }
