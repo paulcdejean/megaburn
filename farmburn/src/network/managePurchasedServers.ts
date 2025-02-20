@@ -23,7 +23,8 @@ export function managePurchasedServers(ns : NS, serverList : Network) : void {
         serverList.set(newServer, ns.getServer(newServer) as Required<Server>)
         purchasedServerCount++
       }
-    } while(ns.getServerMoneyAvailable("home") > ns.getPurchasedServerCost(ns.getPurchasedServerMaxRam()) && purchasedServerCount < ns.getPurchasedServerLimit())
+    } while(ns.getServerMoneyAvailable("home") > ns.getPurchasedServerCost(ns.getPurchasedServerMaxRam())
+        && purchasedServerCount < ns.getPurchasedServerLimit())
   }
   return
 }

@@ -16,7 +16,10 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
     farm = await simpleWeaken(ns, target, network)
   }
 
-  await ns.asleep(ns.getWeakenTime(target))
+  const runExecsStartTime = performance.now()
+  await Promise.all(farm.startupPromises)
+  const runExecsFinishTime = performance.now()
+  ns.tprint(`Completed farm execs in ${ns.tFormat(runExecsFinishTime - runExecsStartTime)}`)
 
   await Promise.any(farm.nextwritePromises)
   ns.tprint("First batch completed")
@@ -40,6 +43,8 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
 }
 
 async function simpleHWGW(ns : NS, target : string, network : Network) : Promise<Farm> {
+  ns.tprint(`Farming ${target}`)
+
   const farm = new Farm(ns, target)
   const homeReservedRam = 32
   const amountToHack = arbitraryHackingNumber // Totally made up number
@@ -77,6 +82,7 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
   const growRequiredRam = growThreads * farm.scriptRamCosts.grow
   const secondWeakenRequiredRam = secondWeakenThreads * farm.scriptRamCosts.weaken
 
+  const spoolExecStartTime = performance.now()
   let max = 100000 // For lag
   while(max > 0) {
     // Page through until there's one with space
@@ -123,10 +129,12 @@ async function simpleHWGW(ns : NS, target : string, network : Network) : Promise
       {action: Action.weaken, threads: secondWeakenThreads, server: batchSecondWeakenServer},
     ]
 
-    void farm.runBatch(ns, batch)
+    farm.runBatch(ns, batch)
     max--
   }
-  ns.tprint(`Farming ${target}`)
+  const spoolExecFinishTime = performance.now()
+  ns.tprint(`Spooled up farm execs in ${ns.tFormat(spoolExecFinishTime - spoolExecStartTime)}`)
+
   return farm
 }
 
@@ -139,7 +147,7 @@ async function simpleWeaken(ns : NS, target : string, network : Network) : Promi
     }
     const weakenThreads = Math.floor(availableRam / farm.scriptRamCosts.weaken)
     if (weakenThreads > 0 && serverData.hasAdminRights) {
-      await farm.runBatch(ns, [{action: Action.weaken, threads: weakenThreads, server: serverName}])
+      farm.runBatch(ns, [{action: Action.weaken, threads: weakenThreads, server: serverName}])
     }
   }
   ns.tprint(`Weakening ${target}`)

@@ -31,6 +31,7 @@ export class Farm {
   public readonly homeReservedRam : number = 32
   private port : number = 2000
   public readonly nextwritePromises : Promise<true | void>[] = []
+  public readonly startupPromises : Promise<void>[] = []
   public readonly scriptRamCosts : ScriptRamCosts
   public readonly target : string
   private readonly cycleTime : number
@@ -46,8 +47,8 @@ export class Farm {
     this.cycleTime = Math.ceil(ns.getWeakenTime(target) / 1000) * 1000
   }
 
-  public runBatch(ns : NS, batch : Batch) : Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+  public runBatch(ns : NS, batch : Batch) : void {
+    this.startupPromises.push(new Promise<void>((resolve, reject) => {
       setTimeout(() => {
         const extraMsecs : ExtraMsecs = {
           hack: this.cycleTime - ns.getHackTime(this.target) + 0.5,
@@ -101,6 +102,6 @@ export class Farm {
         this.port++
         resolve()
       })
-    })
+    }))
   }
 }
