@@ -2,7 +2,7 @@
 import { NS, RunOptions } from "@ns";
 import { Network } from "../types";
 import { Batch, Action, Farm } from "./Farm";
-import { arbitraryFuzz, arbitraryHackingNumber, maxNumberOfScripts } from "@/constants";
+import { arbitraryFuzz, arbitraryHackingNumber, debugEnabled, maxNumberOfScripts } from "@/constants";
 
 export async function basicHack(ns : NS, target : string, network : Network): Promise<void> {
   const startTime = performance.now()
@@ -21,25 +21,15 @@ export async function basicHack(ns : NS, target : string, network : Network): Pr
   const runExecsFinishTime = performance.now()
   ns.tprint(`Completed farm execs in ${ns.tFormat(runExecsFinishTime - runExecsStartTime)}`)
 
-  await Promise.any(farm.nextwritePromises)
-  ns.tprint("First batch completed")
-  let hackingMoneyAfter = ns.getMoneySources().sinceInstall.hacking
-  let profit = hackingMoneyAfter - hackingMoneyBefore
-  let endTime = performance.now()
-  let timeElapsed = endTime - startTime
-  ns.tprint(`Farmed ${ns.formatNumber(profit)} from ${target} in ${ns.tFormat(timeElapsed)}`)
-  ns.tprint(`${target} security level = ${network.get(target)!.hackDifficulty}`)
-  ns.tprint(`${target} current money = ${ns.formatNumber(network.get(target)!.moneyAvailable)}`)
-
   await Promise.all(farm.nextwritePromises)
-  ns.tprint("All batches completed")
-  hackingMoneyAfter = ns.getMoneySources().sinceInstall.hacking
-  profit = hackingMoneyAfter - hackingMoneyBefore
-  endTime = performance.now()
-  timeElapsed = endTime - startTime
-  ns.tprint(`Farmed ${ns.formatNumber(profit)} from ${target} in ${ns.tFormat(timeElapsed)}`)
-  ns.tprint(`${target} security level = ${network.get(target)!.hackDifficulty}`)
-  ns.tprint(`${target} current money = ${ns.formatNumber(network.get(target)!.moneyAvailable)}`)
+  const hackingMoneyAfter = ns.getMoneySources().sinceInstall.hacking
+  const profit = hackingMoneyAfter - hackingMoneyBefore
+  const endTime = performance.now()
+  ns.tprint(`Farmed ${ns.formatNumber(profit)} from ${target} in ${ns.tFormat(endTime - startTime)}`)
+  if (debugEnabled) {
+    ns.tprint(`${target} security level = ${network.get(target)!.hackDifficulty}`)
+    ns.tprint(`${target} current money = ${ns.formatNumber(network.get(target)!.moneyAvailable)}`)
+  }
 }
 
 async function simpleHWGW(ns : NS, target : string, network : Network) : Promise<Farm> {
