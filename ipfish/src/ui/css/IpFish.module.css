@@ -1,8 +1,26 @@
-.board {
+.boardBackground {
   border-spacing: 0 0;
-  padding: 30px;
   margin-left: 10%;
   background-color: #C49741;
   width: 80%;
-  padding-bottom: 80%;
+  aspect-ratio: 1 / 1;
+}
+
+.board {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  table-layout: fixed;
+  position: sticky;
+}
+
+.board::after {
+  background-image: linear-gradient(to right, black 1px, transparent 1px);
+}
+
+.intersection {
+  color: black;
+  margin: 0;
+  padding: 0;
 }

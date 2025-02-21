@@ -1,15 +1,48 @@
-interface GoBoardProps {
-  className: string,
-}
-
-
+import css from "./css/IpFish.module.css"
  
-function GoBoard(props: GoBoardProps) {
+function GoBoard() {
 
   return (
     <>
-      <table className={props.className} >
-      </table>
+      <div className={css.boardBackground} >
+        <table className={css.board}>
+          {/* <tr>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+          </tr>
+          <tr>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+          </tr>
+          <tr>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+          </tr>
+          <tr>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+          </tr>
+          <tr>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+            <td className={css.intersection}>•</td>
+          </tr> */}
+        </table>
+      </div>
     </>
   )
 }

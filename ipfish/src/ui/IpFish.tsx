@@ -1,5 +1,4 @@
 import cssInline from "./css/IpFish.module.css?inline"
-import css from "./css/IpFish.module.css"
 import GoBoard from "./GoBoard"
 
 function IpFish() {
@@ -10,7 +9,7 @@ function IpFish() {
       <p>
         Top text
       </p>
-      <GoBoard className={css.board} />
+      <GoBoard />
       <p>
         Bottom text
       </p>
