@@ -1,7 +1,12 @@
+import { Game } from "@/game"
 import cssInline from "./css/IpFish.module.css?inline"
 import GoBoard from "./GoBoard"
 
-function IpFish() {
+interface IpfishProps {
+  game : Game
+}
+
+function IpFish(props : IpfishProps) {
 
   return (
     <>
@@ -9,7 +14,7 @@ function IpFish() {
       <p>
         Top text
       </p>
-      <GoBoard />
+      <GoBoard game={props.game}/>
       <p>
         Bottom text
       </p>

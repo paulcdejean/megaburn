@@ -1,45 +1,52 @@
+import { Game } from "@/game"
 import css from "./css/IpFish.module.css"
+import GoPoint from "./GoPoint"
+
+interface GoBoardProps {
+  game : Game
+}
  
-function GoBoard() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function GoBoard(props : GoBoardProps) {
 
   return (
     <>
       <div className={css.boardBackground} >
         <table className={css.board}>
           <tr>
-            <td className={`${css.intersection} ${css.topleft}`} />
-            <td className={`${css.intersection} ${css.topmiddle}`} />
-            <td className={`${css.intersection} ${css.topmiddle}`} />
-            <td className={`${css.intersection} ${css.topmiddle}`} />
-            <td className={`${css.intersection} ${css.topright}`} />
+            <GoPoint className={`${css.topleft}`} />
+            <GoPoint className={`${css.topmiddle}`} />
+            <GoPoint className={`${css.topmiddle}`} />
+            <GoPoint className={`${css.topmiddle}`} />
+            <GoPoint className={`${css.topright}`} />
           </tr>
           <tr>
-            <td className={`${css.intersection} ${css.leftmiddle}`} />
-            <td className={`${css.intersection}`} />
-            <td className={`${css.intersection}`} />
-            <td className={`${css.intersection}`} />
-            <td className={`${css.intersection} ${css.rightmiddle}`} />
+            <GoPoint className={`${css.leftmiddle}`} />
+            <GoPoint className={``} />
+            <GoPoint className={``} />
+            <GoPoint className={``} />
+            <GoPoint className={`${css.rightmiddle}`} />
           </tr>
           <tr>
-            <td className={`${css.intersection} ${css.leftmiddle}`} />
-            <td className={`${css.intersection}`} />
-            <td className={`${css.intersection}`} />
-            <td className={`${css.intersection}`} />
-            <td className={`${css.intersection} ${css.rightmiddle}`} />
+            <GoPoint className={`${css.leftmiddle}`} />
+            <GoPoint className={``} />
+            <GoPoint className={``} />
+            <GoPoint className={``} />
+            <GoPoint className={`${css.rightmiddle}`} />
           </tr>
           <tr>
-            <td className={`${css.intersection} ${css.leftmiddle}`} />
-            <td className={`${css.intersection}`} />
-            <td className={`${css.intersection}`} />
-            <td className={`${css.intersection}`} />
-            <td className={`${css.intersection} ${css.rightmiddle}`} />
+            <GoPoint className={`${css.leftmiddle}`} />
+            <GoPoint className={``} />
+            <GoPoint className={``} />
+            <GoPoint className={``} />
+            <GoPoint className={`${css.rightmiddle}`} />
           </tr>
           <tr>
-            <td className={`${css.intersection} ${css.bottomright}`} />
-            <td className={`${css.intersection} ${css.bottommiddle}`} />
-            <td className={`${css.intersection} ${css.bottommiddle}`} />
-            <td className={`${css.intersection} ${css.bottommiddle}`} />
-            <td className={`${css.intersection} ${css.bottomleft}`} />
+            <GoPoint className={`${css.bottomright}`} />
+            <GoPoint className={`${css.bottommiddle}`} />
+            <GoPoint className={`${css.bottommiddle}`} />
+            <GoPoint className={`${css.bottommiddle}`} />
+            <GoPoint className={`${css.bottomleft}`} />
           </tr>
         </table>
       </div>
