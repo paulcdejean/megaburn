@@ -14,32 +14,32 @@ function GoBoard() {
             <td className={`${css.intersection} ${css.topright}`} />
           </tr>
           <tr>
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
+            <td className={`${css.intersection} ${css.leftmiddle}`} />
+            <td className={`${css.intersection}`} />
+            <td className={`${css.intersection}`} />
+            <td className={`${css.intersection}`} />
+            <td className={`${css.intersection} ${css.rightmiddle}`} />
           </tr>
           <tr>
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
+            <td className={`${css.intersection} ${css.leftmiddle}`} />
+            <td className={`${css.intersection}`} />
+            <td className={`${css.intersection}`} />
+            <td className={`${css.intersection}`} />
+            <td className={`${css.intersection} ${css.rightmiddle}`} />
           </tr>
           <tr>
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
+            <td className={`${css.intersection} ${css.leftmiddle}`} />
+            <td className={`${css.intersection}`} />
+            <td className={`${css.intersection}`} />
+            <td className={`${css.intersection}`} />
+            <td className={`${css.intersection} ${css.rightmiddle}`} />
           </tr>
           <tr>
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
-            <td className={css.intersection} />
+            <td className={`${css.intersection} ${css.bottomright}`} />
+            <td className={`${css.intersection} ${css.bottommiddle}`} />
+            <td className={`${css.intersection} ${css.bottommiddle}`} />
+            <td className={`${css.intersection} ${css.bottommiddle}`} />
+            <td className={`${css.intersection} ${css.bottomleft}`} />
           </tr>
         </table>
       </div>
