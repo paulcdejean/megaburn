@@ -6,41 +6,41 @@ function GoBoard() {
     <>
       <div className={css.boardBackground} >
         <table className={css.board}>
-          {/* <tr>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
+          <tr>
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
           </tr>
           <tr>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
           </tr>
           <tr>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
           </tr>
           <tr>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
           </tr>
           <tr>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-            <td className={css.intersection}>•</td>
-          </tr> */}
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+            <td className={css.intersection} />
+          </tr>
         </table>
       </div>
     </>
