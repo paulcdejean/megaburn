@@ -68,7 +68,7 @@
   background-size: 100% 50%, 50% 100%;
 }
 
-.alphabeticlabel {
+.alphabeticLabel {
   color: black;
   text-align: center;
   vertical-align: text-top;
@@ -76,18 +76,64 @@
   font-weight: bold;
 }
 
-.numericlabel {
+.numericLabel {
   color: black;
   text-align: right;
   width: 2em;
   font-weight: bold;
 }
 
-.gopiece {
+.goPiece {
   height: 70%;
   width: 70%;
   position: absolute;
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
+}
+
+.evalNegative {
+  width: 5em;
+  height: 5em;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  background-image: radial-gradient(circle at center, #C06768 0, #C06768 1.4em, transparent 1.45em, transparent 100%);
+  font-size: 0.75rem;
+}
+
+.evalPositive {
+  width: 5em;
+  height: 5em;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  background-image: radial-gradient(circle at center, #59a56c 0, #59a56c 1.4em, transparent 1.45em, transparent 100%);
+  font-size: 0.75rem;
+}
+
+.evalBest {
+  width: 5em;
+  height: 5em;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  background-image: radial-gradient(circle at center, #7582cf 0, #7582cf 1.4em, transparent 1.45em, transparent 100%);
+  font-size: 0.75rem;
+}
+
+.evalIllegal {
+  color: red;
+  font-size: 3rem;
+}
+
+.evaluationText {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  user-select: none;
 }

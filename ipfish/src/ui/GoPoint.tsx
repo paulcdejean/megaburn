@@ -8,6 +8,7 @@ interface GoPointProps {
   className: string,
   state: PointState,
   evaluation: number,
+  bestMove: boolean,
 }
 
 function formatEvaluation(evaluation : number) : string {
@@ -20,14 +21,16 @@ function formatEvaluation(evaluation : number) : string {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function getEvaluationClass(evaluation : number) : string {
-  if(evaluation === 0) {
-    return css.evalillegal
+function getEvaluationClass(evaluation : number, bestMove : boolean) : string {
+  if (bestMove) {
+    return css.evalBest
+  }
+  else if(evaluation === 0) {
+    return css.evalIllegal
   } else if (evaluation > 0) {
-    return css.evalpositive
+    return css.evalPositive
   } else {
-    return css.evalnegative
+    return css.evalNegative
   }
 }
 
@@ -36,12 +39,12 @@ function GoPoint(props : GoPointProps) {
   return (
     <>
       <td className={`${css.point} ${props.className}`}>
-        <img src={blackPiece} className={css.gopiece} style={{ display: props.state === PointState.Black ? "block" : "none"}} />
-        <img src={whitePiece} className={css.gopiece} style={{ display: props.state === PointState.White ? "block" : "none"}} />
-        <img src={offlinePoint} className={css.gopiece} style={{ display: props.state === PointState.Offline ? "block" : "none"}} />
-        <span style={{ display: props.state === PointState.Empty ? "block" : "none"}} >
-          {formatEvaluation(props.evaluation)}
-        </span>
+        <img src={blackPiece} className={css.goPiece} style={{ display: props.state === PointState.Black ? "block" : "none"}} />
+        <img src={whitePiece} className={css.goPiece} style={{ display: props.state === PointState.White ? "block" : "none"}} />
+        <img src={offlinePoint} className={css.goPiece} style={{ display: props.state === PointState.Offline ? "block" : "none"}} />
+        <div className={getEvaluationClass(props.evaluation, props.bestMove)} style={{ display: props.state === PointState.Empty ? "block" : "none"}} >
+          <div className={css.evaluationText}>{formatEvaluation(props.evaluation)}</div>
+        </div>
       </td>
     </>
   )
