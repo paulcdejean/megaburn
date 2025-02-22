@@ -25,6 +25,7 @@
                     linear-gradient(to bottom, transparent  0 calc(50% - 1px), black calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px) 100%);
   background-repeat: no-repeat, no-repeat;
   text-align: center;
+  position: relative;
 }
 
 .topmiddle {
@@ -80,4 +81,13 @@
   text-align: right;
   width: 2em;
   font-weight: bold;
+}
+
+.gopiece {
+  height: 70%;
+  width: 70%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">
+<defs>
+<pattern id="p" patternUnits="userSpaceOnUse" x="-22.8" y="-21.6" width="56.3" height="74">
+<path d="M0,1H53v35H0M-22.5,38h46v35H-21.5M27,38h31v35h-31" fill="#000"/>
+<path d="M0,1H52v34H0M-22.5,38h45v34H-21.5M27,38h30v34h-30" fill="#800000"/>
+</pattern>
+</defs>
+<path d="M0,0H400V400H0" fill="url(#p)"/>
+</svg>
