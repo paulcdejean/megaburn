@@ -11,12 +11,10 @@ Go stone svgs by [Wikipedia user Micheletb](https://commons.wikimedia.org/wiki/U
 
 Aevum casino roulette cheating UI.
 
-### Targetburn
+### Farmburn
 
-A UI for selecting a hacking target. The target will be first weakened before it's switched to as a hacking target. Requires the formulas API. TODO!
+Quick and dirty HWGW batcher.
 
-### Serverburn
+### Ipfish
 
-Nukes servers and keeps a json of the servers up to date. Also spends money to purchase or upgrade servers.
-
-Then hacks the selected target. Weakening the target first if that's needed.
+Like stockfish for ipvgo, hopefully!
