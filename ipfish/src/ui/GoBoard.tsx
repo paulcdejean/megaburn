@@ -7,7 +7,7 @@ interface GoBoardProps {
   gameClass : Game
   gameState : GameState
   updateGameState : (gameState: GameState) => void
-  boardSize : 5 | 7 | 9 | 13
+  boardSize : 5 | 7 | 9 | 13 | 19
 }
 
 // The go alphabet skips the letter I for some reason
@@ -24,7 +24,6 @@ function GoBoard(props : GoBoardProps) {
               {[...Array(props.boardSize).keys()].map((column) => {
                 return <GoPoint
                           key={column}
-                          className={css.point}
                           pointState={props.gameClass.getPoint(props.boardSize - row - 1, column)}
                           evaluation={0.5}
                           bestMove={false}

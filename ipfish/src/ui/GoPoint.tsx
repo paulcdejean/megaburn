@@ -5,7 +5,6 @@ import whitePiece from "./svg/Go_w.svg"
 import offlinePoint from "./svg/bricks.svg"
 
 interface GoPointProps {
-  className: string,
   pointState: PointState,
   evaluation: number,
   bestMove: boolean,
@@ -37,12 +36,10 @@ function getEvaluationClass(evaluation : number, bestMove : boolean) : string {
     return css.evalNegative
   }
 }
-
 function GoPoint(props : GoPointProps) {
-
   return (
     <>
-      <td className={`${css.point} ${props.className}`}>
+      <td className={`${css.point}`} onClick={() => void props.gameClass.makeMove(props.row, props.column, props.updateGameState)} > 
         <img src={blackPiece} className={css.goPiece} style={{ display: props.pointState === PointState.Black ? "block" : "none"}} />
         <img src={whitePiece} className={css.goPiece} style={{ display: props.pointState === PointState.White ? "block" : "none"}} />
         <img src={offlinePoint} className={css.goPiece} style={{ display: props.pointState === PointState.Offline ? "block" : "none"}} />
