@@ -1,4 +1,4 @@
-import { Game, GameState, PointState } from "@/game"
+import { AnalysisState, Game, GameState, PointState } from "@/game"
 import css from "./css/IpFish.module.css"
 import blackPiece from "./svg/Go_b.svg"
 import whitePiece from "./svg/Go_w.svg"
@@ -12,6 +12,7 @@ interface GoPointProps {
   gameClass : Game
   row : number
   column : number
+  updateAnalysisState : (analysisState: AnalysisState) => void
 }
 
 function formatEvaluation(evaluation : number) : string {
@@ -39,7 +40,7 @@ function getEvaluationClass(evaluation : number, bestMove : boolean) : string {
 function GoPoint(props : GoPointProps) {
   return (
     <>
-      <td className={`${css.point}`} onClick={() => void props.gameClass.makeMove(props.row, props.column, props.updateGameState)} > 
+      <td className={`${css.point}`} onClick={() => void props.gameClass.makeMove(props.row, props.column, props.updateGameState, props.updateAnalysisState)} > 
         <img src={blackPiece} className={css.goPiece} style={{ display: props.pointState === PointState.Black ? "block" : "none"}} />
         <img src={whitePiece} className={css.goPiece} style={{ display: props.pointState === PointState.White ? "block" : "none"}} />
         <img src={offlinePoint} className={css.goPiece} style={{ display: props.pointState === PointState.Offline ? "block" : "none"}} />

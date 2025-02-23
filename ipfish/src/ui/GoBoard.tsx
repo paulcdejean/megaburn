@@ -30,6 +30,7 @@ function GoBoard(props : GoBoardProps) {
                           evaluation={props.analysisState.analysis[(props.boardSize - row - 1) * props.boardSize + column]}
                           bestMove={(props.boardSize - row - 1) * props.boardSize + column === props.analysisState.bestMove}
                           updateGameState={props.updateGameState}
+                          updateAnalysisState={props.updateAnalysisState}
                           gameClass={props.gameClass}
                           row={props.boardSize - row - 1}
                           column={column}
