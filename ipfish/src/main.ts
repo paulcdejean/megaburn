@@ -6,7 +6,7 @@ export async function main(ns: NS): Promise<void> {
   
 
    
-  const game = new Game(ns)
+  const game = new Game(ns, "Daedalus", 5)
 
   ipfish(ns, game)
 

@@ -7,8 +7,8 @@ interface IpfishProps {
 }
 
 function IpFish(props : IpfishProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [gameState, playMove] = React.useState(props.game.getGameState());
+   
+  const [gameState, updateGameState] = React.useState(props.game.getGameState());
 
   return (
     <>
@@ -16,7 +16,7 @@ function IpFish(props : IpfishProps) {
       <p>
         Top text
       </p>
-      <GoBoard gameState={gameState}/>
+      <GoBoard gameState={gameState} updateGameState={updateGameState} gameClass={props.game} boardSize={props.game.boardSize} />
       <p>
         Bottom text
       </p>

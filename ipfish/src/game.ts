@@ -25,10 +25,12 @@ export enum CurrentTurn {
 export class Game {
   public readonly board : BoardState 
   private ns : NS
+  public readonly boardSize :  5 | 7 | 9 | 13
 
   constructor(ns : NS, opponent : GoOpponent, boardSize :  5 | 7 | 9 | 13) {
     this.ns = ns
     ns.go.resetBoardState(opponent, boardSize)
+    this.boardSize = boardSize
 
     const stringState = ns.go.getBoardState() // For some reason this does columns then rows smdh
     if (boardSize !== 5) throw new Error('Only 5x5 boards are currently supported')

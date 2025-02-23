@@ -1,4 +1,4 @@
-import { PointState } from "@/game"
+import { Game, GameState, PointState } from "@/game"
 import css from "./css/IpFish.module.css"
 import blackPiece from "./svg/Go_b.svg"
 import whitePiece from "./svg/Go_w.svg"
@@ -6,9 +6,13 @@ import offlinePoint from "./svg/bricks.svg"
 
 interface GoPointProps {
   className: string,
-  state: PointState,
+  pointState: PointState,
   evaluation: number,
   bestMove: boolean,
+  updateGameState : (gameState: GameState) => void,
+  gameClass : Game
+  // row : number
+  // column : number
 }
 
 function formatEvaluation(evaluation : number) : string {
@@ -39,10 +43,10 @@ function GoPoint(props : GoPointProps) {
   return (
     <>
       <td className={`${css.point} ${props.className}`}>
-        <img src={blackPiece} className={css.goPiece} style={{ display: props.state === PointState.Black ? "block" : "none"}} />
-        <img src={whitePiece} className={css.goPiece} style={{ display: props.state === PointState.White ? "block" : "none"}} />
-        <img src={offlinePoint} className={css.goPiece} style={{ display: props.state === PointState.Offline ? "block" : "none"}} />
-        <div className={getEvaluationClass(props.evaluation, props.bestMove)} style={{ display: props.state === PointState.Empty ? "block" : "none"}} >
+        <img src={blackPiece} className={css.goPiece} style={{ display: props.pointState === PointState.Black ? "block" : "none"}} />
+        <img src={whitePiece} className={css.goPiece} style={{ display: props.pointState === PointState.White ? "block" : "none"}} />
+        <img src={offlinePoint} className={css.goPiece} style={{ display: props.pointState === PointState.Offline ? "block" : "none"}} />
+        <div className={getEvaluationClass(props.evaluation, props.bestMove)} style={{ display: props.pointState === PointState.Empty ? "block" : "none"}} >
           <div className={css.evaluationText}>{formatEvaluation(props.evaluation)}</div>
         </div>
       </td>
