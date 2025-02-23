@@ -28,46 +28,6 @@
   position: relative;
 }
 
-.topmiddle {
-  background-position: bottom left, 0 0;
-  background-size: 100% 50%, 100% 100%;
-}
-
-.topleft {
-  background-position: bottom left, bottom right;
-  background-size: 100% 50%, 50% 100%;
-}
-
-.topright {
-  background-position: bottom left, bottom left;
-  background-size: 100% 50%, 50% 100%;
-}
-
-.bottommiddle {
-  background-position: top left, 0 0;
-  background-size: 100% 50%, 100% 100%;
-}
-
-.leftmiddle {
-  background-position: 0 0, bottom right;
-  background-size: 100% 100%, 50% 100%;
-}
-
-.rightmiddle {
-  background-position: 0 0, bottom left;
-  background-size: 100% 100%, 50% 100%;
-}
-
-.bottomright {
-  background-position: top left, bottom right;
-  background-size: 100% 50%, 50% 100%;
-}
-
-.bottomleft {
-  background-position: top left, bottom left;
-  background-size: 100% 50%, 50% 100%;
-}
-
 .alphabeticLabel {
   color: black;
   text-align: center;

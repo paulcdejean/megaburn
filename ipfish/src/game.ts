@@ -75,12 +75,18 @@ export class Game {
     try {
       const responsePromise = this.ns.go.makeMove(column, row)
       this.board[this.boardSize * row + column] = PointState.Black
-      if (updateCallback !== undefined) updateCallback(this.getGameState())
+      if (updateCallback !== undefined) {
+        const newState = this.getGameState()
+        updateCallback(newState)
+      }
       const opponentMove = await responsePromise
 
       if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
         this.board[opponentMove.y * this.boardSize + opponentMove.x] = PointState.White
-        if (updateCallback !== undefined) updateCallback(this.getGameState())
+        if (updateCallback !== undefined) {
+          const newState = this.getGameState()
+          updateCallback(newState)
+        }
       }
     } catch (e) {
       // Currently e is a string unfortunately

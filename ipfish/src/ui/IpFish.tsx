@@ -1,14 +1,15 @@
-import { Game } from "@/game"
+import { Game, GameState } from "@/game"
 import cssInline from "./css/IpFish.module.css?inline"
 import GoBoard from "./GoBoard"
 
 interface IpfishProps {
   game : Game
+  initalState : GameState
 }
 
 function IpFish(props : IpfishProps) {
    
-  const [gameState, updateGameState] = React.useState(props.game.getGameState());
+  const [gameState, updateGameState] = React.useState(props.initalState);
 
   return (
     <>

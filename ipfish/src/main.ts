@@ -25,5 +25,5 @@ export function ipfish(ns: NS, game : Game): void {
   ns.resizeTail(720, 860)
   ns.moveTail(1020, 50)
 
-  ns.printRaw(React.createElement(IpFish, {game: game}))
+  ns.printRaw(React.createElement(IpFish, {game: game, initalState: game.getGameState()}))
 }
