@@ -21,6 +21,9 @@ export enum CurrentTurn {
   Inactive = 3,
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const goAlphabet = [...'abcdefghjklmnopqrstuvwxyz'];
+
 // Represents only a single game of ipvgo
 export class Game {
   public readonly board : BoardState 
@@ -74,11 +77,11 @@ export class Game {
       this.board[this.boardSize * row + column] = PointState.Black
       if (updateCallback !== undefined) updateCallback(this.getGameState())
       const opponentMove = await responsePromise
-      if(opponentMove.type === "move" && opponentMove.x && opponentMove.y) {
+
+      if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
         this.board[opponentMove.y * this.boardSize + opponentMove.x] = PointState.White
         if (updateCallback !== undefined) updateCallback(this.getGameState())
       }
-      
     } catch (e) {
       // Currently e is a string unfortunately
       // The string looks like this:
