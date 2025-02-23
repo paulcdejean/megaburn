@@ -1,4 +1,4 @@
-import { PointState } from "../types.d"
+import { PointState } from "@/game"
 import css from "./css/IpFish.module.css"
 import blackPiece from "./svg/Go_b.svg"
 import whitePiece from "./svg/Go_w.svg"
