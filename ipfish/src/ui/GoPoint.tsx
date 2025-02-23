@@ -15,7 +15,7 @@ interface GoPointProps {
 }
 
 function formatEvaluation(evaluation : number) : string {
-  if(evaluation === 0) {
+  if(evaluation === Number.NEGATIVE_INFINITY) {
     return "x"
   } else if (evaluation > 0) {
     return "+".concat(evaluation.toString())

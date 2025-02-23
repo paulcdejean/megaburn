@@ -1,5 +1,5 @@
  
-import { EvaluationState as AnalysisState, Game, GameState } from "@/game"
+import { AnalysisState as AnalysisState, Game, GameState } from "@/game"
 import css from "./css/IpFish.module.css"
 import GoPoint from "./GoPoint"
 
@@ -27,8 +27,8 @@ function GoBoard(props : GoBoardProps) {
                 return <GoPoint
                           key={column}
                           pointState={props.gameClass.getPoint(props.boardSize - row - 1, column)}
-                          evaluation={props.analysisState[(props.boardSize - row - 1) * row + column]}
-                          bestMove={false}
+                          evaluation={props.analysisState.analysis[(props.boardSize - row - 1) * props.boardSize + column]}
+                          bestMove={(props.boardSize - row - 1) * props.boardSize + column === props.analysisState.bestMove}
                           updateGameState={props.updateGameState}
                           gameClass={props.gameClass}
                           row={props.boardSize - row - 1}

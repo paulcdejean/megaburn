@@ -1,7 +1,11 @@
 import { NS, GoOpponent } from "@ns";
 
 export type BoardState = Uint8Array
-export type EvaluationState = Float64Array
+
+export interface AnalysisState {
+  analysis: Float64Array
+  bestMove: number
+}
 
 export interface GameState {
   board: BoardState
@@ -71,21 +75,25 @@ export class Game {
     return this.board[this.boardSize * row + column]
   }
 
-  public async makeMove(row : number, column : number, updateCallback? : (gameState: GameState) => void) {
+  public async makeMove(row : number, column : number, boardCallback? : (gameState: GameState) => void, analysisCallBack? : (analysisState: AnalysisState) => void) {
     try {
       const responsePromise = this.ns.go.makeMove(column, row)
       this.board[this.boardSize * row + column] = PointState.Black
-      if (updateCallback !== undefined) {
+      if (boardCallback !== undefined) {
         const newState = this.getGameState()
-        updateCallback(newState)
+        boardCallback(newState)
       }
       const opponentMove = await responsePromise
 
       if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
         this.board[opponentMove.y * this.boardSize + opponentMove.x] = PointState.White
-        if (updateCallback !== undefined) {
-          const newState = this.getGameState()
-          updateCallback(newState)
+        if (boardCallback !== undefined) {
+          const newBoardState = this.getGameState()
+          boardCallback(newBoardState)
+        }
+        if (analysisCallBack !== undefined) {
+          const newAnalaysisState = await this.getAnalysis()
+          analysisCallBack(newAnalaysisState)
         }
       }
     } catch (e) {
@@ -102,24 +110,35 @@ export class Game {
     }
   }
 
-  public async getAnalysis() : Promise<EvaluationState> {
+  public async getAnalysis() : Promise<AnalysisState> {
     // TODO make good
     const analysis = new Float64Array(this.boardSize**2)
     const validMoves = this.ns.go.analysis.getValidMoves()
     let column = 0
     let row = 0
+    let highestScore = 0 - ((this.boardSize**2)/2) - 1
+    let bestMove = 0
     for (const validMovesColumn of validMoves) {
       row = 0
       for (const point of validMovesColumn) {
         if(point) {
-          analysis[row * this.boardSize + column] = 0.5
+          const score = Math.floor(Math.random() * (this.boardSize**2)) - ((this.boardSize**2)/2) - 1
+          if (score > highestScore) {
+            bestMove = row * this.boardSize + column
+            highestScore = score
+          }
+          analysis[row * this.boardSize + column] = score;
         } else {
           analysis[row * this.boardSize + column] = Number.NEGATIVE_INFINITY
         }
+        row++
       }
       column++
     }
-    return analysis
+    return {
+      analysis: analysis,
+      bestMove: bestMove
+    }
   }
 }
 
