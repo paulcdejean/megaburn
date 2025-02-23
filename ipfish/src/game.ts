@@ -29,7 +29,7 @@ export class Game {
 
   constructor(ns : NS, opponent : GoOpponent, boardSize :  5 | 7 | 9 | 13) {
     this.ns = ns
-    ns.go.resetBoardState(opponent, boardSize)
+    // ns.go.resetBoardState(opponent, boardSize)
     this.boardSize = boardSize
 
     const stringState = ns.go.getBoardState() // For some reason this does columns then rows smdh
@@ -52,11 +52,16 @@ export class Game {
     }
   }
 
-  getGameState() : GameState {
+  public getGameState() : GameState {
     return {
       board: this.board,
       turn: getCurrentTurn(this.ns)
     }
+  }
+
+  // IMPORTANT: this is zero indexed
+  public getPoint(row : number, column : number) {
+    return this.board[this.board.length * column + row]
   }
 }
 

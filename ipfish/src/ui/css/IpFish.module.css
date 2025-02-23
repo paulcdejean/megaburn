@@ -74,6 +74,7 @@
   vertical-align: text-top;
   height: 2em;
   font-weight: bold;
+  user-select: none;
 }
 
 .numericLabel {
@@ -81,6 +82,7 @@
   text-align: right;
   width: 2em;
   font-weight: bold;
+  user-select: none;
 }
 
 .goPiece {

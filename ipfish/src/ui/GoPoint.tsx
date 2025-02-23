@@ -11,8 +11,8 @@ interface GoPointProps {
   bestMove: boolean,
   updateGameState : (gameState: GameState) => void,
   gameClass : Game
-  // row : number
-  // column : number
+  row : number
+  column : number
 }
 
 function formatEvaluation(evaluation : number) : string {
