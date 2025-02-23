@@ -3,9 +3,6 @@ import IpFish from "./ui/IpFish";
 import { Game } from "./game";
 
 export async function main(ns: NS): Promise<void> {
-  
-
-   
   const game = new Game(ns, "Daedalus", 5)
 
   ipfish(ns, game)

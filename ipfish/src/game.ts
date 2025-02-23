@@ -61,7 +61,7 @@ export class Game {
 
   // IMPORTANT: this is zero indexed
   public getPoint(row : number, column : number) {
-    return this.board[this.board.length * column + row]
+    return this.board[this.boardSize * row + column]
   }
 }
 

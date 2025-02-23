@@ -25,12 +25,12 @@ function GoBoard(props : GoBoardProps) {
                 return <GoPoint
                           key={column}
                           className={css.point}
-                          pointState={props.gameClass.getPoint(row, column)}
+                          pointState={props.gameClass.getPoint(props.boardSize - row - 1, column)}
                           evaluation={0.5}
                           bestMove={false}
                           updateGameState={props.updateGameState}
                           gameClass={props.gameClass}
-                          row={row}
+                          row={props.boardSize - row - 1}
                           column={column}
                         />
               })}
