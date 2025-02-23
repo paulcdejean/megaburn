@@ -1,5 +1,5 @@
  
-import { Game, GameState } from "@/game"
+import { EvaluationState as AnalysisState, Game, GameState } from "@/game"
 import css from "./css/IpFish.module.css"
 import GoPoint from "./GoPoint"
 
@@ -8,6 +8,8 @@ interface GoBoardProps {
   gameState : GameState
   updateGameState : (gameState: GameState) => void
   boardSize : 5 | 7 | 9 | 13 | 19
+  analysisState : AnalysisState
+  updateAnalysisState : (analysisState: AnalysisState) => void
 }
 
 // The go alphabet skips the letter I for some reason
@@ -25,7 +27,7 @@ function GoBoard(props : GoBoardProps) {
                 return <GoPoint
                           key={column}
                           pointState={props.gameClass.getPoint(props.boardSize - row - 1, column)}
-                          evaluation={0.5}
+                          evaluation={props.analysisState[(props.boardSize - row - 1) * row + column]}
                           bestMove={false}
                           updateGameState={props.updateGameState}
                           gameClass={props.gameClass}

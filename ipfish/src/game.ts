@@ -67,7 +67,7 @@ export class Game {
   }
 
   // IMPORTANT: this is zero indexed
-  public getPoint(row : number, column : number) {
+  public getPoint(row : number, column : number) : PointState {
     return this.board[this.boardSize * row + column]
   }
 
@@ -100,6 +100,26 @@ export class Game {
       const errorMessage = (e as string).replace(/[\s\S]*go\.makeMove: (.*)[\s\S]*/, "$1")
       this.ns.toast(errorMessage, this.ns.enums.ToastVariant.ERROR, 5000)
     }
+  }
+
+  public async getAnalysis() : Promise<EvaluationState> {
+    // TODO make good
+    const analysis = new Float64Array(this.boardSize**2)
+    const validMoves = this.ns.go.analysis.getValidMoves()
+    let column = 0
+    let row = 0
+    for (const validMovesColumn of validMoves) {
+      row = 0
+      for (const point of validMovesColumn) {
+        if(point) {
+          analysis[row * this.boardSize + column] = 0.5
+        } else {
+          analysis[row * this.boardSize + column] = Number.NEGATIVE_INFINITY
+        }
+      }
+      column++
+    }
+    return analysis
   }
 }
 

@@ -28,7 +28,7 @@ function getEvaluationClass(evaluation : number, bestMove : boolean) : string {
   if (bestMove) {
     return css.evalBest
   }
-  else if(evaluation === 0) {
+  else if(evaluation === Number.NEGATIVE_INFINITY) {
     return css.evalIllegal
   } else if (evaluation > 0) {
     return css.evalPositive

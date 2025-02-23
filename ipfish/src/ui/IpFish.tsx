@@ -1,15 +1,18 @@
-import { Game, GameState } from "@/game"
+import { EvaluationState, Game, GameState } from "@/game"
 import cssInline from "./css/IpFish.module.css?inline"
 import GoBoard from "./GoBoard"
 
 interface IpfishProps {
   game : Game
-  initalState : GameState
+  initalGameState : GameState
+  initalAnalysisState : EvaluationState
 }
 
 function IpFish(props : IpfishProps) {
    
-  const [gameState, updateGameState] = React.useState(props.initalState);
+  const [gameState, updateGameState] = React.useState(props.initalGameState);
+   
+  const [analysisState, updateAnalysisState] = React.useState(props.initalAnalysisState);
 
   return (
     <>
@@ -17,7 +20,13 @@ function IpFish(props : IpfishProps) {
       <p>
         Top text
       </p>
-      <GoBoard gameState={gameState} updateGameState={updateGameState} gameClass={props.game} boardSize={props.game.boardSize} />
+      <GoBoard gameState={gameState}
+               updateGameState={updateGameState}
+               analysisState={analysisState}
+               updateAnalysisState={updateAnalysisState}
+               gameClass={props.game}
+               boardSize={props.game.boardSize}
+      />
       <p>
         Bottom text
       </p>

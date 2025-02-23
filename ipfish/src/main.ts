@@ -5,14 +5,14 @@ import { Game } from "./game";
 export async function main(ns: NS): Promise<void> {
   const game = new Game(ns, "Daedalus", 5)
 
-  ipfish(ns, game)
+  await ipfish(ns, game)
 
   while(true) {
     await ns.asleep(2000)
   }
 }
 
-export function ipfish(ns: NS, game : Game): void {
+export async function ipfish(ns: NS, game : Game): Promise<void> {
   ns.disableLog("ALL")
   ns.clearLog()
   // Cleans up react element after exit
@@ -25,5 +25,7 @@ export function ipfish(ns: NS, game : Game): void {
   ns.resizeTail(720, 860)
   ns.moveTail(1020, 50)
 
-  ns.printRaw(React.createElement(IpFish, {game: game, initalState: game.getGameState()}))
+  const initalAnalysisState = await game.getAnalysis()
+
+  ns.printRaw(React.createElement(IpFish, {game: game, initalGameState: game.getGameState(), initalAnalysisState: initalAnalysisState}))
 }
