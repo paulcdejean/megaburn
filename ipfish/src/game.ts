@@ -115,8 +115,6 @@ export class Game {
     // TODO make good
     const analysis = get_analysis([this.board])
     const bestMove = 0
-    this.ns.tprint(analysis)
-    this.ns.exit()
     return {
       analysis: analysis,
       bestMove: bestMove

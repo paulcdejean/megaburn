@@ -37,7 +37,6 @@ pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
   }
 
   let mut result: Vec<f64> = Vec::new();
-
   for go_move in get_legal_moves(&current_board, &history) {
     if(go_move) {
       result.push(3.5);
@@ -76,7 +75,6 @@ fn get_legal_moves(board: &Vec<u8>, board_history: &HashSet<Vec<u8>>) -> Vec<boo
       result.push(true);
     }
   }
-
   return result;
 }
 
