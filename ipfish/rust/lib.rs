@@ -1,7 +1,6 @@
 #![allow(warnings)]
 use core::f64;
 use std::collections::HashSet;
-
 use wasm_bindgen::prelude::*;
 
 #[repr(u8)]
@@ -11,17 +10,6 @@ enum PointState {
   Black = 3,
   Offline = 4,
 }
-
-
-/// Squares a number, I just think the documentation is really cool
-///
-/// # Arguments
-///
-/// * `n` - The number to square.
-// #[wasm_bindgen]
-// pub fn wasmsquare(n: js_sys::Number) -> js_sys::Number {
-//   return n.clone() * n;
-// }
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///
