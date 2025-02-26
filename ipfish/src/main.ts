@@ -1,11 +1,8 @@
 import { NS } from "@ns";
 import IpFish from "./ui/IpFish";
 import { Game } from "./game";
-import { wasmsquare } from "@rust"
 
 export async function main(ns: NS): Promise<void> {
-  ns.tprint(`2 squred = ${wasmsquare(2)}`)
-  return
 
   const game = new Game(ns, "Daedalus", 5)
 

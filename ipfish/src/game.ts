@@ -1,4 +1,5 @@
 import { NS, GoOpponent } from "@ns";
+import { get_analysis } from "@rust";
 
 export type BoardState = Uint8Array
 
@@ -112,29 +113,10 @@ export class Game {
 
   public async getAnalysis() : Promise<AnalysisState> {
     // TODO make good
-    const analysis = new Float64Array(this.boardSize**2)
-    const validMoves = this.ns.go.analysis.getValidMoves()
-    let column = 0
-    let row = 0
-    let highestScore = 0 - ((this.boardSize**2)/2) - 1
-    let bestMove = 0
-    for (const validMovesColumn of validMoves) {
-      row = 0
-      for (const point of validMovesColumn) {
-        if(point) {
-          const score = Math.floor(Math.random() * (this.boardSize**2)) - ((this.boardSize**2)/2) - 1
-          if (score > highestScore) {
-            bestMove = row * this.boardSize + column
-            highestScore = score
-          }
-          analysis[row * this.boardSize + column] = score;
-        } else {
-          analysis[row * this.boardSize + column] = Number.NEGATIVE_INFINITY
-        }
-        row++
-      }
-      column++
-    }
+    const analysis = get_analysis([this.board])
+    const bestMove = 0
+    this.ns.tprint(analysis)
+    this.ns.exit()
     return {
       analysis: analysis,
       bestMove: bestMove

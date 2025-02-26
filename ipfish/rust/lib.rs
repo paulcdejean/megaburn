@@ -18,11 +18,16 @@ enum PointState {
 /// # Arguments
 ///
 /// * `n` - The number to square.
-#[wasm_bindgen]
-pub fn wasmsquare(n: js_sys::Number) -> js_sys::Number {
-  return n.clone() * n;
-}
+// #[wasm_bindgen]
+// pub fn wasmsquare(n: js_sys::Number) -> js_sys::Number {
+//   return n.clone() * n;
+// }
 
+/// Performs an analysis on a a ipvgo board. Higher number = better move.
+///
+/// # Arguments
+///
+/// * `board_history` - All states the board has historically been in. The last element of the array is the current board position.
 #[wasm_bindgen]
 pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
   let current_board: Vec<u8> = js_sys::Uint8Array::new(&board_history.iter().last().unwrap()).to_vec();
@@ -44,7 +49,7 @@ pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
   return js_sys::Float64Array::from(result.as_slice());
 }
 
-/// Returns a vector 
+/// Returns a Vec<bool> where true is a legal move and false is an illegal move.
 ///
 /// # Arguments
 ///
