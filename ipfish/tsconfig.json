@@ -23,6 +23,7 @@
     "allowJs": true,
     "noEmit": true,
     "jsx": "react",
+    "skipLibCheck": true,
     "paths": {
       "@ns": ["../NetscriptDefinitions.d.ts"],
       "@rust": ["../pkg/ipfish.d.ts"],
