@@ -48,6 +48,7 @@ describe(`Basic capture: ${basicCaptureBoard}`, async() => {
     komi: 0.5,
   }
 
+  // Starts at a1 so the bottom left
   const legality = [
     true, true, true,
     false, // Node is offline

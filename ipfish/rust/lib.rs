@@ -67,6 +67,7 @@ fn get_legal_moves(board: &Vec<u8>, board_history: &HashSet<Vec<u8>>) -> Vec<boo
 }
 
 fn is_self_capture(point: usize, board: &Vec<u8>) -> bool {
+  // TODO
   return false
 }
 
