@@ -41,8 +41,7 @@ OXOX.
 ....#
 ...#.
 `
-describe(`Basic capture:
-${basicCaptureBoard}`, async() => {
+describe(`Basic capture: ${basicCaptureBoard}`, async() => {
   const gameState : GameState = {
     board: boardFromText(basicCaptureBoard, 5),
     turn: CurrentTurn.Black,
