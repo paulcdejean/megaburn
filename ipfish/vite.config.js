@@ -5,6 +5,8 @@ import { fileURLToPath, URL } from 'url';
 import wasm from "vite-plugin-wasm";
 
 export default defineConfig({
+  test: {
+  },
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
