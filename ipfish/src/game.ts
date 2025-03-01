@@ -65,18 +65,17 @@ export class Game {
   public async makeMove(row : number, column : number, boardCallback? : (gameState: GameState) => void, analysisCallBack? : (analysisState: AnalysisState) => void) {
     try {
       const responsePromise = this.ns.go.makeMove(column, row)
-      this.gameState.board[this.boardSize * row + column] = PointState.Black
-      const startingGameState = this.gameState
+      this.updateGameState()
       if (boardCallback !== undefined) {
-        boardCallback(startingGameState)
+        boardCallback(this.gameState)
       }
       const opponentMove = await responsePromise
+      this.updateGameState()
 
       if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
         this.gameState.board[opponentMove.y * this.boardSize + opponentMove.x] = PointState.White
-        const newGameState = this.gameState
         if (boardCallback !== undefined) {
-          boardCallback(newGameState)
+          boardCallback(this.gameState)
         }
         if (analysisCallBack !== undefined) {
           const newAnalaysisState = await this.getAnalysis()
