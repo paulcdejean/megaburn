@@ -1,5 +1,5 @@
  
-import { AnalysisState as AnalysisState, Game, GameState } from "@/game"
+import { AnalysisState as AnalysisState, Game, GameState } from "@/Game"
 import css from "./css/IpFish.module.css"
 import GoPoint from "./GoPoint"
 

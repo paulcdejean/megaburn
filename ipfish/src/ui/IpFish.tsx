@@ -1,4 +1,4 @@
-import { AnalysisState, Game, GameState } from "@/game"
+import { AnalysisState, Game, GameState } from "@/Game"
 import cssInline from "./css/IpFish.module.css?inline"
 import GoBoard from "./GoBoard"
 

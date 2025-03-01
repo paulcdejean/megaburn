@@ -1,6 +1,7 @@
 import { NS } from "@ns";
 import IpFish from "./ui/IpFish";
-import { Game } from "./game";
+import { Game } from "./Game"
+import { getAnalysis } from "./getAnalysis";
 
 export async function main(ns: NS): Promise<void> {
 
@@ -26,7 +27,7 @@ export async function ipfish(ns: NS, game : Game): Promise<void> {
   ns.resizeTail(720, 860)
   ns.moveTail(1020, 50)
 
-  const initalAnalysisState = await game.getAnalysis()
+  const initalAnalysisState = await getAnalysis(game.gameState)
 
   ns.printRaw(React.createElement(IpFish, {game: game, initalGameState: game.gameState, initalAnalysisState: initalAnalysisState}))
 }

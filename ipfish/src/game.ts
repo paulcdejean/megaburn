@@ -1,7 +1,7 @@
 import { NS, GoOpponent } from "@ns";
-import { get_analysis } from "@rust";
-
-type BoardSize = 5 | 7 | 9 | 13 | 19
+import { CurrentTurn, getCurrentTurn } from "./getCurrentTurn";
+import { getBoardFromAPI } from "./getBoardFromAPI"
+import { getAnalysis } from "./getAnalysis";
 
 export type BoardState = Uint8Array
 
@@ -23,11 +23,7 @@ export enum PointState {
   Offline = 4,
 }
 
-export enum CurrentTurn {
-  Black = 1,
-  White = 2,
-  Inactive = 3,
-}
+
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const goAlphabet = [...'abcdefghjklmnopqrstuvwxyz'];
@@ -78,7 +74,7 @@ export class Game {
           boardCallback(this.gameState)
         }
         if (analysisCallBack !== undefined) {
-          const newAnalaysisState = await this.getAnalysis()
+          const newAnalaysisState = await getAnalysis(this.gameState)
           analysisCallBack(newAnalaysisState)
         }
       }
@@ -95,48 +91,4 @@ export class Game {
       this.ns.toast(errorMessage, this.ns.enums.ToastVariant.ERROR, 5000)
     }
   }
-
-  public async getAnalysis() : Promise<AnalysisState> {
-    // TODO make good
-    const analysis = get_analysis([this.gameState.board])
-    const bestMove = 0
-    return {
-      analysis: analysis,
-      bestMove: bestMove
-    }
-  }
-}
-
-function getCurrentTurn(ns : NS) : CurrentTurn {
-  const turnString = ns.go.getCurrentPlayer()
-  if (turnString === "White") {
-    return CurrentTurn.White
-  } else if (turnString === "Black") {
-    return CurrentTurn.Black
-  } else {
-    return CurrentTurn.Inactive
-  }
-}
-
-function getBoardFromAPI(ns : NS) : BoardState {
-  const stringState = ns.go.getBoardState()
-  const boardSize = stringState.length as BoardSize
-  const board = new Uint8Array(boardSize**2)
-  
-  let row = 0
-  let column = 0
-  for (const str of stringState) {
-    column = 0
-    for (const point of str) {
-      const pointNumber = (column * boardSize) + row
-      if (point === ".") board[pointNumber] = PointState.Empty
-      else if (point === "X") board[pointNumber] = PointState.Black
-      else if (point === "O") board[pointNumber] = PointState.White
-      else if (point === "#") board[pointNumber] = PointState.Offline
-      else throw new Error(`Invalid point data ${point} at position ${pointNumber}`)
-      column++
-    }
-    row++
-  }
-  return board
 }
