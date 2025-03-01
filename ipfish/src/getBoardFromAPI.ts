@@ -1,6 +1,5 @@
 import { NS } from "@ns"
-import { BoardState } from "./Game"
-
+import { BoardState, PointState } from "./Game"
 
 export function getBoardFromAPI(ns : NS) : BoardState {
   const stringState = ns.go.getBoardState()

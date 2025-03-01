@@ -23,8 +23,6 @@ export enum PointState {
   Offline = 4,
 }
 
-
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const goAlphabet = [...'abcdefghjklmnopqrstuvwxyz'];
 
