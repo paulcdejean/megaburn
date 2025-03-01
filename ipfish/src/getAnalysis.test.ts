@@ -14,7 +14,7 @@ function boardFromText(boardString : string, boardSize : number) : BoardState {
     const column = n % boardSize
     const row = Math.floor((boardSize**2 - n - 1) / boardSize)
     const location = row * boardSize + column
-    // console.log(`n = ${n}, row = ${row}, column = ${column}, location = ${location}, letter = ${letter}`)
+
     if(letter === "\n") {
       continue
     } else if(letter === ".") {
