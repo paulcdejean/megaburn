@@ -28,5 +28,5 @@ export async function ipfish(ns: NS, game : Game): Promise<void> {
 
   const initalAnalysisState = await game.getAnalysis()
 
-  ns.printRaw(React.createElement(IpFish, {game: game, initalGameState: game.getGameState(), initalAnalysisState: initalAnalysisState}))
+  ns.printRaw(React.createElement(IpFish, {game: game, initalGameState: game.gameState, initalAnalysisState: initalAnalysisState}))
 }
