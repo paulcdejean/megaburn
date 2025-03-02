@@ -18,10 +18,10 @@ enum PointState {
 /// * `board_history` - All states the board has historically been in. The last element of the array is the current board position.
 #[wasm_bindgen]
 pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
-  let current_board: Vec<u8> = js_sys::Uint8Array::new(&board_history.iter().last().unwrap()).to_vec();
-  let mut history: HashSet<Vec<u8>> = HashSet::new();
+  let current_board: Box<[u8]> = js_sys::Uint8Array::new(&board_history.iter().last().unwrap()).to_vec().into_boxed_slice();
+  let mut history: HashSet<Box<[u8]>> = HashSet::new();
   for board in board_history.iter() {
-    history.insert(js_sys::Uint8Array::new(&board).to_vec());
+    history.insert(js_sys::Uint8Array::new(&board).to_vec().into_boxed_slice());
   }
 
   let mut result: Vec<f64> = Vec::new();
@@ -42,7 +42,7 @@ pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
 ///
 /// * `board` - The state of the board we're getting the legal moves for.
 /// * `board_history` - All states the board has historically been in, important for determining superko.
-fn get_legal_moves(board: &Vec<u8>, board_history: &HashSet<Vec<u8>>) -> Vec<bool> {
+fn get_legal_moves(board: &Box<[u8]>, board_history: &HashSet<Box<[u8]>>) -> Box<[bool]> {
   let mut result: Vec<bool> = Vec::new();
 
   for point in 0..board.len() {
@@ -63,14 +63,14 @@ fn get_legal_moves(board: &Vec<u8>, board_history: &HashSet<Vec<u8>>) -> Vec<boo
       result.push(true);
     }
   }
-  return result;
+  return result.into_boxed_slice();
 }
 
-fn is_self_capture(point: usize, board: &Vec<u8>) -> bool {
+fn is_self_capture(point: usize, board: &Box<[u8]>) -> bool {
   // TODO
   return false
 }
 
-fn violates_superko(point: usize, board: &Vec<u8>, board_history: &HashSet<Vec<u8>>) -> bool {
+fn violates_superko(point: usize, board: &Box<[u8]>, board_history: &HashSet<Box<[u8]>>) -> bool {
   return false
 }
