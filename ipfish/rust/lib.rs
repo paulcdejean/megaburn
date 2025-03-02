@@ -67,7 +67,9 @@ fn get_legal_moves(board: &Box<[u8]>, board_history: &HashSet<Box<[u8]>>) -> Box
 }
 
 fn is_self_capture(point: usize, board: &Box<[u8]>) -> bool {
-  // TODO
+  // If there's an adjacent empty point, it is not self capture
+  // If there's an adjacent friendly group with more than 1 liberty, it's not self capture
+  // If there's an adjacent enemy group with only 1 liberty, then this move captures it so it's not self capture
   return false
 }
 

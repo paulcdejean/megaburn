@@ -9,10 +9,8 @@ export default defineConfig({
   },
   build: {
     lib: {
-      // Could also be a dictionary or array of multiple entry points
       entry: fileURLToPath(new URL('./src/main.ts', import.meta.url)),
       name: 'ipfish',
-      // the proper extensions will be added
       fileName: 'ipfish',
       formats: ['es'],
     },
