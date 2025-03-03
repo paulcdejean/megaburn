@@ -143,3 +143,7 @@ fn get_adjacent_points(point: usize, board: &Box<[u8]>) -> Box<[usize]> {
   }
   return result.into_boxed_slice();
 }
+
+fn count_liberties_of_group(point: usize, board: &Box<[u8]>) -> u64 {
+  return 1
+}
