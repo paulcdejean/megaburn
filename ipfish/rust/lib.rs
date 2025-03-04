@@ -145,5 +145,32 @@ fn get_adjacent_points(point: usize, board: &Box<[u8]>) -> Box<[usize]> {
 }
 
 fn count_liberties_of_group(point: usize, board: &Box<[u8]>) -> u64 {
-  return 1
+  let mut group: HashSet<usize> = HashSet::from([point]);
+  
+  let player: Player;
+  if board[point] == Player::Black as u8 {
+    player = Player::Black;
+  } else if board[point] == Player::White as u8 {
+    player = Player::White;
+  } else {
+    panic!("Can't get the group of an empty of offline point!");
+  }
+
+  let mut unchecked_points: Vec<usize> = Vec::from(get_adjacent_points(point, board));
+
+  let mut liberties: u64 = 0;
+
+  while unchecked_points.len() > 0 {
+    let point_to_check: usize = unchecked_points.pop().unwrap();
+    if board[point_to_check] == player as u8 {
+      if !group.contains(&point_to_check) {
+        unchecked_points.extend_from_slice(&get_adjacent_points(point, board));
+      }
+      group.insert(point_to_check);
+    } else if board[point_to_check] == PointState::Empty as u8 {
+      liberties += 1;
+    }
+  }
+
+  return liberties;
 }
