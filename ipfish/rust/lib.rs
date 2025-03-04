@@ -157,7 +157,6 @@ fn count_liberties_of_group(point: usize, board: &[u8]) -> usize {
   }
 
   let mut unchecked_points: Vec<usize> = Vec::from(get_adjacent_points(point, board));
-  println!("Unchecked points {:?}", unchecked_points);
 
   let mut liberties: HashSet<usize> = HashSet::new();
 
@@ -171,10 +170,7 @@ fn count_liberties_of_group(point: usize, board: &[u8]) -> usize {
     } else if board[point_to_check] == PointState::Empty as u8 {
       liberties.insert(point_to_check);
     }
-    println!("Unchecked points {:?}", unchecked_points);
   }
-
-  println!("Liberties {:?}", liberties);
 
   return liberties.len();
 }
