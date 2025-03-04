@@ -92,7 +92,7 @@ XXXOO
 `
 describe(`Self capture legality: ${selfCaptureLegalityBoard}`, async() => {
   const gameState : GameState = {
-    board: boardFromText(basicCaptureBoard, 5),
+    board: boardFromText(selfCaptureLegalityBoard, 5),
     turn: CurrentTurn.Black,
     komi: 7.5,
   }

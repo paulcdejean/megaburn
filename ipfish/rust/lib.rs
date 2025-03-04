@@ -144,7 +144,7 @@ fn get_adjacent_points(point: usize, board: &Box<[u8]>) -> Box<[usize]> {
   return result.into_boxed_slice();
 }
 
-fn count_liberties_of_group(point: usize, board: &Box<[u8]>) -> u64 {
+fn count_liberties_of_group(point: usize, board: &Box<[u8]>) -> usize {
   let mut group: HashSet<usize> = HashSet::from([point]);
   
   let player: Player;
@@ -158,7 +158,7 @@ fn count_liberties_of_group(point: usize, board: &Box<[u8]>) -> u64 {
 
   let mut unchecked_points: Vec<usize> = Vec::from(get_adjacent_points(point, board));
 
-  let mut liberties: u64 = 0;
+  let mut liberties: HashSet<usize> = HashSet::new();
 
   while unchecked_points.len() > 0 {
     let point_to_check: usize = unchecked_points.pop().unwrap();
@@ -168,9 +168,9 @@ fn count_liberties_of_group(point: usize, board: &Box<[u8]>) -> u64 {
       }
       group.insert(point_to_check);
     } else if board[point_to_check] == PointState::Empty as u8 {
-      liberties += 1;
+      liberties.insert(point_to_check);
     }
   }
 
-  return liberties;
+  return liberties.len();
 }
