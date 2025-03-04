@@ -71,7 +71,7 @@ pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
 ///
 /// * `board` - The state of the board we're getting the legal moves for.
 /// * `board_history` - All states the board has historically been in, important for determining superko.
-fn get_legal_moves(active_player: Player, board: &Box<[u8]>, board_history: &HashSet<Box<[u8]>>) -> Box<[bool]> {
+fn get_legal_moves(active_player: Player, board: &[u8], board_history: &HashSet<Box<[u8]>>) -> Box<[bool]> {
   let mut result: Vec<bool> = Vec::new();
 
   for point in 0..board.len() {
@@ -95,7 +95,7 @@ fn get_legal_moves(active_player: Player, board: &Box<[u8]>, board_history: &Has
   return result.into_boxed_slice();
 }
 
-fn is_self_capture(active_player: Player, point: usize, board: &Box<[u8]>) -> bool {
+fn is_self_capture(active_player: Player, point: usize, board: &[u8]) -> bool {
   for point in get_adjacent_points(point, board) {
     // If there's an adjacent empty point, it is not self capture
     if board[point] == PointState::Empty as u8 {
@@ -117,11 +117,11 @@ fn is_self_capture(active_player: Player, point: usize, board: &Box<[u8]>) -> bo
   return true;
 }
 
-fn violates_superko(point: usize, board: &Box<[u8]>, board_history: &HashSet<Box<[u8]>>) -> bool {
+fn violates_superko(point: usize, board: &[u8], board_history: &HashSet<Box<[u8]>>) -> bool {
   return false;
 }
 
-fn get_adjacent_points(point: usize, board: &Box<[u8]>) -> Box<[usize]> {
+fn get_adjacent_points(point: usize, board: &[u8]) -> Box<[usize]> {
   let board_size: usize = board.len().isqrt();
   let mut result : Vec<usize> = Vec::new();
 
@@ -144,7 +144,7 @@ fn get_adjacent_points(point: usize, board: &Box<[u8]>) -> Box<[usize]> {
   return result.into_boxed_slice();
 }
 
-fn count_liberties_of_group(point: usize, board: &Box<[u8]>) -> usize {
+fn count_liberties_of_group(point: usize, board: &[u8]) -> usize {
   let mut group: HashSet<usize> = HashSet::from([point]);
   
   let player: Player;
@@ -157,6 +157,7 @@ fn count_liberties_of_group(point: usize, board: &Box<[u8]>) -> usize {
   }
 
   let mut unchecked_points: Vec<usize> = Vec::from(get_adjacent_points(point, board));
+  println!("Unchecked points {:?}", unchecked_points);
 
   let mut liberties: HashSet<usize> = HashSet::new();
 
@@ -164,13 +165,46 @@ fn count_liberties_of_group(point: usize, board: &Box<[u8]>) -> usize {
     let point_to_check: usize = unchecked_points.pop().unwrap();
     if board[point_to_check] == player as u8 {
       if !group.contains(&point_to_check) {
-        unchecked_points.extend_from_slice(&get_adjacent_points(point, board));
+        unchecked_points.extend_from_slice(&get_adjacent_points(point_to_check, board));
       }
       group.insert(point_to_check);
     } else if board[point_to_check] == PointState::Empty as u8 {
       liberties.insert(point_to_check);
     }
+    println!("Unchecked points {:?}", unchecked_points);
   }
 
+  println!("Liberties {:?}", liberties);
+
   return liberties.len();
+}
+
+pub fn add(left: u64, right: u64) -> u64 {
+  left + right
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn liberties_counted_correctly() {
+      // .....
+      // .OO..
+      // #.XX.
+      // .OXOX
+      // ..XO.
+
+      let board: Box<[u8]> = Box::from([
+        1, 1, 2, 3, 1,
+        1, 3, 2, 3, 2,
+        4, 1, 2, 2, 1,
+        1, 3, 3, 1, 1,
+        1, 1, 1, 1, 1,
+      ]);
+
+      // Count the liberties for 11 aka b3
+      let result = count_liberties_of_group(12, &board);
+      assert_eq!(result, 4);
+  }
 }
