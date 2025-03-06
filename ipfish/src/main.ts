@@ -20,12 +20,13 @@ export async function ipfish(ns: NS, game : Game): Promise<void> {
   // Cleans up react element after exit
   ns.atExit(() => {
     ns.clearLog()
-    ns.closeTail()
+    ns.ui.closeTail()
   })
 
-  ns.tail()
-  ns.resizeTail(720, 860)
-  ns.moveTail(1020, 50)
+  ns.ui.openTail()
+  ns.ui.resizeTail(720, 860)
+  ns.ui.moveTail(1020, 50)
+  ns.ui.renderTail()
 
   const initalAnalysisState = await getAnalysis(game.gameState)
 

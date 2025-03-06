@@ -1,7 +1,7 @@
 {
   "lib": ["esnext", "DOM", "DOM.Iterable"],
   "include": [
-    "NetscriptDefinitions.d.ts",
+    "../NetscriptDefinitions.d.ts",
     "customd.d.ts",
     "src/**/*",
     "../pkg/ipfish.d.ts"
@@ -25,7 +25,7 @@
     "jsx": "react",
     "skipLibCheck": true,
     "paths": {
-      "@ns": ["../NetscriptDefinitions.d.ts"],
+      "@ns": ["../../NetscriptDefinitions.d.ts"],
       "@rust": ["../pkg/ipfish.d.ts"],
       "@/*": [
         "*"
