@@ -1,7 +1,6 @@
 
 import { expect, test, describe } from 'vitest'
 import { getAnalysis } from '../getAnalysis'
-import { type GameState } from '../Game'
 import { CurrentTurn } from '../getCurrentTurn'
 import { moveString } from '../moveString'
 import { boardFromText } from './utils'
@@ -14,11 +13,9 @@ OXOX.
 ...#.
 `
 describe(`Basic capture: ${basicCaptureBoard}`, async() => {
-  const gameState : GameState = {
-    board: boardFromText(basicCaptureBoard, 5),
-    turn: CurrentTurn.Black,
-    komi: 0.5,
-  }
+  const komi = 0.5
+  const board = boardFromText(basicCaptureBoard, 5)
+  const turn = CurrentTurn.Black
 
   // Starts at a1 so the bottom left
   const legality = [
@@ -36,7 +33,7 @@ describe(`Basic capture: ${basicCaptureBoard}`, async() => {
     true, true, true, true, true,
   ]
 
-  const analysis = await getAnalysis(gameState)
+  const analysis = await getAnalysis([board], komi, turn)
 
   const testingMatrix : (string | number | boolean)[][] = []
   for (let n = 0; n < legality.length; n++) {
