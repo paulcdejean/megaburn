@@ -1,9 +1,11 @@
-import { GameState, AnalysisState } from "./Game";
+import { AnalysisState, BoardState } from "./Game";
 import { get_analysis } from "@rust"
+import { CurrentTurn } from "./getCurrentTurn";
 
-export async function getAnalysis(gameState : GameState) : Promise<AnalysisState> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function getAnalysis(boardHistory : [BoardState], komi: number, turn: CurrentTurn) : Promise<AnalysisState> {
   // TODO make good
-  const analysis = get_analysis([gameState.board])
+  const analysis = get_analysis(boardHistory)
   const bestMove = 0
   return {
     analysis: analysis,

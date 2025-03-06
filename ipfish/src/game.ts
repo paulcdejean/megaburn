@@ -1,5 +1,5 @@
 import { NS, GoOpponent } from "@ns";
-import { CurrentTurn, getCurrentTurn } from "./getCurrentTurn";
+import { CurrentTurn } from "./getCurrentTurn";
 import { getBoardFromAPI } from "./getBoardFromAPI"
 import { getAnalysis } from "./getAnalysis";
 
@@ -8,12 +8,6 @@ export type BoardState = Uint8Array
 export interface AnalysisState {
   analysis: Float64Array
   bestMove: number
-}
-
-export interface GameState {
-  board: BoardState
-  turn: CurrentTurn
-  komi: number // This isn't just the starting komi, but also reflects currently captured stones and their effect on the score
 }
 
 export enum PointState {
@@ -30,51 +24,48 @@ const goAlphabet = [...'abcdefghjklmnopqrstuvwxyz'];
 export class Game {
   private ns : NS
   public readonly boardSize :  5 | 7 | 9 | 13 | 19
-  public readonly gameState : GameState
+  public readonly boardHistory : [BoardState]
+  public readonly komi : number
+  public turn : CurrentTurn
 
   constructor(ns : NS, opponent : GoOpponent, boardSize :  5 | 7 | 9 | 13) {
     this.ns = ns
     ns.go.resetBoardState(opponent, boardSize)
     this.boardSize = ns.go.getBoardState().length as 5 | 7 | 9 | 13 | 19 // 19 is secret opponent
-    const gameState = this.ns.go.getGameState()
-    this.gameState = {
-      board: getBoardFromAPI(this.ns),
-      turn: getCurrentTurn(this.ns),
-      komi: gameState.blackScore - gameState.whiteScore - gameState.komi
-    }
+    this.boardHistory = [getBoardFromAPI(this.ns)]
+    this.komi = this.ns.go.getGameState().komi
+    this.turn = CurrentTurn.Black
   }
 
-  public updateGameState() {
-    const gameState = this.ns.go.getGameState()
-    this.gameState.board = getBoardFromAPI(this.ns)
-    this.gameState.komi = gameState.blackScore - gameState.whiteScore - gameState.komi
-    this.gameState.turn = getCurrentTurn(this.ns)
+  public getBoard() : BoardState {
+    return this.boardHistory[this.boardHistory.length - 1]
   }
 
   // IMPORTANT: this is zero indexed
   public getPoint(row : number, column : number) : PointState {
-    return this.gameState.board[this.boardSize * row + column]
+    return this.getBoard()[this.boardSize * row + column]
   }
 
-  public async makeMove(row : number, column : number, boardCallback? : (gameState: GameState) => void, analysisCallBack? : (analysisState: AnalysisState) => void) {
+  public async makeMove(row : number, column : number, boardCallback? : (boardState: BoardState) => void, analysisCallBack? : (analysisState: AnalysisState) => void) {
     try {
       const responsePromise = this.ns.go.makeMove(column, row)
-      this.updateGameState()
+      const boardAfterBlackMoved = getBoardFromAPI(this.ns)
       if (boardCallback !== undefined) {
-        boardCallback(this.gameState)
+        boardCallback(boardAfterBlackMoved)
       }
-      const opponentMove = await responsePromise
-      this.updateGameState()
+      this.boardHistory.push(boardAfterBlackMoved)
 
+      const opponentMove = await responsePromise
+      const boardAfterWhiteMoved = getBoardFromAPI(this.ns)
       if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
-        this.gameState.board[opponentMove.y * this.boardSize + opponentMove.x] = PointState.White
         if (boardCallback !== undefined) {
-          boardCallback(this.gameState)
+          boardCallback(boardAfterWhiteMoved)
         }
-        if (analysisCallBack !== undefined) {
-          const newAnalaysisState = await getAnalysis(this.gameState)
-          analysisCallBack(newAnalaysisState)
-        }
+        this.boardHistory.push(boardAfterWhiteMoved)
+      }
+      if (analysisCallBack !== undefined) {
+        const newAnalaysisState = await getAnalysis(this.boardHistory, this.komi, CurrentTurn.Black)
+        analysisCallBack(newAnalaysisState)
       }
     } catch (e) {
       // Currently e is a string unfortunately

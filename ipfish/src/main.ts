@@ -28,7 +28,12 @@ export async function ipfish(ns: NS, game : Game): Promise<void> {
   ns.ui.moveTail(1020, 50)
   ns.ui.renderTail()
 
-  const initalAnalysisState = await getAnalysis(game.gameState)
+  const initalAnalysisState = await getAnalysis(game.boardHistory, game.komi, game.turn)
 
-  ns.printRaw(React.createElement(IpFish, {game: game, initalGameState: game.gameState, initalAnalysisState: initalAnalysisState}))
+  ns.printRaw(React.createElement(IpFish, {game: game,
+                                           initalBoardState: game.getBoard(),
+                                           initalAnalysisState: initalAnalysisState,
+                                           komi: game.komi,
+                                           initialTurn: game.turn,
+                                          }))
 }

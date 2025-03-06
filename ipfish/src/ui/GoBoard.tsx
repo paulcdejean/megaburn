@@ -1,12 +1,12 @@
  
-import { AnalysisState as AnalysisState, Game, GameState } from "@/Game"
+import { AnalysisState as AnalysisState, BoardState, Game } from "@/Game"
 import css from "./css/IpFish.module.css"
 import GoPoint from "./GoPoint"
 
 interface GoBoardProps {
   gameClass : Game
-  gameState : GameState
-  updateGameState : (gameState: GameState) => void
+  boardState : BoardState
+  updateBoardState : (boardState: BoardState) => void
   boardSize : 5 | 7 | 9 | 13 | 19
   analysisState : AnalysisState
   updateAnalysisState : (analysisState: AnalysisState) => void
@@ -29,7 +29,7 @@ function GoBoard(props : GoBoardProps) {
                           pointState={props.gameClass.getPoint(props.boardSize - row - 1, column)}
                           evaluation={props.analysisState.analysis[(props.boardSize - row - 1) * props.boardSize + column]}
                           bestMove={(props.boardSize - row - 1) * props.boardSize + column === props.analysisState.bestMove}
-                          updateGameState={props.updateGameState}
+                          updateBoardState={props.updateBoardState}
                           updateAnalysisState={props.updateAnalysisState}
                           gameClass={props.gameClass}
                           row={props.boardSize - row - 1}
