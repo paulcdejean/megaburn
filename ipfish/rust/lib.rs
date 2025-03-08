@@ -4,15 +4,20 @@ mod player;
 mod get_adjacent_points;
 mod point_state;
 mod board;
+mod is_self_capture;
+mod get_legal_moves;
 
 use core::f64;
 use std::{collections::HashSet, ops::Not};
 use wasm_bindgen::prelude::*;
+
 use crate::player::Player;
 use crate::count_liberties_of_group::count_liberties_of_group;
 use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;
 use crate::board::Board;
+use crate::is_self_capture::is_self_capture;
+use crate::get_legal_moves::get_legal_moves;
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///
@@ -34,7 +39,7 @@ pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
   };
 
   let mut result: Vec<f64> = Vec::new();
-  for go_move in get_legal_moves(Player::Black, &current_board, &history) {
+  for go_move in get_legal_moves(&current_board, &history) {
     if(go_move) {
       result.push(3.5);
     } else {
@@ -44,64 +49,6 @@ pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
 
   return js_sys::Float64Array::from(result.as_slice());
 }
-
-/// Returns a Vec<bool> where true is a legal move and false is an illegal move.
-///
-/// # Arguments
-///
-/// * `board` - The state of the board we're getting the legal moves for.
-/// * `board_history` - All states the board has historically been in, important for determining superko.
-fn get_legal_moves(active_player: Player, board: &Board, board_history: &HashSet<Box<[u8]>>) -> Box<[bool]> {
-  let mut result: Vec<bool> = Vec::new();
-
-  for point in 0..board.board.len() {
-    // The move is illegal if there is already a piece there.
-    if board.board[point] != PointState::Empty as u8 {
-      result.push(false);
-    }
-    // The move is illegal if it would lead to a self capture.
-    else if is_self_capture(active_player, point, board) {
-      result.push(false);
-    }
-    // The move is illegal if it would repeat a previous board state.
-    else if violates_superko(point, board, board_history) {
-      result.push(false);
-    }
-    // Otherwise the move is legal.
-    else {
-      result.push(true);
-    }
-  }
-  return result.into_boxed_slice();
-}
-
-fn is_self_capture(active_player: Player, point: usize, board: &Board) -> bool {
-  for point in get_adjacent_points(point, board) {
-    // If there's an adjacent empty point, it is not self capture
-    if board.board[point] == PointState::Empty as u8 {
-      return false;
-    }
-    // If there's an adjacent friendly group with more than 1 liberty, it's not self capture
-    else if board.board[point] == active_player as u8 {
-      if count_liberties_of_group(point, board) > 1 {
-        return false;
-      }
-    }
-    // If there's an adjacent enemy group with only 1 liberty, then this move captures it so it's not self capture
-    else if board.board[point] == !active_player as u8 {
-      if count_liberties_of_group(point, board) <= 1 {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-fn violates_superko(point: usize, board: &Board, board_history: &HashSet<Box<[u8]>>) -> bool {
-  return false;
-}
-
-
 
 // #[cfg(test)]
 // mod tests {
