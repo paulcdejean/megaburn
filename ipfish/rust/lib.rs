@@ -29,7 +29,7 @@ use crate::board_from_string::board_from_string;
 ///
 /// * `board_history` - All states the board has historically been in. The last element of the array is the current board position.
 #[wasm_bindgen]
-pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
+pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: &js_sys::Number) -> js_sys::Float64Array {
   let current_board: Box<[u8]> = js_sys::Uint8Array::new(&board_history.iter().last().unwrap()).to_vec().into_boxed_slice();
   let mut history: HashSet<Box<[u8]>> = HashSet::new();
   for board in board_history.iter() {
@@ -40,6 +40,7 @@ pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
     size: current_board.len().isqrt(),
     board: current_board,
     player: Player::Black,
+    komi: komi.value_of(),
   };
 
   let mut result: Vec<f64> = Vec::new();

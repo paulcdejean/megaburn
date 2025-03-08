@@ -73,6 +73,7 @@ use crate::board_from_string::board_from_string;
       board: board,
       size: 5,
       player: Player::Black,
+      komi: 7.5,
     };
     let board_history: HashSet<Box<[u8]>> = HashSet::new();
     let result: Box<[bool]> = get_legal_moves(&board, &board_history);
@@ -103,6 +104,7 @@ use crate::board_from_string::board_from_string;
       board: board,
       size: 5,
       player: Player::Black,
+      komi: 7.5,
     };
 
     let board_history: HashSet<Box<[u8]>> = HashSet::new();
@@ -132,6 +134,7 @@ use crate::board_from_string::board_from_string;
       board: board,
       size: 5,
       player: Player::Black,
+      komi: 7.5,
     };
 
     let board_history: HashSet<Box<[u8]>> = HashSet::new();
@@ -168,6 +171,7 @@ use crate::board_from_string::board_from_string;
       board: current_board.clone(),
       size: 5,
       player: Player::Black,
+      komi: 7.5,
     };
     let mut board_history: HashSet<Box<[u8]>> = HashSet::new();
     board_history.insert(previous_board);

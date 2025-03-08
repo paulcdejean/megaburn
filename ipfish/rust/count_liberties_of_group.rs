@@ -55,6 +55,7 @@ mod tests {
       board: board,
       size: 5,
       player: Player::Black,
+      komi: 7.5,
     };
 
     // Count the liberties for 12 aka c3
