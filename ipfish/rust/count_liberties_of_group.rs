@@ -35,3 +35,30 @@ pub fn count_liberties_of_group(point: usize, board: &Board) -> usize {
 
   return liberties.len();
 }
+
+#[cfg(test)]
+mod tests {
+  use crate::board_from_string::board_from_string;
+  use super::*;
+
+  #[test]
+  fn liberties_counted_correctly() {
+    let board_string: &str = "
+    .....
+    .OO..
+    #.XX.
+    .OXOX
+    ..XO.
+    ";
+    let board: Box<[u8]> = board_from_string(board_string, 5);
+    let board: Board = Board {
+      board: board,
+      size: 5,
+      player: Player::Black,
+    };
+
+    // Count the liberties for 12 aka c3
+    let result: usize = count_liberties_of_group(12, &board);
+    assert_eq!(result, 4);
+  }
+}

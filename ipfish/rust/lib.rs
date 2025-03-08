@@ -6,6 +6,7 @@ mod point_state;
 mod board;
 mod is_self_capture;
 mod get_legal_moves;
+mod board_from_string;
 
 use core::f64;
 use std::{collections::HashSet, ops::Not};
@@ -18,6 +19,7 @@ use crate::point_state::PointState;
 use crate::board::Board;
 use crate::is_self_capture::is_self_capture;
 use crate::get_legal_moves::get_legal_moves;
+use crate::board_from_string::board_from_string;
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///
@@ -49,29 +51,3 @@ pub fn get_analysis(board_history: &js_sys::Array) -> js_sys::Float64Array {
 
   return js_sys::Float64Array::from(result.as_slice());
 }
-
-// #[cfg(test)]
-// mod tests {
-//   use super::*;
-
-//   #[test]
-//   fn liberties_counted_correctly() {
-//       // .....
-//       // .OO..
-//       // #.XX.
-//       // .OXOX
-//       // ..XO.
-
-//       let board: Box<[u8]> = Box::from([
-//         1, 1, 2, 3, 1,
-//         1, 3, 2, 3, 2,
-//         4, 1, 2, 2, 1,
-//         1, 3, 3, 1, 1,
-//         1, 1, 1, 1, 1,
-//       ]);
-
-//       // Count the liberties for 11 aka b3
-//       let result = count_liberties_of_group(12, &board);
-//       assert_eq!(result, 4);
-//   }
-// }

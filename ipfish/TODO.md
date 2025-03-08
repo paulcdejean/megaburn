@@ -1,6 +1,4 @@
 Tests in rust:
-* count_liberties_of_group
-* is_self_capture
 * get_legal_moves
 
 Test driven development for some future play_move function (???)
