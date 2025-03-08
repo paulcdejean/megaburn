@@ -6,6 +6,7 @@ use crate::point_state::PointState;
 use crate::player::Player;
 use crate::board::Board;
 use crate::is_self_capture::is_self_capture;
+use crate::violates_superko::violates_superko;
 
 /// Returns a sequence of bool where true is a legal move and false is an illegal move.
 ///
@@ -37,6 +38,109 @@ pub fn get_legal_moves(board: &Board, board_history: &HashSet<Box<[u8]>>) -> Box
   return result.into_boxed_slice();
 }
 
-fn violates_superko(point: usize, board: &Board, board_history: &HashSet<Box<[u8]>>) -> bool {
-  return false;
+#[cfg(test)]
+mod tests {
+  use crate::board_from_string::board_from_string;
+  use super::*;
+
+  #[test]
+  fn basic_capture() {
+    let board_string: &str = "
+    .....
+    OXOX.
+    .OX..
+    ....#
+    ...#.
+    ";
+    let board: Box<[u8]> = board_from_string(board_string, 5);
+    let board: Board = Board {
+      board: board,
+      size: 5,
+      player: Player::Black,
+    };
+
+    let legality: [bool; 25] = [
+      true, true, true,
+      false, // Node is offline
+      false, // Surrounded by offline nodes
+      true, true, true, true,
+      false, // Node is offline
+      true,
+      false, // White piece there
+      false, // Black piece there
+      true, true,
+      false, false, false, false, // Pieces there
+      true,
+      true, true, true, true, true,
+    ];
+
+    let board_history: HashSet<Box<[u8]>> = HashSet::new();
+
+    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
+    assert_eq!(*result, legality);
+  }
+  #[test]
+  fn self_capture_legality() {
+    let board_string: &str = "
+    .OX#.
+    OOXX.
+    XXXOO
+    ...O.
+    #####
+    ";
+    let board: Box<[u8]> = board_from_string(board_string, 5);
+    let board: Board = Board {
+      board: board,
+      size: 5,
+      player: Player::Black,
+    };
+
+    let legality: [bool; 25] = [
+      false, false, false, false, false,  // Bottom row is offline
+      true, true, true,
+      false, // White piece there
+      false, // Would be self capture
+      false, false, false, false, false, // Pieces in this row
+      false, false, false, false, // More pieces
+      true, // Best move, as it prevents white from making life
+      true, // Legal move, it's not self capture because it captures the white group
+      false, false, false, // Pieces there
+      true,
+    ];
+
+    let board_history: HashSet<Box<[u8]>> = HashSet::new();
+
+    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
+    assert_eq!(*result, legality);
+  }
+
+  #[test]
+  fn more_self_capture_legality() {
+    let board_string: &str = "
+    .....
+    .OO..
+    #.XX.
+    .OXOX
+    ..XO.
+    ";
+    let board: Box<[u8]> = board_from_string(board_string, 5);
+    let board: Board = Board {
+      board: board,
+      size: 5,
+      player: Player::Black,
+    };
+
+    let legality: [bool; 25] = [
+      true, true, false, false, true,
+      true, false, false, false, false,
+      false, true, false, false, true,
+      true, false, false, true, true,
+      true, true, true, true, true,
+    ];
+
+    let board_history: HashSet<Box<[u8]>> = HashSet::new();
+
+    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
+    assert_eq!(*result, legality);
+  }  
 }

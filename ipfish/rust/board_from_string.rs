@@ -35,7 +35,7 @@ pub fn board_from_string(board_str: &str, board_size: usize) -> Box<[u8]> {
       result[location] = PointState::White as u8;
       n += 1;
     } else if letter == '#' {
-      result[location] = PointState::Empty as u8;
+      result[location] = PointState::Offline as u8;
       n += 1;
     }
   }
