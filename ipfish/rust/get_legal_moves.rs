@@ -40,25 +40,20 @@ pub fn get_legal_moves(board: &Board, board_history: &HashSet<Box<[u8]>>) -> Box
 
 #[cfg(test)]
 mod tests {
-  use crate::board_from_string::board_from_string;
+  use std::thread::current;
+
+use crate::board_from_string::board_from_string;
   use super::*;
 
   #[test]
   fn basic_capture() {
-    let board_string: &str = "
+    let board:Box<[u8]> = board_from_string("
     .....
     OXOX.
     .OX..
     ....#
     ...#.
-    ";
-    let board: Box<[u8]> = board_from_string(board_string, 5);
-    let board: Board = Board {
-      board: board,
-      size: 5,
-      player: Player::Black,
-    };
-
+    ", 5);
     let legality: [bool; 25] = [
       true, true, true,
       false, // Node is offline
@@ -74,27 +69,24 @@ mod tests {
       true, true, true, true, true,
     ];
 
-    let board_history: HashSet<Box<[u8]>> = HashSet::new();
-
-    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
-    assert_eq!(*result, legality);
-  }
-  #[test]
-  fn self_capture_legality() {
-    let board_string: &str = "
-    .OX#.
-    OOXX.
-    XXXOO
-    ...O.
-    #####
-    ";
-    let board: Box<[u8]> = board_from_string(board_string, 5);
     let board: Board = Board {
       board: board,
       size: 5,
       player: Player::Black,
     };
-
+    let board_history: HashSet<Box<[u8]>> = HashSet::new();
+    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
+    assert_eq!(*result, legality);
+  }
+  #[test]
+  fn self_capture_legality() {
+    let board:Box<[u8]>  = board_from_string("
+    .OX#.
+    OOXX.
+    XXXOO
+    ...O.
+    #####
+    ", 5);
     let legality: [bool; 25] = [
       false, false, false, false, false,  // Bottom row is offline
       true, true, true,
@@ -107,6 +99,11 @@ mod tests {
       false, false, false, // Pieces there
       true,
     ];
+    let board: Board = Board {
+      board: board,
+      size: 5,
+      player: Player::Black,
+    };
 
     let board_history: HashSet<Box<[u8]>> = HashSet::new();
 
@@ -116,20 +113,13 @@ mod tests {
 
   #[test]
   fn more_self_capture_legality() {
-    let board_string: &str = "
+    let board: Box<[u8]> = board_from_string("
     .....
     .OO..
     #.XX.
     .OXOX
     ..XO.
-    ";
-    let board: Box<[u8]> = board_from_string(board_string, 5);
-    let board: Board = Board {
-      board: board,
-      size: 5,
-      player: Player::Black,
-    };
-
+    ", 5);
     let legality: [bool; 25] = [
       true, true, false, false, true,
       true, false, false, false, false,
@@ -138,9 +128,53 @@ mod tests {
       true, true, true, true, true,
     ];
 
-    let board_history: HashSet<Box<[u8]>> = HashSet::new();
+    let board: Board = Board {
+      board: board,
+      size: 5,
+      player: Player::Black,
+    };
 
+    let board_history: HashSet<Box<[u8]>> = HashSet::new();
     let result: Box<[bool]> = get_legal_moves(&board, &board_history);
     assert_eq!(*result, legality);
-  }  
+  }
+
+  #[test]
+  fn first_ko() {
+    let previous_board: Box<[u8]>  = board_from_string("
+    ...X.
+    XOOOX
+    XXXOO
+    .XOOO
+    X.#..
+    ", 5);
+    let current_board: Box<[u8]>  = board_from_string("
+    ...XO
+    XOOO.
+    XXXOO
+    .XOOO
+    X.#..
+    ", 5);
+    let legality: [bool; 25] = [
+      false, true, false, true, true,
+      true, false, false, false, false,
+      false, false, false, false, false,
+      false, false, false, false,
+      false, // Ko!
+      true, true, true, false, false,
+    ];
+
+    let board: Board = Board {
+      board: current_board.clone(),
+      size: 5,
+      player: Player::Black,
+    };
+    let mut board_history: HashSet<Box<[u8]>> = HashSet::new();
+    board_history.insert(previous_board);
+    board_history.insert(current_board);
+    
+
+    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
+    assert_eq!(legality, *result);
+  }
 }

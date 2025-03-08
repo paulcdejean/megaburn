@@ -8,6 +8,7 @@ mod is_self_capture;
 mod get_legal_moves;
 mod board_from_string;
 mod violates_superko;
+mod make_move;
 
 use core::f64;
 use std::{collections::HashSet, ops::Not};
