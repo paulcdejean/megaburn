@@ -65,5 +65,8 @@ pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: 
     point += 1;
   }
 
+  // This represents passing.
+  result.push(score(&current_board));
+
   return js_sys::Float64Array::from(result.as_slice());
 }
