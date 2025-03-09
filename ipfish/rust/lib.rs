@@ -12,7 +12,8 @@ mod make_move;
 mod score;
 
 use core::f64;
-use std::{collections::HashSet, ops::Not};
+use std::collections::HashSet;
+use std::ops::Not;
 use wasm_bindgen::prelude::*;
 
 use crate::player::Player;
@@ -55,4 +56,9 @@ pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   }
 
   return js_sys::Float64Array::from(result.as_slice());
+}
+
+#[wasm_bindgen]
+extern {
+    fn alert(s: &str);
 }

@@ -1,9 +1,9 @@
 import { NS } from "@ns"
 
 export enum CurrentTurn {
-  Black = 1,
-  White = 2,
-  Inactive = 3,
+  Inactive = 1,
+  Black = 2,
+  White = 3,
 }
 
 export function getCurrentTurn(ns : NS) : CurrentTurn {

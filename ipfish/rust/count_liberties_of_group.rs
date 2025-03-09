@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use crate::alert;
 use crate::board::Board;
 use crate::player::Player;
 use crate::get_adjacent_points::get_adjacent_points;
@@ -15,6 +16,7 @@ pub fn count_liberties_of_group(point: usize, board: &Board) -> usize {
     player = Player::White;
   } else {
     player = Player::White;
+    alert("Can't get the group of an empty or offline point!");
     // panic!("Can't get the group of an empty of offline point!");
   }
 
