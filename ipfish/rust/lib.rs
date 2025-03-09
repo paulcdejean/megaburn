@@ -10,6 +10,7 @@ mod board_from_string;
 mod violates_superko;
 mod make_move;
 mod score;
+mod minimax_score;
 
 use core::f64;
 use std::collections::HashSet;
