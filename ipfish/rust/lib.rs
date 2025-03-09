@@ -27,6 +27,7 @@ use crate::is_self_capture::is_self_capture;
 use crate::get_legal_moves::get_legal_moves;
 use crate::board_from_string::board_from_string;
 use crate::score::score;
+use crate::make_move::make_move;
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///
@@ -53,12 +54,15 @@ pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   };
 
   let mut result: Vec<f64> = Vec::new();
-  for go_move in get_legal_moves(&current_board, &history) {
-    if(go_move) {
-      result.push(3.5);
+  let mut point: usize = 0;
+  for legality in get_legal_moves(&current_board, &history) {
+    if(legality) {
+      let new_board: Board = make_move(point, &current_board);
+      result.push(score(&new_board));
     } else {
       result.push(f64::NEG_INFINITY);
     }
+    point += 1;
   }
 
   return js_sys::Float64Array::from(result.as_slice());
