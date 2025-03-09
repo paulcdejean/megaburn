@@ -14,7 +14,9 @@ mod score;
 use core::f64;
 use std::collections::HashSet;
 use std::ops::Not;
+use std::process::exit;
 use wasm_bindgen::prelude::*;
+use std::panic;
 
 use crate::player::Player;
 use crate::count_liberties_of_group::count_liberties_of_group;
@@ -33,6 +35,10 @@ use crate::score::score;
 /// * `board_history` - All states the board has historically been in. The last element of the array is the current board position.
 #[wasm_bindgen]
 pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: &js_sys::Number) -> js_sys::Float64Array {
+  panic::set_hook(Box::new(|panic_info| {
+    wasm_bindgen::throw_str(format!("{}", panic_info).as_str());
+  }));
+
   let current_board: Box<[u8]> = js_sys::Uint8Array::new(&board_history.iter().last().unwrap()).to_vec().into_boxed_slice();
   let mut history: HashSet<Box<[u8]>> = HashSet::new();
   for board in board_history.iter() {
@@ -56,9 +62,4 @@ pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   }
 
   return js_sys::Float64Array::from(result.as_slice());
-}
-
-#[wasm_bindgen]
-extern {
-    fn alert(s: &str);
 }

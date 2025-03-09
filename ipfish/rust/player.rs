@@ -1,6 +1,5 @@
 use std::ops::Not;
 
-use crate::alert;
 
 #[repr(u8)]
 #[derive(Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -26,8 +25,7 @@ impl From<f64> for Player {
       } else if n as u8 == Player::White as u8 {
         return Player::White;
       } else {
-        alert(format!("Can not convert {:?} into a Player", n).as_str());
-        return Player::White;
+        panic!("Can not convert {:?} into a Player", n);
       }
   }
 }
