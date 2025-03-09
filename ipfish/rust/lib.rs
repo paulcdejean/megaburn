@@ -1,6 +1,6 @@
 #![allow(warnings)]
 mod count_liberties_of_group;
-mod newplayer;
+mod player;
 mod get_adjacent_points;
 mod point_state;
 mod board;
@@ -14,7 +14,7 @@ use core::f64;
 use std::{collections::HashSet, ops::Not};
 use wasm_bindgen::prelude::*;
 
-use crate::newplayer::Player;
+use crate::player::Player;
 use crate::count_liberties_of_group::count_liberties_of_group;
 use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;

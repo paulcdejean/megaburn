@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use crate::count_liberties_of_group::count_liberties_of_group;
 use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;
-use crate::newplayer::Player;
+use crate::player::Player;
 use crate::board::Board;
 use crate::is_self_capture::is_self_capture;
 use crate::violates_superko::violates_superko;
