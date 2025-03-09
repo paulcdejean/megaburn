@@ -1,5 +1,7 @@
 import { AnalysisState, BoardState, Game } from "@/Game"
 
+import css from "./css/IpFish.module.css"
+
 interface PassButtonProps {
   gameClass : Game
   evaluation : number
@@ -8,11 +10,24 @@ interface PassButtonProps {
   updateAnalysisState : (analysisState: AnalysisState) => void
 }
 
+function getEvaluationClass(evaluation : number, bestMove : boolean) : string {
+  if (bestMove) {
+    return css.passBest
+  } else if (evaluation > 0) {
+    return css.passPositive
+  } else {
+    return css.passNegative
+  }
+}
  
 function PassButton(props : PassButtonProps) {
   return (
     <>
-      <button type="button" onClick={() => void props.gameClass.passTurn()}>Pass</button>
+      <button className={getEvaluationClass(props.evaluation, props.bestMove)} type="button" onClick={() => void props.gameClass.passTurn(props.updateBoardState, props.updateAnalysisState)}>
+        Pass
+        <br />
+        {props.evaluation}
+      </button>
     </>
   )
 }

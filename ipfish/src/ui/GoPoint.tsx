@@ -37,6 +37,7 @@ function getEvaluationClass(evaluation : number, bestMove : boolean) : string {
     return css.evalNegative
   }
 }
+
 function GoPoint(props : GoPointProps) {
   return (
     <>

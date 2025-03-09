@@ -94,5 +94,9 @@ export class Game {
       const newAnalaysisState = await getAnalysis(this.boardHistory, this.komi, CurrentTurn.Black)
       analysisCallBack(newAnalaysisState)
     }
+
+    if (this.ns.go.getCurrentPlayer() === "None") {
+      this.ns.exit()
+    }
   }
 }
