@@ -24,7 +24,8 @@ impl From<f64> for Player {
       } else if n as u8 == Player::White as u8 {
         return Player::White;
       } else {
-        panic!("Can not convert {:?} into a Player", n);
+        return Player::White;
+        // panic!("Can not convert {:?} into a Player", n);
       }
   }
 }

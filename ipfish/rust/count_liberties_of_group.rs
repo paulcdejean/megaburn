@@ -14,7 +14,8 @@ pub fn count_liberties_of_group(point: usize, board: &Board) -> usize {
   } else if board.board[point] == Player::White as u8 {
     player = Player::White;
   } else {
-    panic!("Can't get the group of an empty of offline point!");
+    player = Player::White;
+    // panic!("Can't get the group of an empty of offline point!");
   }
 
   let mut unchecked_points: Vec<usize> = Vec::from(get_adjacent_points(point, board));

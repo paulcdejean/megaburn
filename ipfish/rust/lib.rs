@@ -9,6 +9,7 @@ mod get_legal_moves;
 mod board_from_string;
 mod violates_superko;
 mod make_move;
+mod score;
 
 use core::f64;
 use std::{collections::HashSet, ops::Not};
@@ -22,6 +23,7 @@ use crate::board::Board;
 use crate::is_self_capture::is_self_capture;
 use crate::get_legal_moves::get_legal_moves;
 use crate::board_from_string::board_from_string;
+use crate::score::score;
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///
