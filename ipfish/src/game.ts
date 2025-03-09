@@ -80,4 +80,19 @@ export class Game {
       this.ns.toast(errorMessage, this.ns.enums.ToastVariant.ERROR, 5000)
     }
   }
+
+  public async passTurn(boardCallback? : (boardState: BoardState) => void, analysisCallBack? : (analysisState: AnalysisState) => void) {
+    const opponentMove = await this.ns.go.passTurn()
+    const boardAfterWhiteMoved = getBoardFromAPI(this.ns)
+    if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
+      if (boardCallback !== undefined) {
+        boardCallback(boardAfterWhiteMoved)
+      }
+      this.boardHistory.push(boardAfterWhiteMoved)
+    }
+    if (analysisCallBack !== undefined) {
+      const newAnalaysisState = await getAnalysis(this.boardHistory, this.komi, CurrentTurn.Black)
+      analysisCallBack(newAnalaysisState)
+    }
+  }
 }

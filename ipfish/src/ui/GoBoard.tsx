@@ -2,6 +2,7 @@
 import { AnalysisState as AnalysisState, BoardState, Game } from "@/Game"
 import css from "./css/IpFish.module.css"
 import GoPoint from "./GoPoint"
+import PassButton from "./PassButton"
 
 interface GoBoardProps {
   gameClass : Game
@@ -39,7 +40,15 @@ function GoBoard(props : GoBoardProps) {
             </tr>
           })}
           <tr>
-            <td></td>{/* Botttom left blank corner space. TODO put a pass turn button here maybe? */}
+            <td>
+              <PassButton
+                evaluation={props.analysisState.analysis[props.boardSize**2]}
+                bestMove={props.boardSize**2 === props.analysisState.bestMove}
+                gameClass={props.gameClass}
+                updateBoardState={props.updateBoardState}
+                updateAnalysisState={props.updateAnalysisState}
+              />
+            </td>
             {[...Array(props.boardSize).keys()].map((row) => {
               return <td className={css.alphabeticLabel}>{goAlphabet[row]}</td>
             })}
