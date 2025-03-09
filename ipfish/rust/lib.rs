@@ -1,6 +1,6 @@
 #![allow(warnings)]
 mod count_liberties_of_group;
-mod player;
+mod newplayer;
 mod get_adjacent_points;
 mod point_state;
 mod board;
@@ -14,7 +14,7 @@ use core::f64;
 use std::{collections::HashSet, ops::Not};
 use wasm_bindgen::prelude::*;
 
-use crate::player::Player;
+use crate::newplayer::Player;
 use crate::count_liberties_of_group::count_liberties_of_group;
 use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;
@@ -39,7 +39,7 @@ pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   let current_board: Board = Board {
     size: current_board.len().isqrt(),
     board: current_board,
-    player: Player::Black,
+    player: Player::from(turn.value_of()),
     komi: komi.value_of(),
   };
 

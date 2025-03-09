@@ -1,4 +1,4 @@
-use crate::player::Player;
+use crate::newplayer::Player;
 
 pub struct Board {
   // The current pieces of the board.

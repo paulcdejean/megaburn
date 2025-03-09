@@ -1,4 +1,4 @@
-use crate::player::Player;
+use crate::newplayer::Player;
 
 // Needs to match what's in the javascript
 #[repr(u8)]

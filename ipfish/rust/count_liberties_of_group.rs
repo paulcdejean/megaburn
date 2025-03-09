@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use crate::board::Board;
-use crate::player::Player;
+use crate::newplayer::Player;
 use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;
 

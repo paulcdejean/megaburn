@@ -17,3 +17,14 @@ impl Not for Player {
   }
 }
 
+impl From<f64> for Player {
+  fn from(n: f64) -> Self {
+      if n as u8 == Player::Black as u8 {
+        return Player::Black;
+      } else if n as u8 == Player::White as u8 {
+        return Player::White;
+      } else {
+        panic!("Can not convert {:?} into a Player", n);
+      }
+  }
+}
