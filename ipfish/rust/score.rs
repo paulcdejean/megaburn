@@ -71,7 +71,7 @@ fn score_point_territory(point: usize, board: &Board, counted_empty_points: &mut
   }
 
   match active_player {
-    None => f64::NAN,
+    None => f64::NEG_INFINITY,
     Some(Player::White) => points_in_territory.len() as f64 * -1.0,
     Some(Player::Black) => points_in_territory.len() as f64,
   }
