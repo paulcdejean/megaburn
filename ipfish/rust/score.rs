@@ -71,7 +71,7 @@ fn score_point_territory(point: usize, board: &Board, counted_empty_points: &mut
   }
 
   match active_player {
-    None => panic!("Did you try and score territory for an empty board?"),
+    None => f64::NAN,
     Some(Player::White) => points_in_territory.len() as f64 * -1.0,
     Some(Player::Black) => points_in_territory.len() as f64,
   }
