@@ -2,17 +2,26 @@ import { NS } from "@ns";
 import IpFish from "./ui/IpFish";
 import { Game } from "./Game"
 import { getAnalysis } from "./getAnalysis";
+import { longfunc } from "./longfunc"
 
 export async function main(ns: NS): Promise<void> {
-
-  const game = new Game(ns, "Daedalus", 5)
-
-  await ipfish(ns, game)
-
-  while(true) {
-    await ns.asleep(2000)
-  }
+  const startTime = performance.now()
+  ns.tprint(`Starting longfunc at ${ns.tFormat(performance.now() - startTime)}`)
+  const longfuncPromise = longfunc(ns)
+  ns.tprint(`Longfunc is running at ${ns.tFormat(performance.now() - startTime)}`)
+  ns.tprint(await longfuncPromise)
+  ns.tprint(`Longfunc has finished running at ${ns.tFormat(performance.now() - startTime)}`)
 }
+
+
+// export async function main(ns: NS): Promise<void> {
+//   const game = new Game(ns, "Daedalus", 5)
+//   await ipfish(ns, game)
+
+//   while(true) {
+//     await ns.asleep(2000)
+//   }
+// }
 
 export async function ipfish(ns: NS, game : Game): Promise<void> {
   ns.disableLog("ALL")

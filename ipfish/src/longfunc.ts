@@ -1,0 +1,33 @@
+import { NS } from "@ns"
+import webWorker from "./worker/longfunc?worker&inline"
+
+export async function longfunc(ns : NS) : Promise<string> {
+  const worker = new webWorker()
+
+  ns.atExit(() => {
+    worker.terminate()
+  }, "longfunc")
+
+  return new Promise((resolve, reject) => {
+    worker.onmessage = (event) => {
+      resolve(event.data as string)
+    }
+
+    worker.onerror = (event) => {
+      reject(JSON.stringify(event))
+    }
+
+    worker.onmessageerror = (event) => {
+      reject(JSON.stringify(event))
+    }
+  })
+}
+
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // longfuncWorker.onmessage = function(event: any) {
+  //   ns.tprint(event.data)
+  // }
+
+  // ns.atExit(() => {
+  //   longfuncWorker.terminate()
+  // })

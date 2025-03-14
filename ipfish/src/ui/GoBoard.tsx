@@ -1,4 +1,5 @@
- 
+/// <reference types="vite/client" />
+
 import { AnalysisState as AnalysisState, BoardState, Game } from "@/Game"
 import css from "./css/IpFish.module.css"
 import GoPoint from "./GoPoint"
