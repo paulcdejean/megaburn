@@ -50,7 +50,6 @@ fn score_from_territory(board: &Board) -> f64 {
 fn score_point_territory(point: usize, board: &Board, counted_empty_points: &mut HashSet<usize>) -> f64 {
   let mut points_in_territory: HashSet<usize> = HashSet::from([point]);
   let mut unchecked_points: Vec<usize> = Vec::from([point]);
-
   let mut active_player : Option<Player> = None;
 
   while let Some(unchecked_point) = unchecked_points.pop() {
@@ -72,7 +71,7 @@ fn score_point_territory(point: usize, board: &Board, counted_empty_points: &mut
   }
 
   match active_player {
-    None => panic!("Is the board empty?"),
+    None => panic!("Did you try and score territory for an empty board?"),
     Some(Player::White) => points_in_territory.len() as f64 * -1.0,
     Some(Player::Black) => points_in_territory.len() as f64,
   }
