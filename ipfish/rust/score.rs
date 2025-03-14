@@ -40,7 +40,7 @@ fn score_from_territory(board: &Board) -> f64 {
 
   for point in 0..board.board.len() {
     if board.board[point] == PointState::Empty as u8 && !counted_empty_points.contains(&point) {
-      territory_score += score_point_territory(point, &board, &mut counted_empty_points);;
+      territory_score += score_point_territory(point, &board, &mut counted_empty_points);
     }
   }
 
