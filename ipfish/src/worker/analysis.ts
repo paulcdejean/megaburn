@@ -1,8 +1,6 @@
 import { AnalaysisBoard, AnalysisState } from "@/analysis"
 import { get_analysis } from "@rust"
 
-
-
 onmessage = (event : MessageEvent<AnalaysisBoard>) => {
   postMessage(getAnalysis(event.data))
 }
