@@ -30,7 +30,7 @@ pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> B
     else {
       match board_history {
         None => {result.push(true)}
-        Some(s) => result.push(violates_superko(point, board, s))
+        Some(s) => result.push(!violates_superko(point, board, s))
       }
     }
   }
@@ -175,6 +175,8 @@ use crate::board_from_string::board_from_string;
     
 
     let result: Box<[bool]> = get_legal_moves(&board, Some(&board_history));
+    // Test the ko before testing the whole thing.
+    assert_eq!(legality[20], result[20]);
     assert_eq!(legality, *result);
   }
 }

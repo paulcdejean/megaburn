@@ -13,12 +13,14 @@ mod final_score;
 mod minimax_score;
 mod pass_move;
 mod montecarlo_score;
+mod evaluate_move;
 
 use core::f64;
 use std::collections::HashSet;
 use std::ops::Not;
 use std::process::exit;
 use std::thread::current;
+use evaluate_move::evaluate_move;
 use minimax_score::minimax_score;
 use wasm_bindgen::prelude::*;
 use std::panic;
@@ -67,14 +69,11 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
 
   for legality in get_legal_moves(&current_board, Some(&board_history)) {
     if(legality) {
-      let minimax_score: f64 = minimax_score(
+      let score: f64 = evaluate_move(
         &make_move(point, &current_board),
         &board_history,
-        depth,
-        f64::NEG_INFINITY,
-        f64::INFINITY,
       );
-      result.push(minimax_score);
+      result.push(score);
     } else {
       result.push(f64::NEG_INFINITY);
     }
@@ -82,14 +81,11 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   }
 
   // This represents passing.
-  let minimax_score: f64 = minimax_score(
+  let score: f64 = evaluate_move(
     &pass_move(&current_board),
     &board_history,
-    depth,
-    f64::NEG_INFINITY,
-    f64::INFINITY,
   );
-  result.push(minimax_score);
+  result.push(score);
 
   return js_sys::Float64Array::from(result.as_slice());
 }
