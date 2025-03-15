@@ -115,7 +115,7 @@ export class Game {
     }
   }
 
-  public async analysis() : Promise<Analysis> {
+  private async realAnalysis() : Promise<Analysis> {
     if (!this.workerInit) {
       const initalized = await new Promise((resolve, reject) => {
         if (this.worker === undefined) {
@@ -156,5 +156,13 @@ export class Game {
         }
       }
     })
+  }
+
+  public async analysis() : Promise<Analysis> {
+    const analysisStart = performance.now()
+    const analysis = await this.realAnalysis()
+    const analysisTime = performance.now() - analysisStart
+    this.ns.tprint(`Completed analysis in ${this.ns.tFormat(analysisTime)}`)
+    return analysis
   }
 }
