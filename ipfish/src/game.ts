@@ -59,7 +59,11 @@ export class Game {
         this.boardHistory.push(boardAfterWhiteMoved)
       }
       if (analysisCallBack !== undefined) {
-        const newAnalaysisState = await Analysis.get(this.ns, this.boardHistory, this.komi, CurrentTurn.Black)
+        const newAnalaysisState = await Analysis.get(this.ns, {
+          boardHistory: this.boardHistory,
+          komi: this.komi,
+          turn: CurrentTurn.Black,
+        })
         analysisCallBack(newAnalaysisState)
       }
     } catch (e) {
@@ -86,7 +90,11 @@ export class Game {
       this.boardHistory.push(boardAfterWhiteMoved)
     }
     if (analysisCallBack !== undefined) {
-      const newAnalaysisState = await Analysis.get(this.ns, this.boardHistory, this.komi, CurrentTurn.Black)
+      const newAnalaysisState = await Analysis.get(this.ns, {
+        boardHistory: this.boardHistory,
+        komi: this.komi,
+        turn: CurrentTurn.Black,
+      })
       analysisCallBack(newAnalaysisState)
     }
 
