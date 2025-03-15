@@ -1,5 +1,4 @@
-import { BoardState, Game } from "@/Game"
-import { AnalysisState } from "@/analysis"
+import { BoardState, Game, Analysis } from "@/Game"
 import css from "./css/IpFish.module.css"
 
 interface PassButtonProps {
@@ -7,7 +6,7 @@ interface PassButtonProps {
   evaluation : number
   bestMove : boolean
   updateBoardState : (boardState: BoardState) => void,
-  updateAnalysisState : (analysisState: AnalysisState) => void
+  updateAnalysisState : (analysisState: Analysis) => void
 }
 
 function getEvaluationClass(evaluation : number, bestMove : boolean) : string {

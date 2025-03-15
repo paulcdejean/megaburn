@@ -1,7 +1,7 @@
 import { NS, GoOpponent } from "@ns";
 import { CurrentTurn } from "./getCurrentTurn";
 import { getBoardFromAPI } from "./getBoardFromAPI"
-import { Analysis, AnalysisState } from "./analysis";
+import analysisWorker from "./worker/analysis?worker&inline"
 
 export type BoardState = Uint8Array
 
@@ -10,6 +10,18 @@ export enum PointState {
   Black = 2,
   White = 3,
   Offline = 4,
+}
+
+export interface AnalaysisBoard {
+  boardHistory : [BoardState],
+  komi: number,
+  turn: CurrentTurn
+}
+
+
+export interface Analysis {
+  analysis: Float64Array
+  bestMove: number
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,6 +34,8 @@ export class Game {
   public readonly boardHistory : [BoardState]
   public readonly komi : number
   public turn : CurrentTurn
+  private worker : Worker
+  private workerInit : boolean = false
 
   constructor(ns : NS, opponent : GoOpponent, boardSize :  5 | 7 | 9 | 13) {
     this.ns = ns
@@ -30,6 +44,11 @@ export class Game {
     this.boardHistory = [getBoardFromAPI(this.ns)]
     this.komi = this.ns.go.getGameState().komi
     this.turn = CurrentTurn.Black
+
+    this.worker = new analysisWorker()
+    ns.atExit(() => {
+      if(this.worker !== undefined) this.worker.terminate()
+    }, "Game")
   }
 
   public getBoard() : BoardState {
@@ -41,7 +60,7 @@ export class Game {
     return this.getBoard()[this.boardSize * row + column]
   }
 
-  public async makeMove(row : number, column : number, boardCallback? : (boardState: BoardState) => void, analysisCallBack? : (analysisState: AnalysisState) => void) {
+  public async makeMove(row : number, column : number, boardCallback? : (boardState: BoardState) => void, analysisCallBack? : (analysisState: Analysis) => void) {
     try {
       const responsePromise = this.ns.go.makeMove(column, row)
       const boardAfterBlackMoved = getBoardFromAPI(this.ns)
@@ -59,11 +78,7 @@ export class Game {
         this.boardHistory.push(boardAfterWhiteMoved)
       }
       if (analysisCallBack !== undefined) {
-        const newAnalaysisState = await Analysis.get(this.ns, {
-          boardHistory: this.boardHistory,
-          komi: this.komi,
-          turn: CurrentTurn.Black,
-        })
+        const newAnalaysisState = await this.analysis()
         analysisCallBack(newAnalaysisState)
       }
     } catch (e) {
@@ -80,7 +95,7 @@ export class Game {
     }
   }
 
-  public async passTurn(boardCallback? : (boardState: BoardState) => void, analysisCallBack? : (analysisState: AnalysisState) => void) {
+  public async passTurn(boardCallback? : (boardState: BoardState) => void, analysisCallBack? : (analysisState: Analysis) => void) {
     const opponentMove = await this.ns.go.passTurn()
     const boardAfterWhiteMoved = getBoardFromAPI(this.ns)
     if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
@@ -90,16 +105,55 @@ export class Game {
       this.boardHistory.push(boardAfterWhiteMoved)
     }
     if (analysisCallBack !== undefined) {
-      const newAnalaysisState = await Analysis.get(this.ns, {
-        boardHistory: this.boardHistory,
-        komi: this.komi,
-        turn: CurrentTurn.Black,
-      })
+      const newAnalaysisState = await this.analysis()
       analysisCallBack(newAnalaysisState)
     }
 
     if (this.ns.go.getCurrentPlayer() === "None") {
       this.ns.exit()
     }
+  }
+
+  public async analysis() : Promise<Analysis> {
+    if (!this.workerInit) {
+      const initalized = await new Promise((resolve, reject) => {
+        if (this.worker === undefined) {
+          reject("Worker non existent during init")
+        } else {
+          this.worker.onmessage = (event : MessageEvent<string>) => {
+            resolve(event.data) 
+          }
+          this.worker.onerror = (event) => {
+            reject(`Worker init onerror triggered ${event.message}`)
+          }
+          this.worker.onmessageerror = (event) => {
+            reject(`Worker init onmessageerror triggered ${event.data}`)
+          }
+        }
+      })
+      this.ns.tprint(`Go worker ${initalized}`)
+      this.workerInit = true
+    }
+
+    this.worker.postMessage({
+      boardHistory: this.boardHistory,
+      komi: this.komi,
+      turn: this.turn,
+    })
+    return new Promise((resolve, reject) => {
+      if (this.worker === undefined) {
+        reject("Worker non existent during analysis")
+      } else {
+        this.worker.onmessage = (event : MessageEvent<Analysis>) => {
+          resolve(event.data) 
+        }
+        this.worker.onerror = (event) => {
+          reject(`Worker onerror triggered ${event.message}`)
+        }
+        this.worker.onmessageerror = (event) => {
+          reject(`Worker onmessageerror triggered ${event.data}`)
+        }
+      }
+    })
   }
 }

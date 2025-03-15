@@ -1,4 +1,4 @@
-import { AnalaysisBoard, AnalysisState } from "@/analysis"
+import { AnalaysisBoard, Analysis } from "@/Game"
 import { get_analysis } from "@rust"
 
 onmessage = (event : MessageEvent<AnalaysisBoard>) => {
@@ -6,7 +6,7 @@ onmessage = (event : MessageEvent<AnalaysisBoard>) => {
 }
 postMessage("initalized")
 
-export function getAnalysis(analysisBoard: AnalaysisBoard) : AnalysisState {
+export function getAnalysis(analysisBoard: AnalaysisBoard) : Analysis {
   // TODO make good
   const analysis = get_analysis(analysisBoard.boardHistory, analysisBoard.komi, analysisBoard.turn)
   // Last element represents passing, if all moves tie with passing we should pass.

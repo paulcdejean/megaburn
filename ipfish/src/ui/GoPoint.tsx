@@ -1,5 +1,4 @@
-import { BoardState, Game, PointState } from "@/Game"
-import { AnalysisState } from "@/analysis"
+import { BoardState, Game, PointState, Analysis } from "@/Game"
 import css from "./css/IpFish.module.css"
 import blackPiece from "./svg/Go_b.svg"
 import whitePiece from "./svg/Go_w.svg"
@@ -13,7 +12,7 @@ interface GoPointProps {
   gameClass : Game
   row : number
   column : number
-  updateAnalysisState : (analysisState: AnalysisState) => void
+  updateAnalysisState : (analysisState: Analysis) => void
 }
 
 function formatEvaluation(evaluation : number) : string {

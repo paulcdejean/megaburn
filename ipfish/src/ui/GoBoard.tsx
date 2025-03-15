@@ -1,5 +1,4 @@
-import { BoardState, Game } from "@/Game"
-import { AnalysisState } from "@/analysis"
+import { BoardState, Game, Analysis } from "@/Game"
 import css from "./css/IpFish.module.css"
 import GoPoint from "./GoPoint"
 import PassButton from "./PassButton"
@@ -9,8 +8,8 @@ interface GoBoardProps {
   boardState : BoardState
   updateBoardState : (boardState: BoardState) => void
   boardSize : 5 | 7 | 9 | 13 | 19
-  analysisState : AnalysisState
-  updateAnalysisState : (analysisState: AnalysisState) => void
+  analysisState : Analysis
+  updateAnalysisState : (analysisState: Analysis) => void
 }
 
 // The go alphabet skips the letter I for some reason

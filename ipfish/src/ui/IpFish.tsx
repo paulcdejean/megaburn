@@ -1,15 +1,14 @@
-import { BoardState, Game } from "@/Game"
+import { BoardState, Game, Analysis } from "@/Game"
 import cssInline from "./css/IpFish.module.css?inline"
 import GoBoard from "./GoBoard"
 import { CurrentTurn } from "@/getCurrentTurn"
-import { AnalysisState } from "@/analysis"
 
 interface IpfishProps {
   game : Game
   initalBoardState : BoardState
   komi : number
   initialTurn : CurrentTurn
-  initalAnalysisState : AnalysisState
+  initalAnalysisState : Analysis
 }
 
 function IpFish(props : IpfishProps) {

@@ -2,7 +2,6 @@
 import { NS } from "@ns";
 import IpFish from "./ui/IpFish";
 import { Game } from "./Game"
-import { Analysis } from "./analysis";
 
 export async function main(ns: NS): Promise<void> {
   const game = new Game(ns, "Daedalus", 5)
@@ -20,18 +19,14 @@ export async function ipfish(ns: NS, game : Game): Promise<void> {
   ns.atExit(() => {
     ns.clearLog()
     ns.ui.closeTail()
-  })
+  }, "main")
 
   ns.ui.openTail()
   ns.ui.resizeTail(720, 860)
   ns.ui.moveTail(1020, 50)
   ns.ui.renderTail()
 
-  const initalAnalysisState = await Analysis.get(ns, {
-    boardHistory: game.boardHistory,
-    komi: game.komi,
-    turn: game.turn,
-  })
+  const initalAnalysisState = await game.analysis()
 
   ns.printRaw(React.createElement(IpFish, {game: game,
                                            initalBoardState: game.getBoard(),
