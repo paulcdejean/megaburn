@@ -1,4 +1,4 @@
-use crate::board::Board;
+use crate::board::{Board, BoardHistory};
 use crate::player::Player;
 
 
@@ -12,6 +12,7 @@ use crate::player::Player;
 /// * `board_history` - The board history of the current state.
 /// * `passed` - Wheather the previous player passed the turn.
 /// * `depth` - The maximum, or remaining, depth to search.
-pub fn minimax_score() -> f64 {
-  return 42.0;
+pub fn minimax_score(board: Board, board_history: BoardHistory) -> Vec<f64> {
+  let mut result: Vec<f64> = Vec::new();
+  return result;
 }

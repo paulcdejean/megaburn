@@ -1,4 +1,5 @@
 use crate::player::Player;
+use std::collections::HashSet;
 
 pub struct Board {
   // The current pieces of the board.
@@ -10,3 +11,5 @@ pub struct Board {
   // The bonus points that white gets to their score.
   pub komi: f64,
 }
+
+pub type BoardHistory = HashSet<Box<[u8]>>;

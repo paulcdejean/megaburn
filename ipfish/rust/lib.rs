@@ -23,7 +23,7 @@ use crate::player::Player;
 use crate::count_liberties_of_group::count_liberties_of_group;
 use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;
-use crate::board::Board;
+use crate::board::{Board, BoardHistory};
 use crate::is_self_capture::is_self_capture;
 use crate::get_legal_moves::get_legal_moves;
 use crate::board_from_string::board_from_string;
@@ -42,7 +42,7 @@ pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   }));
 
   let current_board: Box<[u8]> = js_sys::Uint8Array::new(&board_history.iter().last().unwrap()).to_vec().into_boxed_slice();
-  let mut history: HashSet<Box<[u8]>> = HashSet::new();
+  let mut history: BoardHistory = HashSet::new();
   for board in board_history.iter() {
     history.insert(js_sys::Uint8Array::new(&board).to_vec().into_boxed_slice());
   }
