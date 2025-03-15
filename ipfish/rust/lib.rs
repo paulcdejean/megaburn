@@ -9,9 +9,10 @@ mod get_legal_moves;
 mod board_from_string;
 mod violates_superko;
 mod make_move;
-mod score;
+mod final_score;
 mod minimax_score;
 mod pass_move;
+mod montecarlo_score;
 
 use core::f64;
 use std::collections::HashSet;
@@ -30,7 +31,7 @@ use crate::board::{Board, BoardHistory};
 use crate::is_self_capture::is_self_capture;
 use crate::get_legal_moves::get_legal_moves;
 use crate::board_from_string::board_from_string;
-use crate::score::score;
+use crate::final_score::final_score;
 use crate::make_move::make_move;
 use crate::pass_move::pass_move;
 
@@ -64,7 +65,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   // CURRENTLY HARDCODED
   let depth: usize = 5;
 
-  for legality in get_legal_moves(&current_board, &board_history) {
+  for legality in get_legal_moves(&current_board, Some(&board_history)) {
     if(legality) {
       let minimax_score: f64 = minimax_score(
         &make_move(point, &current_board),

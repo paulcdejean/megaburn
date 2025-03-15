@@ -13,8 +13,8 @@ use crate::violates_superko::violates_superko;
 /// # Arguments
 ///
 /// * `board` - The state of the board we're getting the legal moves for.
-/// * `board_history` - All states the board has historically been in, important for determining superko.
-pub fn get_legal_moves(board: &Board, board_history: &BoardHistory) -> Box<[bool]> {
+/// * `board_history` - All states the board has historically been in, important for determining superko. If this none then superko isn't calculated.
+pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> Box<[bool]> {
   let mut result: Vec<bool> = Vec::new();
 
   for point in 0..board.board.len() {
@@ -26,13 +26,12 @@ pub fn get_legal_moves(board: &Board, board_history: &BoardHistory) -> Box<[bool
     else if is_self_capture(point, board) {
       result.push(false);
     }
-    // The move is illegal if it would repeat a previous board state.
-    else if violates_superko(point, board, board_history) {
-      result.push(false);
-    }
-    // Otherwise the move is legal.
+    // The move is illegal if it would repeat a previous board state, otherwise it's legal.
     else {
-      result.push(true);
+      match board_history {
+        None => {result.push(true)}
+        Some(s) => result.push(violates_superko(point, board, s))
+      }
     }
   }
   return result.into_boxed_slice();
@@ -75,8 +74,7 @@ use crate::board_from_string::board_from_string;
       player: Player::Black,
       komi: 7.5,
     };
-    let board_history: BoardHistory = HashSet::new();
-    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
+    let result: Box<[bool]> = get_legal_moves(&board, None);
     assert_eq!(*result, legality);
   }
   #[test]
@@ -107,9 +105,7 @@ use crate::board_from_string::board_from_string;
       komi: 7.5,
     };
 
-    let board_history: BoardHistory = HashSet::new();
-
-    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
+    let result: Box<[bool]> = get_legal_moves(&board, None);
     assert_eq!(*result, legality);
   }
 
@@ -138,7 +134,7 @@ use crate::board_from_string::board_from_string;
     };
 
     let board_history: BoardHistory = HashSet::new();
-    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
+    let result: Box<[bool]> = get_legal_moves(&board, None);
     assert_eq!(*result, legality);
   }
 
@@ -178,7 +174,7 @@ use crate::board_from_string::board_from_string;
     board_history.insert(current_board);
     
 
-    let result: Box<[bool]> = get_legal_moves(&board, &board_history);
+    let result: Box<[bool]> = get_legal_moves(&board, Some(&board_history));
     assert_eq!(legality, *result);
   }
 }

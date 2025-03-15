@@ -1,8 +1,21 @@
 use crate::board::{Board, BoardHistory};
 use crate::{get_legal_moves, make_move};
 use crate::player::Player;
-use crate::score::score;
+use crate::final_score::final_score;
 use crate::pass_move::pass_move;
+
+/// Private function! This is the score according to the minimax algorithm.
+/// This is the value it's trying to minimize and maximize.
+/// Changing the scoring algorithm will significantly alter the behavior of the minimax algorithm.
+/// This doesn't take a board history for now, because that would slow things down.
+/// 
+/// # Arguments
+///
+/// * `board` - The board state to evaluate.
+fn score(board: &Board) -> f64 {
+  // TODO: Using the board score seems to not be very effective earlier in the game.
+  return final_score(&board);
+}
 
 /// Returns the evaluation of a board position using minimax algorithm to a specified depth.
 /// This is called recursively an exponential number of times.
@@ -28,7 +41,7 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize, 
       let mut best_score: f64 = score(board);
 
       let mut proposed_move: usize = 0;
-      for legality in get_legal_moves(board, board_history) {
+      for legality in get_legal_moves(board, Some(board_history)) {
         if legality {
           let minimax_score: f64 = minimax_score(
             &make_move(proposed_move, board),
@@ -52,7 +65,7 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize, 
       let mut best_score: f64 = score(board);
 
       let mut proposed_move: usize = 0;
-      for legality in get_legal_moves(board, board_history) {
+      for legality in get_legal_moves(board, Some(board_history)) {
         if legality {
           let minimax_score: f64 = minimax_score(
             &make_move(proposed_move, board),

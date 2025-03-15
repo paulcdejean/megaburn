@@ -5,20 +5,14 @@ use crate::player::Player;
 use crate::point_state::PointState;
 use crate::get_adjacent_points::get_adjacent_points;
 
-/// Returns the evaluation of a position, without any foresight.
-/// Doesn't consider the history at all. Just a snapshot in time.
-/// Think of it like a player glancing at the board and thinking "hmm looks like white is winning."
-/// CURRENTLY counts the final score of the board, but in the future might work in another way.
-/// Positive = better for black. Negitive = better for white.
+/// Counts all the stones and territory, to determine the winner.
+/// Positive value = win for black.
+/// Negative value = win for white.
 ///
 /// # Arguments
 ///
-/// * `board` - The board state to evaluate.
-pub fn score(board: &Board) -> f64 {
-  return final_score(board);
-}
-
-fn final_score(board: &Board) -> f64 {
+/// * `board` - The board state to score.
+pub fn final_score(board: &Board) -> f64 {
   return 0.0 + score_from_stones(board) + score_from_territory(board) - board.komi;
 }
 
