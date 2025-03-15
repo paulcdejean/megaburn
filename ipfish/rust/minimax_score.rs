@@ -1,5 +1,7 @@
 use crate::board::{Board, BoardHistory};
+use crate::make_move;
 use crate::player::Player;
+use crate::score::score;
 
 
 /// Returns the evaluation of a board position using minimax algorithm to a specified depth.
@@ -12,7 +14,12 @@ use crate::player::Player;
 /// * `board_history` - The board history of the current state.
 /// * `passed` - Wheather the previous player passed the turn.
 /// * `depth` - The maximum, or remaining, depth to search.
-pub fn minimax_score(board: Board, board_history: BoardHistory) -> Vec<f64> {
-  let mut result: Vec<f64> = Vec::new();
-  return result;
+pub fn minimax_score(board: &Board, board_history: &BoardHistory, point: usize, depth: usize) -> f64 {
+  // Terminating condition
+  if depth <= 1 {
+    return score(&make_move(point, &board));
+  } else {
+    // TODO
+    return 30.5
+  }
 }

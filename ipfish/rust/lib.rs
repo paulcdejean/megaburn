@@ -16,6 +16,7 @@ use core::f64;
 use std::collections::HashSet;
 use std::ops::Not;
 use std::process::exit;
+use minimax_score::minimax_score;
 use wasm_bindgen::prelude::*;
 use std::panic;
 
@@ -36,15 +37,15 @@ use crate::make_move::make_move;
 ///
 /// * `board_history` - All states the board has historically been in. The last element of the array is the current board position.
 #[wasm_bindgen]
-pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: &js_sys::Number) -> js_sys::Float64Array {
+pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: &js_sys::Number) -> js_sys::Float64Array {
   panic::set_hook(Box::new(|panic_info| {
     wasm_bindgen::throw_str(format!("{}", panic_info).as_str());
   }));
 
-  let current_board: Box<[u8]> = js_sys::Uint8Array::new(&board_history.iter().last().unwrap()).to_vec().into_boxed_slice();
-  let mut history: BoardHistory = HashSet::new();
-  for board in board_history.iter() {
-    history.insert(js_sys::Uint8Array::new(&board).to_vec().into_boxed_slice());
+  let current_board: Box<[u8]> = js_sys::Uint8Array::new(&input_history.iter().last().unwrap()).to_vec().into_boxed_slice();
+  let mut board_history: BoardHistory = HashSet::new();
+  for board in input_history.iter() {
+    board_history.insert(js_sys::Uint8Array::new(&board).to_vec().into_boxed_slice());
   }
 
   let current_board: Board = Board {
@@ -56,10 +57,9 @@ pub fn get_analysis(board_history: &js_sys::Array, komi: &js_sys::Number, turn: 
 
   let mut result: Vec<f64> = Vec::new();
   let mut point: usize = 0;
-  for legality in get_legal_moves(&current_board, &history) {
+  for legality in get_legal_moves(&current_board, &board_history) {
     if(legality) {
-      let new_board: Board = make_move(point, &current_board);
-      result.push(score(&new_board));
+      result.push(minimax_score(&current_board, &board_history, point, 1));
     } else {
       result.push(f64::NEG_INFINITY);
     }
