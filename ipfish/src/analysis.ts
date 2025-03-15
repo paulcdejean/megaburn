@@ -19,12 +19,27 @@ export interface AnalaysisBoard {
 export class Analysis {
   private static worker : Worker
    
-  public static get(ns: NS, analysisBoard : AnalaysisBoard) : Promise<AnalysisState> {
+  public static async get(ns: NS, analysisBoard : AnalaysisBoard) : Promise<AnalysisState> {
     if (this.worker === undefined) {
       this.worker = new webWorker()
       ns.atExit(() => {
         this.worker.terminate()
       }, "Analysis")
+
+      const initalized = await new Promise((resolve, reject) => {
+        this.worker.onmessage = (event : MessageEvent<string>) => {
+          resolve(event.data) 
+        }
+    
+        this.worker.onerror = (event) => {
+          reject(`Worker init onerror triggered ${event.message}`)
+        }
+    
+        this.worker.onmessageerror = (event) => {
+          reject(`Worker init onmessageerror triggered ${event.data}`)
+        }
+      })
+      ns.tprint(`Go worker ${initalized}`)
     }
 
     this.worker.postMessage(analysisBoard)
