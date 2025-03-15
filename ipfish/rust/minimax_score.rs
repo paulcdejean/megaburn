@@ -13,7 +13,9 @@ use crate::pass_move::pass_move;
 /// * `board` - The board state to evaluate.
 /// * `board_history` - The board history of the current state.
 /// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
-pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) -> f64 {
+/// * `alpha` - The highest score seen so far. Pass -infinity for non recursive calls.
+/// * `beta` - The lower score seen so far. Pass +infinity for non recursive calls.
+pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize, mut alpha: f64, mut beta: f64) -> f64 {
   // Terminating condition
   if depth < 1 {
     return score(&board);
@@ -28,10 +30,18 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) 
       let mut proposed_move: usize = 0;
       for legality in get_legal_moves(board, board_history) {
         if legality {
-          let minimax_score: f64 = minimax_score(&make_move(proposed_move, board), &deeper_history, depth - 1);
+          let minimax_score: f64 = minimax_score(
+            &make_move(proposed_move, board),
+            &deeper_history,
+            depth - 1,
+            alpha,
+            beta,
+          );
           // Maximizing.
-          if minimax_score > best_score {
-            best_score = minimax_score;
+          best_score = best_score.max(minimax_score);
+          alpha = alpha.max(best_score);
+          if beta <= alpha {
+            break;
           }
         }
         proposed_move += 1;
@@ -44,10 +54,18 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) 
       let mut proposed_move: usize = 0;
       for legality in get_legal_moves(board, board_history) {
         if legality {
-          let minimax_score: f64 = minimax_score(&make_move(proposed_move, board), &deeper_history, depth - 1);
+          let minimax_score: f64 = minimax_score(
+            &make_move(proposed_move, board),
+            &deeper_history,
+            depth - 1,
+            alpha,
+            beta,
+          );
           // Minimizing.
-          if minimax_score < best_score {
-            best_score = minimax_score;
+          best_score = best_score.min(minimax_score);
+          beta = beta.min(best_score);
+          if beta <= alpha {
+            break;
           }
         }
         proposed_move += 1;
