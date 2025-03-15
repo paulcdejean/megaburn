@@ -38,5 +38,6 @@ export default defineConfig({
     plugins: [
       wasm(),
     ],
+    format: "es",
   }
 })
