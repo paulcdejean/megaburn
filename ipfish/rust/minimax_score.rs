@@ -1,5 +1,5 @@
 use crate::board::{Board, BoardHistory};
-use crate::make_move;
+use crate::{get_legal_moves, make_move};
 use crate::player::Player;
 use crate::score::score;
 
@@ -14,12 +14,52 @@ use crate::score::score;
 /// * `board_history` - The board history of the current state.
 /// * `passed` - Wheather the previous player passed the turn.
 /// * `depth` - The maximum, or remaining, depth to search.
-pub fn minimax_score(board: &Board, board_history: &BoardHistory, point: usize, depth: usize) -> f64 {
+pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) -> f64 {
   // Terminating condition
-  if depth <= 1 {
-    return score(&make_move(point, &board));
+  if depth < 1 {
+    return score(&board);
   } else {
-    // TODO
-    return 30.5
+    let mut deeper_history: BoardHistory = board_history.clone();
+    deeper_history.insert(board.board.clone());
+
+    if board.player == Player::Black { // Maximizing
+      // We start with passing, and we want to find a better move than passing.
+      let mut best_move: usize = board.board.len();
+      // We start out with the current state of the board, and we want to find a move that improves that.
+      let mut best_score: f64 = score(board); 
+
+      let mut proposed_move: usize = 0;
+      for legality in get_legal_moves(board, board_history) {
+        if legality {
+          let minimax_score: f64 = minimax_score(&make_move(proposed_move, board), &deeper_history, depth - 1);
+          // Maximizing.
+          if minimax_score > best_score {
+            best_score = minimax_score;
+            best_move = proposed_move;
+          }
+        }
+        proposed_move += 1;
+      }
+      return best_score;
+    } else { // Minimizing.
+      // We start with passing, and we want to find a better move than passing.
+      let mut best_move: usize = board.board.len();
+      // We start out with the current state of the board, and we want to find a move that improves that.
+      let mut best_score: f64 = score(board); 
+
+      let mut proposed_move: usize = 0;
+      for legality in get_legal_moves(board, board_history) {
+        if legality {
+          let minimax_score: f64 = minimax_score(&make_move(proposed_move, board), &deeper_history, depth - 1);
+          // Minimizing.
+          if minimax_score < best_score {
+            best_score = minimax_score;
+            best_move = proposed_move;
+          }
+        }
+        proposed_move += 1;
+      }
+      return best_score;
+    }
   }
 }

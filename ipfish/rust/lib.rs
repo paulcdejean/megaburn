@@ -16,6 +16,7 @@ use core::f64;
 use std::collections::HashSet;
 use std::ops::Not;
 use std::process::exit;
+use std::thread::current;
 use minimax_score::minimax_score;
 use wasm_bindgen::prelude::*;
 use std::panic;
@@ -59,7 +60,8 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   let mut point: usize = 0;
   for legality in get_legal_moves(&current_board, &board_history) {
     if(legality) {
-      result.push(minimax_score(&current_board, &board_history, point, 1));
+      let minimax_score: f64 = minimax_score(&make_move(point, &current_board), &board_history, 0);
+      result.push(minimax_score);
     } else {
       result.push(f64::NEG_INFINITY);
     }
