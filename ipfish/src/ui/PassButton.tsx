@@ -1,5 +1,5 @@
-import { AnalysisState, BoardState, Game } from "@/Game"
-
+import { BoardState, Game } from "@/Game"
+import { AnalysisState } from "@/analysis"
 import css from "./css/IpFish.module.css"
 
 interface PassButtonProps {

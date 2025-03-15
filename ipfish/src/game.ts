@@ -5,8 +5,6 @@ import { Analysis, AnalysisState } from "./analysis";
 
 export type BoardState = Uint8Array
 
-
-
 export enum PointState {
   Empty = 1,
   Black = 2,

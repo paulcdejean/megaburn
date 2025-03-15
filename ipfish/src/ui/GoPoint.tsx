@@ -1,4 +1,5 @@
-import { AnalysisState, BoardState, Game, PointState } from "@/Game"
+import { BoardState, Game, PointState } from "@/Game"
+import { AnalysisState } from "@/analysis"
 import css from "./css/IpFish.module.css"
 import blackPiece from "./svg/Go_b.svg"
 import whitePiece from "./svg/Go_w.svg"
