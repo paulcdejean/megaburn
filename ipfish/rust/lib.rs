@@ -11,6 +11,7 @@ mod violates_superko;
 mod make_move;
 mod score;
 mod minimax_score;
+mod pass_move;
 
 use core::f64;
 use std::collections::HashSet;
@@ -60,7 +61,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   let mut point: usize = 0;
   for legality in get_legal_moves(&current_board, &board_history) {
     if(legality) {
-      let minimax_score: f64 = minimax_score(&make_move(point, &current_board), &board_history, 0);
+      let minimax_score: f64 = minimax_score(&make_move(point, &current_board), &board_history, 1);
       result.push(minimax_score);
     } else {
       result.push(f64::NEG_INFINITY);
