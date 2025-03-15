@@ -35,9 +35,9 @@ export default defineConfig({
     ],
   },
   worker: {
-    plugins: [
-      wasm(),
-    ],
+    plugins: () => {
+      return [wasm()]
+    },
     format: "es",
   }
 })
