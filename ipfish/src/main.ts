@@ -1,19 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 import { NS } from "@ns";
 import IpFish from "./ui/IpFish";
 import { Game } from "./Game"
 import { Analysis } from "./analysis";
-import { longfunc } from "./longfunc"
-
-// export async function main(ns: NS): Promise<void> {
-//   const startTime = performance.now()
-//   ns.tprint(`Starting longfunc at ${ns.tFormat(performance.now() - startTime)}`)
-//   const longfuncPromise = longfunc(ns)
-//   ns.tprint(`Longfunc is running at ${ns.tFormat(performance.now() - startTime)}`)
-//   ns.tprint(await longfuncPromise)
-//   ns.tprint(`Longfunc has finished running at ${ns.tFormat(performance.now() - startTime)}`)
-// }
-
 
 export async function main(ns: NS): Promise<void> {
   const game = new Game(ns, "Daedalus", 5)
