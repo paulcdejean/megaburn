@@ -15,7 +15,6 @@ export interface AnalaysisBoard {
   turn: CurrentTurn
 }
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class Analysis {
   private static worker : Worker
    

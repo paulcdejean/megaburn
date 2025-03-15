@@ -54,5 +54,6 @@ export default [{
         "@typescript-eslint/no-floating-promises": "error",
         "no-unused-vars": "off",
         "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-extraneous-class": "off",
     },
 }];
