@@ -22,12 +22,3 @@ export async function longfunc(ns : NS) : Promise<string> {
     }
   })
 }
-
-  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // longfuncWorker.onmessage = function(event: any) {
-  //   ns.tprint(event.data)
-  // }
-
-  // ns.atExit(() => {
-  //   longfuncWorker.terminate()
-  // })
