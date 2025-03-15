@@ -62,7 +62,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   let mut point: usize = 0;
   for legality in get_legal_moves(&current_board, &board_history) {
     if(legality) {
-      let minimax_score: f64 = minimax_score(&make_move(point, &current_board), &board_history, 3);
+      let minimax_score: f64 = minimax_score(&make_move(point, &current_board), &board_history, 4);
       result.push(minimax_score);
     } else {
       result.push(f64::NEG_INFINITY);
@@ -71,7 +71,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   }
 
   // This represents passing.
-  result.push(minimax_score(&pass_move(&current_board), &board_history, 3));
+  result.push(minimax_score(&pass_move(&current_board), &board_history, 4));
 
   return js_sys::Float64Array::from(result.as_slice());
 }
