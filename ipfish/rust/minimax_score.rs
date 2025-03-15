@@ -12,8 +12,7 @@ use crate::score::score;
 ///
 /// * `board` - The board state to evaluate.
 /// * `board_history` - The board history of the current state.
-/// * `passed` - Wheather the previous player passed the turn.
-/// * `depth` - The maximum, or remaining, depth to search.
+/// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
 pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) -> f64 {
   // Terminating condition
   if depth < 1 {
@@ -23,9 +22,7 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) 
     deeper_history.insert(board.board.clone());
 
     if board.player == Player::Black { // Maximizing
-      // We start with passing, and we want to find a better move than passing.
-      let mut best_move: usize = board.board.len();
-      // We start out with the current state of the board, and we want to find a move that improves that.
+      // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = score(board); 
 
       let mut proposed_move: usize = 0;
@@ -35,16 +32,13 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) 
           // Maximizing.
           if minimax_score > best_score {
             best_score = minimax_score;
-            best_move = proposed_move;
           }
         }
         proposed_move += 1;
       }
       return best_score;
     } else { // Minimizing.
-      // We start with passing, and we want to find a better move than passing.
-      let mut best_move: usize = board.board.len();
-      // We start out with the current state of the board, and we want to find a move that improves that.
+      // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = score(board); 
 
       let mut proposed_move: usize = 0;
@@ -54,7 +48,6 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) 
           // Minimizing.
           if minimax_score < best_score {
             best_score = minimax_score;
-            best_move = proposed_move;
           }
         }
         proposed_move += 1;
