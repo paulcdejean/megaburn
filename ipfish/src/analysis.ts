@@ -1,6 +1,6 @@
 import { BoardState } from "./Game";
 import { CurrentTurn } from "./getCurrentTurn";
-import webWorker from "./worker/analysis?worker&inline"
+import analysisWorker from "./worker/analysis?worker&inline"
 import { NS } from "@ns";
 
 
@@ -21,7 +21,7 @@ export class Analysis {
    
   public static async get(ns: NS, analysisBoard : AnalaysisBoard) : Promise<AnalysisState> {
     if (this.worker === undefined) {
-      this.worker = new webWorker()
+      this.worker = new analysisWorker()
       ns.atExit(() => {
         this.worker.terminate()
       }, "Analysis")
