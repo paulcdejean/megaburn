@@ -23,7 +23,7 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) 
 
     if board.player == Player::Black { // Maximizing
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = score(&pass_move(board));
+      let mut best_score: f64 = score(board);
 
       let mut proposed_move: usize = 0;
       for legality in get_legal_moves(board, board_history) {
@@ -39,7 +39,7 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) 
       return best_score;
     } else { // Minimizing.
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = score(&pass_move(board));
+      let mut best_score: f64 = score(board);
 
       let mut proposed_move: usize = 0;
       for legality in get_legal_moves(board, board_history) {
