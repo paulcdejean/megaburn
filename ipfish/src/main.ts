@@ -1,7 +1,7 @@
 import { NS } from "@ns";
 import IpFish from "./ui/IpFish";
 import { Game } from "./Game"
-import { getAnalysis } from "./getAnalysis";
+import { getAnalysis } from "./analysis";
 import { longfunc } from "./longfunc"
 
 export async function main(ns: NS): Promise<void> {

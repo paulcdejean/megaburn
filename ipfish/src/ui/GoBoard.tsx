@@ -1,4 +1,5 @@
-import { AnalysisState as AnalysisState, BoardState, Game } from "@/Game"
+import { BoardState, Game } from "@/Game"
+import { AnalysisState } from "@/analysis"
 import css from "./css/IpFish.module.css"
 import GoPoint from "./GoPoint"
 import PassButton from "./PassButton"

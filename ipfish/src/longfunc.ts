@@ -1,7 +1,7 @@
 import { NS } from "@ns"
 import webWorker from "./worker/longfunc?worker&inline"
 
-export async function longfunc(ns : NS) : Promise<string> {
+export function longfunc(ns : NS) : Promise<string> {
   const worker = new webWorker()
 
   ns.atExit(() => {

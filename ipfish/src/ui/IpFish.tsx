@@ -1,7 +1,8 @@
-import { AnalysisState, BoardState, Game } from "@/Game"
+import { BoardState, Game } from "@/Game"
 import cssInline from "./css/IpFish.module.css?inline"
 import GoBoard from "./GoBoard"
 import { CurrentTurn } from "@/getCurrentTurn"
+import { AnalysisState } from "@/analysis"
 
 interface IpfishProps {
   game : Game

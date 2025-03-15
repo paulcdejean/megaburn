@@ -1,14 +1,11 @@
 import { NS, GoOpponent } from "@ns";
 import { CurrentTurn } from "./getCurrentTurn";
 import { getBoardFromAPI } from "./getBoardFromAPI"
-import { getAnalysis } from "./getAnalysis";
+import { Analysis, AnalysisState } from "./analysis";
 
 export type BoardState = Uint8Array
 
-export interface AnalysisState {
-  analysis: Float64Array
-  bestMove: number
-}
+
 
 export enum PointState {
   Empty = 1,
@@ -64,7 +61,7 @@ export class Game {
         this.boardHistory.push(boardAfterWhiteMoved)
       }
       if (analysisCallBack !== undefined) {
-        const newAnalaysisState = await getAnalysis(this.boardHistory, this.komi, CurrentTurn.Black)
+        const newAnalaysisState = await Analysis.get(this.ns, this.boardHistory, this.komi, CurrentTurn.Black)
         analysisCallBack(newAnalaysisState)
       }
     } catch (e) {
@@ -91,7 +88,7 @@ export class Game {
       this.boardHistory.push(boardAfterWhiteMoved)
     }
     if (analysisCallBack !== undefined) {
-      const newAnalaysisState = await getAnalysis(this.boardHistory, this.komi, CurrentTurn.Black)
+      const newAnalaysisState = await Analysis.get(this.ns, this.boardHistory, this.komi, CurrentTurn.Black)
       analysisCallBack(newAnalaysisState)
     }
 
