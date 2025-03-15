@@ -62,7 +62,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   let mut point: usize = 0;
 
   // CURRENTLY HARDCODED
-  let depth: usize = 4;
+  let depth: usize = 5;
 
   for legality in get_legal_moves(&current_board, &board_history) {
     if(legality) {
