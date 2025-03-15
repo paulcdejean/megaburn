@@ -74,3 +74,47 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize, 
     }
   }
 }
+
+
+mod tests {
+  use crate::board_from_string::board_from_string;
+  use super::*;
+
+  #[test]
+  fn should_not_pass_here() {
+    let board_string: &str = "
+    #.XX.
+    .XO.O
+    XOOOO
+    XXXXO
+    X.X.O
+    ";
+    let board: Box<[u8]> = board_from_string(board_string, 5);
+    let board: Board = Board {
+      board: board,
+      size: 5,
+      player: Player::Black,
+      komi: 5.5, // This is versus the Daedelus
+    };
+    let board_history: BoardHistory = BoardHistory::new();
+
+    let pass_minimax_score: f64 = minimax_score(
+      &pass_move(&board),
+      &board_history,
+      3,
+      f64::NEG_INFINITY,
+      f64::INFINITY,
+    );
+
+    let d1_minimax_score: f64 = minimax_score(
+      &make_move(3, &board),
+      &board_history,
+      3,
+      f64::NEG_INFINITY,
+      f64::INFINITY,
+    );
+
+    // d1 is a better move than passing!
+    assert!(d1_minimax_score > pass_minimax_score);
+  }
+}
