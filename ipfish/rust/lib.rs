@@ -32,6 +32,7 @@ use crate::get_legal_moves::get_legal_moves;
 use crate::board_from_string::board_from_string;
 use crate::score::score;
 use crate::make_move::make_move;
+use crate::pass_move::pass_move;
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///
@@ -61,7 +62,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   let mut point: usize = 0;
   for legality in get_legal_moves(&current_board, &board_history) {
     if(legality) {
-      let minimax_score: f64 = minimax_score(&make_move(point, &current_board), &board_history, 1);
+      let minimax_score: f64 = minimax_score(&make_move(point, &current_board), &board_history, 3);
       result.push(minimax_score);
     } else {
       result.push(f64::NEG_INFINITY);
@@ -70,7 +71,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   }
 
   // This represents passing.
-  result.push(score(&current_board));
+  result.push(minimax_score(&pass_move(&current_board), &board_history, 3));
 
   return js_sys::Float64Array::from(result.as_slice());
 }

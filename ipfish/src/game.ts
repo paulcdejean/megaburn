@@ -162,7 +162,7 @@ export class Game {
     const analysisStart = performance.now()
     const analysis = await this.realAnalysis()
     const analysisTime = performance.now() - analysisStart
-    this.ns.tprint(`Completed analysis in ${this.ns.tFormat(analysisTime)}`)
+    this.ns.tprint(`Completed analysis in ${this.ns.tFormat(analysisTime, true)}`)
     return analysis
   }
 }
