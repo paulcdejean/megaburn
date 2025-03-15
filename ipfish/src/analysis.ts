@@ -30,11 +30,9 @@ export class Analysis {
         this.worker.onmessage = (event : MessageEvent<string>) => {
           resolve(event.data) 
         }
-    
         this.worker.onerror = (event) => {
           reject(`Worker init onerror triggered ${event.message}`)
         }
-    
         this.worker.onmessageerror = (event) => {
           reject(`Worker init onmessageerror triggered ${event.data}`)
         }
@@ -45,15 +43,12 @@ export class Analysis {
     this.worker.postMessage(analysisBoard)
 
     return new Promise((resolve, reject) => {
-       
       this.worker.onmessage = (event : MessageEvent<AnalysisState>) => {
         resolve(event.data) 
       }
-  
       this.worker.onerror = (event) => {
         reject(`Worker onerror triggered ${event.message}`)
       }
-  
       this.worker.onmessageerror = (event) => {
         reject(`Worker onmessageerror triggered ${event.data}`)
       }
