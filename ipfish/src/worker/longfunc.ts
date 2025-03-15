@@ -1,4 +1,4 @@
-async function longfunc(runtime: number) : Promise<string> {
+function longfunc(runtime: number) : string {
   const startTime = performance.now()
   let n = 0
   while(performance.now() - startTime < runtime) {

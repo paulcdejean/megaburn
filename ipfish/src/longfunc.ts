@@ -14,11 +14,11 @@ export async function longfunc(ns : NS) : Promise<string> {
     }
 
     worker.onerror = (event) => {
-      reject(JSON.stringify(event))
+      reject(`Worker onerror triggered ${event.message}`)
     }
 
     worker.onmessageerror = (event) => {
-      reject(JSON.stringify(event))
+      reject(`Worker onmessageerror triggered ${event.data}`)
     }
   })
 }
