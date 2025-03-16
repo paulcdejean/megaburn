@@ -10,7 +10,7 @@ pub fn pick_strategy(board: &Board, board_history: &BoardHistory, opponent_passe
   
   // Switch to alphabeta if we're in a winning position.
   let winning_position: f64 = 0.25;
-  let position_evaluation: f64 = montecarlo_score(&pass_move(board), board_history, 100);
+  let position_evaluation: f64 = montecarlo_score(&board, board_history, 100);
   let mut result: Vec<f64>;
   if position_evaluation > winning_position {
     result = minimax_ab_strategy(board, board_history, opponent_passed);
