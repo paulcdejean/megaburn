@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NS, GoOpponent } from "@ns";
 import { CurrentTurn } from "./getCurrentTurn";
 import { getBoardFromAPI } from "./getBoardFromAPI"
@@ -26,7 +25,7 @@ export interface Analysis {
   bestMove: number
 }
 
- 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const goAlphabet = [...'abcdefghjklmnopqrstuvwxyz'];
 
 // Represents only a single game of ipvgo
@@ -68,7 +67,7 @@ export class Game {
       const responsePromise = this.ns.go.makeMove(column, row)
       const boardAfterBlackMoved = getBoardFromAPI(this.ns)
       if (boardCallback !== undefined) {
-        // boardCallback(boardAfterBlackMoved)
+        boardCallback(boardAfterBlackMoved)
       }
       this.boardHistory.push(boardAfterBlackMoved)
 
@@ -77,7 +76,7 @@ export class Game {
       if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
         this.opponentPassed = false
         if (boardCallback !== undefined) {
-          // boardCallback(boardAfterWhiteMoved)
+          boardCallback(boardAfterWhiteMoved)
         }
         this.boardHistory.push(boardAfterWhiteMoved)
       } else if(opponentMove.type === "pass") {
@@ -85,7 +84,7 @@ export class Game {
       }
       if (analysisCallBack !== undefined) {
         const newAnalaysisState = await this.analysis()
-        // analysisCallBack(newAnalaysisState)
+        analysisCallBack(newAnalaysisState)
       }
     } catch (e) {
       // Currently e is a string unfortunately
@@ -106,13 +105,13 @@ export class Game {
     const boardAfterWhiteMoved = getBoardFromAPI(this.ns)
     if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
       if (boardCallback !== undefined) {
-        // boardCallback(boardAfterWhiteMoved)
+        boardCallback(boardAfterWhiteMoved)
       }
       this.boardHistory.push(boardAfterWhiteMoved)
     }
     if (analysisCallBack !== undefined) {
       const newAnalaysisState = await this.analysis()
-      // analysisCallBack(newAnalaysisState)
+      analysisCallBack(newAnalaysisState)
     }
 
     if (this.ns.go.getCurrentPlayer() === "None") {
