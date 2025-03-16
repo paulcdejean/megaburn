@@ -1,4 +1,5 @@
 use crate::board::{Board, BoardHistory};
+use crate::final_score::final_score;
 use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::pass_move::pass_move;
@@ -17,8 +18,8 @@ use crate::montecarlo_score::montecarlo_score;
 pub fn evaluate_moves(board: &Board, board_history: &BoardHistory, opponent_passed: bool) -> Vec<f64> {
   let minimax_depth: usize = 5;
   let mc_pass_nerf: f64 = 0.2;
-  let endgame_number: usize = 15;
-  let simulation_count: i32 = 100;
+  let endgame_number: usize = 14;
+  let simulation_count: i32 = 120;
 
   let mut result: Vec<f64> = Vec::new();
   let mut point: usize = 0;
@@ -35,12 +36,18 @@ pub fn evaluate_moves(board: &Board, board_history: &BoardHistory, opponent_pass
       }
       point += 1;
     }
-    result.push(minimax_score(&pass_move(board), board_history, minimax_depth));
+    result.push(final_score(&pass_move(board)));
   } else {
     let legal_moves: Box<[bool]> = get_legal_moves(board, Some(board_history));
+    let mut legal_moves_count: usize = 0;
+    for legality in legal_moves.iter() {
+      if *legality {
+        legal_moves_count += 1;
+      }
+    }
 
     let mut point: usize = 0;
-    if legal_moves.len() < endgame_number {
+    if legal_moves_count < endgame_number {
       for legality in legal_moves {
         if legality {
           result.push(minimax_score(&make_move(point, board), board_history, minimax_depth));
