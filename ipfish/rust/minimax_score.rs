@@ -30,7 +30,7 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) 
 ///
 /// * `board` - The board state to evaluate.
 fn score(board: &Board, board_history: &BoardHistory) -> f64 {
-  return final_score(board);
+  return montecarlo_score(board, board_history, 100);
 }
 
 /// Returns the evaluation of a board position using minimax algorithm to a specified depth.
@@ -69,9 +69,9 @@ fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, 
           // Maximizing.
           best_score = best_score.max(minimax_score);
           alpha = alpha.max(best_score);
-          if beta <= alpha {
-            break;
-          }
+          // if beta <= alpha {
+          //   break;
+          // }
         }
         proposed_move += 1;
       }
@@ -93,9 +93,9 @@ fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, 
           // Minimizing.
           best_score = best_score.min(minimax_score);
           beta = beta.min(best_score);
-          if beta <= alpha {
-            break;
-          }
+          // if beta <= alpha {
+          //   break;
+          // }
         }
         proposed_move += 1;
       }
