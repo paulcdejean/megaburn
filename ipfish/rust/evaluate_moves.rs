@@ -1,5 +1,7 @@
 use crate::board::{Board, BoardHistory};
 use crate::get_legal_moves::get_legal_moves;
+use crate::make_move::make_move;
+use crate::pass_move::pass_move;
 use crate::minimax_score::minimax_score;
 use crate::montecarlo_score::montecarlo_score;
 
@@ -23,21 +25,23 @@ pub fn evaluate_moves(board: &Board, board_history: &BoardHistory, opponent_pass
     let point: usize = 0;
     for legality in legal_moves {
       if legality {
-        result.push(minimax_score(board, board_history, minimax_depth));
+        result.push(minimax_score(&make_move(point, board), board_history, minimax_depth));
       } else {
         result.push(f64::NEG_INFINITY);
       }
     }
+    result.push(minimax_score(&pass_move(board), board_history, minimax_depth));
   } else {
     let legal_moves: Box<[bool]> = get_legal_moves(board, Some(board_history));
     let point: usize = 0;
     for legality in legal_moves {
       if legality {
-        result.push(minimax_score(board, board_history, minimax_depth));
+        result.push(minimax_score(&make_move(point, board), board_history, minimax_depth));
       } else {
         result.push(f64::NEG_INFINITY);
       }
     }
+    result.push(minimax_score(&pass_move(board), board_history, minimax_depth));
   }
   return result;
 }
