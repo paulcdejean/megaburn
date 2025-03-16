@@ -9,7 +9,7 @@ use crate::pass_move::pass_move;
 pub fn pick_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool) -> Vec<f64> {
   
   // Switch to alphabeta if we're in a winning position.
-  let winning_position: f64 = 0.1;
+  let winning_position: f64 = 0.25;
   let position_evaluation: f64 = montecarlo_score(&pass_move(board), board_history, 100);
   let mut result: Vec<f64>;
   if position_evaluation > winning_position {
