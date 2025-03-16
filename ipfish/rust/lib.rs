@@ -14,6 +14,7 @@ mod minimax_score;
 mod pass_move;
 mod montecarlo_score;
 mod evaluate_moves;
+mod minimax_mc_strategy;
 
 use core::f64;
 use std::collections::HashSet;
@@ -36,6 +37,7 @@ use crate::board_from_string::board_from_string;
 use crate::final_score::final_score;
 use crate::make_move::make_move;
 use crate::pass_move::pass_move;
+use crate::minimax_mc_strategy::minimax_mc_strategy;
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///
@@ -65,7 +67,7 @@ pub fn get_analysis(input_history: &js_sys::Array,
     opponent_passed: false,
   };
 
-  let result: Vec<f64> = evaluate_moves(&board, &board_history, opponent_passed.value_of());
+  let result: Vec<f64> = minimax_mc_strategy(&board, &board_history, opponent_passed.value_of());
 
   return js_sys::Float64Array::from(result.as_slice());
 }
