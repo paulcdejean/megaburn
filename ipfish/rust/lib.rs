@@ -86,6 +86,8 @@ pub fn get_analysis(input_history: &js_sys::Array,
     let score: f64 = final_score(&current_board);
     if score > 0.0 {
       result.push(f64::INFINITY);
+    } else {
+      result.push(f64::NEG_INFINITY);
     }
   } else {
     let score: f64 = evaluate_move(
