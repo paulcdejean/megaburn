@@ -54,6 +54,7 @@ fn play_random_move(board: &Board) -> Option<Board> {
         possible_moves.push(n);
       }
     }
+    
   }
 
   let chosen_move: Option<&usize> = possible_moves.choose(&mut rand::thread_rng());

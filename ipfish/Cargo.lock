@@ -27,8 +27,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "43a49c392881ce6d5c3b8cb70f98717b7c07aabbdff06687b9030dbfbe2725f8"
 dependencies = [
  "cfg-if",
+ "js-sys",
  "libc",
  "wasi",
+ "wasm-bindgen",
  "windows-targets",
 ]
 
@@ -36,6 +38,7 @@ dependencies = [
 name = "ipfish"
 version = "1.0.0"
 dependencies = [
+ "getrandom",
  "js-sys",
  "rand",
  "wasm-bindgen",
