@@ -1,5 +1,7 @@
 use crate::board::{Board, BoardHistory};
-use crate::{get_legal_moves, make_move};
+use crate::montecarlo_score::montecarlo_score;
+use crate::get_legal_moves::get_legal_moves;
+use crate::make_move::make_move;
 use crate::player::Player;
 use crate::final_score::final_score;
 use crate::pass_move::pass_move;
@@ -13,8 +15,9 @@ use crate::pass_move::pass_move;
 ///
 /// * `board` - The board state to evaluate.
 fn score(board: &Board) -> f64 {
-  // TODO: Using the board score seems to not be very effective earlier in the game.
-  return final_score(&board);
+  return montecarlo_score(board, 20);
+
+  // return final_score(&board);
 }
 
 /// Returns the evaluation of a board position using minimax algorithm to a specified depth.
