@@ -21,7 +21,7 @@ function formatEvaluation(evaluation : number) : string {
   } else if (evaluation > 0) {
     return "+".concat(evaluation.toString())
   } else {
-    return evaluation.toString()
+    return evaluation.toFixed(3)
   }
 }
 

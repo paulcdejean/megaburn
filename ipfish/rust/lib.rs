@@ -43,7 +43,10 @@ use crate::pass_move::pass_move;
 ///
 /// * `board_history` - All states the board has historically been in. The last element of the array is the current board position.
 #[wasm_bindgen]
-pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: &js_sys::Number) -> js_sys::Float64Array {
+pub fn get_analysis(input_history: &js_sys::Array,
+                    komi: &js_sys::Number,
+                    turn: &js_sys::Number,
+                    opponent_passed: &js_sys::Boolean) -> js_sys::Float64Array {
   panic::set_hook(Box::new(|panic_info| {
     wasm_bindgen::throw_str(format!("{}", panic_info).as_str());
   }));
@@ -65,9 +68,6 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
   let mut result: Vec<f64> = Vec::new();
   let mut point: usize = 0;
 
-  // CURRENTLY HARDCODED
-  let depth: usize = 5;
-
   for legality in get_legal_moves(&current_board, Some(&board_history)) {
     if(legality) {
       let score: f64 = evaluate_move(
@@ -81,12 +81,19 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
     point += 1;
   }
 
-  // This represents passing.
-  let score: f64 = evaluate_move(
-    &pass_move(&current_board),
-    &board_history,
-  );
-  result.push(score - 0.01);
+  // If you're winning just end the game!
+  if (opponent_passed.value_of()) {
+    let score: f64 = final_score(&current_board);
+    if score > 0.0 {
+      result.push(f64::INFINITY);
+    }
+  } else {
+    let score: f64 = evaluate_move(
+      &pass_move(&current_board),
+      &board_history,
+    );
+    result.push(score - 0.1);
+  }
 
   return js_sys::Float64Array::from(result.as_slice());
 }

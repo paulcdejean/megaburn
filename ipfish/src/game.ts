@@ -15,7 +15,8 @@ export enum PointState {
 export interface AnalaysisBoard {
   boardHistory : [BoardState],
   komi: number,
-  turn: CurrentTurn
+  turn: CurrentTurn,
+  passed: boolean,
 }
 
 
@@ -36,6 +37,7 @@ export class Game {
   public turn : CurrentTurn
   private worker : Worker
   private workerInit : boolean = false
+  private opponentPassed : boolean = false
 
   constructor(ns : NS, opponent : GoOpponent, boardSize :  5 | 7 | 9 | 13) {
     this.ns = ns
@@ -72,10 +74,13 @@ export class Game {
       const opponentMove = await responsePromise
       const boardAfterWhiteMoved = getBoardFromAPI(this.ns)
       if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
+        this.opponentPassed = false
         if (boardCallback !== undefined) {
           boardCallback(boardAfterWhiteMoved)
         }
         this.boardHistory.push(boardAfterWhiteMoved)
+      } else if(opponentMove.type === "pass") {
+        this.opponentPassed = true
       }
       if (analysisCallBack !== undefined) {
         const newAnalaysisState = await this.analysis()
@@ -136,11 +141,14 @@ export class Game {
       this.workerInit = true
     }
 
-    this.worker.postMessage({
+    const analysisBoard : AnalaysisBoard = {
       boardHistory: this.boardHistory,
       komi: this.komi,
       turn: this.turn,
-    })
+      passed: this.opponentPassed,
+    }
+
+    this.worker.postMessage(analysisBoard)
     return new Promise((resolve, reject) => {
       if (this.worker === undefined) {
         reject("Worker non existent during analysis")
