@@ -15,33 +15,50 @@ use crate::montecarlo_score::montecarlo_score;
 /// * `board_history` - All states the board has historically been in, important for determining superko.
 /// * `point` - The move to evaluate.
 pub fn evaluate_moves(board: &Board, board_history: &BoardHistory, opponent_passed: bool) -> Vec<f64> {
-  let mut result: Vec<f64> = Vec::new();
-
   let minimax_depth: usize = 5;
+  let mc_pass_nerf: f64 = 0.2;
 
+  let mut result: Vec<f64> = Vec::new();
+  let mut point: usize = 0;
+  
   // If opponent passes force using minimax.
   if opponent_passed {
     let legal_moves: Box<[bool]> = get_legal_moves(board, Some(board_history));
-    let point: usize = 0;
+    
     for legality in legal_moves {
       if legality {
         result.push(minimax_score(&make_move(point, board), board_history, minimax_depth));
       } else {
         result.push(f64::NEG_INFINITY);
       }
+      point += 1;
     }
     result.push(minimax_score(&pass_move(board), board_history, minimax_depth));
   } else {
     let legal_moves: Box<[bool]> = get_legal_moves(board, Some(board_history));
-    let point: usize = 0;
-    for legality in legal_moves {
-      if legality {
-        result.push(minimax_score(&make_move(point, board), board_history, minimax_depth));
-      } else {
-        result.push(f64::NEG_INFINITY);
+
+    let mut point: usize = 0;
+    if legal_moves.len() < 7 {
+      for legality in legal_moves {
+        if legality {
+          result.push(minimax_score(&make_move(point, board), board_history, minimax_depth));
+        } else {
+          result.push(f64::NEG_INFINITY);
+        }
+        point += 1;
       }
+      result.push(minimax_score(&pass_move(board), board_history, minimax_depth));
+    } else {
+      for legality in legal_moves {
+        if legality {
+          result.push(montecarlo_score(board, board_history, 100));
+        } else {
+          result.push(f64::NEG_INFINITY);
+        }
+        point += 1;
+      }
+      result.push(montecarlo_score(board, board_history, 100) - mc_pass_nerf);
     }
-    result.push(minimax_score(&pass_move(board), board_history, minimax_depth));
   }
   return result;
 }

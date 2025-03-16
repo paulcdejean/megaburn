@@ -37,7 +37,7 @@ pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_
     black_wins = black_wins + montecarlo_simulation(board.clone(), board_history.clone(), &mut rng) as i32;
   }
 
-  return f64::from(black_wins) / f64::from(simulation_count);
+  return f64::from(black_wins) / f64::from(simulation_count) - 0.5;
 }
 
 fn montecarlo_simulation(mut board: Board, mut board_history: BoardHistory, rng: &mut RNG) -> Winner {
