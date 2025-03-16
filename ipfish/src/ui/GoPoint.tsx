@@ -19,9 +19,9 @@ function formatEvaluation(evaluation : number) : string {
   if(evaluation === Number.NEGATIVE_INFINITY) {
     return "x"
   } else if (evaluation > 0) {
-    return "+".concat(evaluation.toString())
+    return "+".concat(evaluation.toFixed(2))
   } else {
-    return evaluation.toFixed(3)
+    return evaluation.toFixed(2)
   }
 }
 

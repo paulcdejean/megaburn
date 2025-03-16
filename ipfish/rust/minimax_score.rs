@@ -15,9 +15,9 @@ use crate::pass_move::pass_move;
 ///
 /// * `board` - The board state to evaluate.
 fn score(board: &Board) -> f64 {
-  return montecarlo_score(board, 20);
+  return montecarlo_score(board, 3) - 0.5;
 
-  // return final_score(&board);
+  // return final_score(board);
 }
 
 /// Returns the evaluation of a board position using minimax algorithm to a specified depth.
