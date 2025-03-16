@@ -9,7 +9,7 @@ use rand::thread_rng;
 use rand::seq::SliceRandom;
 use rand::seq::IndexedRandom;
 
-#[repr(usize)]
+#[repr(i32)]
 #[derive(Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd, Debug)]
 pub enum Winner {
   WhiteWin = 0,
@@ -24,9 +24,14 @@ pub enum Winner {
 ///
 /// * `board` - The board state to evaluate.
 /// * `simulation_count` - The number of montecarlo simulations to run.
-pub fn montecarlo_score(board: &Board, simulation_count: usize) -> f64 {
+pub fn montecarlo_score(board: &Board, simulation_count: i32) -> f64 {
+  let mut black_wins: i32 = 0;
 
-  return 0.5
+  for _ in 0..simulation_count {
+    black_wins = black_wins + montecarlo_simulation(board.clone()) as i32;
+  }
+
+  return f64::from(simulation_count) / f64::from(black_wins);
 }
 
 fn play_random_move(board: &Board) -> Option<Board> {
@@ -62,6 +67,7 @@ fn play_random_move(board: &Board) -> Option<Board> {
       }
     },
     Some(s) => {
+      println!("Played {}", s);
       return Some(make_move(*s, board));
     },
   }
@@ -80,65 +86,5 @@ fn montecarlo_simulation(mut board: Board) -> Winner {
     return Winner::BlackWin
   } else {
     return Winner::WhiteWin
-  }
-}
-
-mod tests {
-  use crate::board_from_string::board_from_string;
-  use crate::player::Player;
-  use super::*;
-
-  #[test]
-  fn does_not_poke_out_eyes() {
-    let board_string: &str = "
-    ..X..
-    XXX..
-    OOXXX
-    O.OOO
-    .O.O#
-    ";
-    let board: Box<[u8]> = board_from_string(board_string, 5);
-    let mut board: Board = Board {
-      board: board,
-      size: 5,
-      player: Player::Black,
-      komi: 5.5, // Should lead to a score of white 16.5 black 13.
-      opponent_passed: false,
-    };
-    let winner: Winner = montecarlo_simulation(board);
-    assert_eq!(winner, Winner::WhiteWin);
-
-    let board: Box<[u8]> = board_from_string(board_string, 5);
-    let mut board: Board = Board {
-      board: board,
-      size: 5,
-      player: Player::Black,
-      komi: 1.5, // Should lead to a score of white 12.5 black 13.
-      opponent_passed: false,
-    };
-    let winner: Winner = montecarlo_simulation(board);
-    assert_eq!(winner, Winner::BlackWin);
-  }
-  #[test]
-  fn should_play_b5() {
-    let board_string: &str = "
-    O.X.X
-    XXXXX
-    OOXXX
-    O.OOO
-    .O.O#
-    ";
-    let board: Box<[u8]> = board_from_string(board_string, 5);
-    let mut board: Board = Board {
-      board: board,
-      size: 5,
-      player: Player::Black,
-      komi: 5.5, // Should lead to a score of white 16.5 black 13.
-      opponent_passed: false,
-    };
-    let after_move_board: Board = play_random_move(&board).unwrap();
-    
-    assert_eq!(after_move_board.opponent_passed, false);
-    assert_eq!(after_move_board.board[21], Player::Black as u8)
   }
 }

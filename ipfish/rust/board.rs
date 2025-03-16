@@ -1,7 +1,7 @@
 use crate::player::Player;
 use std::collections::HashSet;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Board {
   // The current pieces of the board.
   pub board: Box<[u8]>,
