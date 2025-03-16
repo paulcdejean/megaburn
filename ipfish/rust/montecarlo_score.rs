@@ -1,4 +1,5 @@
 use crate::board::Board;
+use crate::board::BoardHistory;
 use crate::final_score;
 use crate::get_adjacent_points;
 use crate::get_legal_moves::get_legal_moves;
@@ -27,21 +28,37 @@ type RNG = Pcg64Mcg;
 ///
 /// * `board` - The board state to evaluate.
 /// * `simulation_count` - The number of montecarlo simulations to run.
-pub fn montecarlo_score(board: &Board, simulation_count: i32) -> f64 {
+pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_count: i32) -> f64 {
   let mut rng: RNG = RNG::seed_from_u64(js_sys::Math::random().to_bits());
 
   let mut black_wins: i32 = 0;
 
   for _ in 0..simulation_count {
-    black_wins = black_wins + montecarlo_simulation(board.clone(), &mut rng) as i32;
+    black_wins = black_wins + montecarlo_simulation(board.clone(), board_history.clone(), &mut rng) as i32;
   }
 
   return f64::from(black_wins) / f64::from(simulation_count);
 }
 
-fn play_random_move(board: &Board, rng: &mut RNG) -> Option<Board> {
-  let legal_for_me: Box<[bool]> = get_legal_moves(&board, None);
-  let legal_for_opponent: Box<[bool]> = get_legal_moves(&pass_move(board), None);
+fn montecarlo_simulation(mut board: Board, mut board_history: BoardHistory, rng: &mut RNG) -> Winner {
+  for _ in 0..board.board.len() {
+    match play_random_move(&board, &mut board_history, rng) {
+      Some(s) => {board = s;},
+      None => break,
+    }
+  }
+  let result: f64 = final_score(&board);
+
+  if result > 0.0 {
+    return Winner::BlackWin
+  } else {
+    return Winner::WhiteWin
+  }
+}
+
+fn play_random_move(board: &Board, board_history: &mut BoardHistory, rng: &mut RNG) -> Option<Board> {
+  let legal_for_me: Box<[bool]> = get_legal_moves(&board, Some(board_history));
+  let legal_for_opponent: Box<[bool]> = get_legal_moves(&pass_move(board), Some(board_history));
   let mut possible_moves: Vec<usize> = Vec::new();
 
   for n in 0..legal_for_me.len() {
@@ -65,31 +82,15 @@ fn play_random_move(board: &Board, rng: &mut RNG) -> Option<Board> {
   match chosen_move {
     None => {
       if !board.opponent_passed {
-        println!("Passed");
         return Some(pass_move(board));
       } else {
         return None;
       }
     },
     Some(s) => {
-      println!("Played {}", s);
-      return Some(make_move(*s, board));
+      let new_board: Board = make_move(*s, board);
+      board_history.insert(new_board.board.clone());
+      return Some(new_board);
     },
-  }
-}
-
-fn montecarlo_simulation(mut board: Board, rng: &mut RNG) -> Winner {
-  for _ in 0..board.board.len() {
-    match play_random_move(&board, rng) {
-      Some(s) => {board = s;},
-      None => break,
-    }
-  }
-  let result: f64 = final_score(&board);
-
-  if result > 0.0 {
-    return Winner::BlackWin
-  } else {
-    return Winner::WhiteWin
   }
 }

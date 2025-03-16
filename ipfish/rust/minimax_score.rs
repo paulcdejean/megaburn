@@ -1,3 +1,5 @@
+use core::f64;
+
 use crate::board::{Board, BoardHistory};
 use crate::montecarlo_score::montecarlo_score;
 use crate::get_legal_moves::get_legal_moves;
@@ -5,6 +7,19 @@ use crate::make_move::make_move;
 use crate::player::Player;
 use crate::final_score::final_score;
 use crate::pass_move::pass_move;
+
+/// Returns the evaluation of a board position using minimax algorithm to a specified depth.
+/// This is called recursively an exponential number of times.
+/// With high enough depth it can solve the game but your computer will explode.
+///
+/// # Arguments
+///
+/// * `board` - The board state to evaluate.
+/// * `board_history` - The board history of the current state.
+/// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
+pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) -> f64 {
+  return minimax_alphabeta(board, board_history, depth, f64::NEG_INFINITY, f64::INFINITY)
+}
 
 /// Private function! This is the score according to the minimax algorithm.
 /// This is the value it's trying to minimize and maximize.
@@ -14,10 +29,8 @@ use crate::pass_move::pass_move;
 /// # Arguments
 ///
 /// * `board` - The board state to evaluate.
-fn score(board: &Board) -> f64 {
-  return montecarlo_score(board, 3) - 0.5;
-
-  // return final_score(board);
+fn score(board: &Board, board_history: &BoardHistory) -> f64 {
+  return final_score(board);
 }
 
 /// Returns the evaluation of a board position using minimax algorithm to a specified depth.
@@ -31,22 +44,22 @@ fn score(board: &Board) -> f64 {
 /// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
 /// * `alpha` - The highest score seen so far. Pass -infinity for non recursive calls.
 /// * `beta` - The lower score seen so far. Pass +infinity for non recursive calls.
-pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize, mut alpha: f64, mut beta: f64) -> f64 {
+fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, mut alpha: f64, mut beta: f64) -> f64 {
   // Terminating condition
   if depth < 1 {
-    return score(&board);
+    return score(board, board_history);
   } else {
     let mut deeper_history: BoardHistory = board_history.clone();
     deeper_history.insert(board.board.clone());
 
     if board.player == Player::Black { // Maximizing
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = score(board);
+      let mut best_score: f64 = score(board, board_history);
 
       let mut proposed_move: usize = 0;
       for legality in get_legal_moves(board, Some(board_history)) {
         if legality {
-          let minimax_score: f64 = minimax_score(
+          let minimax_score: f64 = minimax_alphabeta(
             &make_move(proposed_move, board),
             &deeper_history,
             depth - 1,
@@ -65,12 +78,12 @@ pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize, 
       return best_score;
     } else { // Minimizing.
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = score(board);
+      let mut best_score: f64 = score(board, board_history);
 
       let mut proposed_move: usize = 0;
       for legality in get_legal_moves(board, Some(board_history)) {
         if legality {
-          let minimax_score: f64 = minimax_score(
+          let minimax_score: f64 = minimax_alphabeta(
             &make_move(proposed_move, board),
             &deeper_history,
             depth - 1,
@@ -119,16 +132,12 @@ mod tests {
       &pass_move(&board),
       &board_history,
       3,
-      f64::NEG_INFINITY,
-      f64::INFINITY,
     );
 
     let d1_minimax_score: f64 = minimax_score(
       &make_move(3, &board),
       &board_history,
       3,
-      f64::NEG_INFINITY,
-      f64::INFINITY,
     );
 
     // d1 is a better move than passing!
