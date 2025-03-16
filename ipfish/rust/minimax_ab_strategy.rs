@@ -1,36 +1,44 @@
 use core::f64;
 
 use crate::board::{Board, BoardHistory};
-use crate::montecarlo_score::montecarlo_score;
+use crate::final_score::final_score;
 use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::player::Player;
-use crate::final_score::final_score;
 use crate::pass_move::pass_move;
 
-/// Returns the evaluation of a board position using minimax algorithm to a specified depth.
-/// This is called recursively an exponential number of times.
-/// With high enough depth it can solve the game but your computer will explode.
-///
-/// # Arguments
-///
-/// * `board` - The board state to evaluate.
-/// * `board_history` - The board history of the current state.
-/// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
-pub fn minimax_score(board: &Board, board_history: &BoardHistory, depth: usize) -> f64 {
-  return minimax_alphabeta(board, board_history, depth, f64::NEG_INFINITY, f64::INFINITY)
+/// This uses minimax with alpha beta pruning. For the scoring function it just uses the game result.
+/// This is good as a "finisher" and terrible at opening the game.
+/// It will try and maximize the result score.
+pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool) -> Vec<f64> {
+  let minimax_depth: usize = 5;
+  let alpha: f64 = f64::NEG_INFINITY;
+  let beta: f64 = f64::INFINITY;
+
+  let mut result: Vec<f64> = Vec::new();
+  let mut point: usize = 0;
+  for legality in get_legal_moves(board, Some(board_history)) {
+    if legality {
+      result.push(minimax_alphabeta(&make_move(point, board), board_history, minimax_depth, alpha, beta));
+    } else {
+      result.push(f64::NEG_INFINITY);
+    }
+    point += 1;
+  }
+  match opponent_passed {
+    false => result.push(minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta)),
+    true => result.push(final_score(board)),
+  }
+  
+
+  return result;
 }
 
 /// Private function! This is the score according to the minimax algorithm.
 /// This is the value it's trying to minimize and maximize.
 /// Changing the scoring algorithm will significantly alter the behavior of the minimax algorithm.
-/// This doesn't take a board history for now, because that would slow things down.
-/// 
-/// # Arguments
-///
-/// * `board` - The board state to evaluate.
 fn score(board: &Board, board_history: &BoardHistory) -> f64 {
-  return montecarlo_score(board, board_history, 100);
+  return final_score(board);
 }
 
 /// Returns the evaluation of a board position using minimax algorithm to a specified depth.
@@ -69,9 +77,9 @@ fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, 
           // Maximizing.
           best_score = best_score.max(minimax_score);
           alpha = alpha.max(best_score);
-          // if beta <= alpha {
-          //   break;
-          // }
+          if beta <= alpha {
+            break;
+          }
         }
         proposed_move += 1;
       }
@@ -93,54 +101,13 @@ fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, 
           // Minimizing.
           best_score = best_score.min(minimax_score);
           beta = beta.min(best_score);
-          // if beta <= alpha {
-          //   break;
-          // }
+          if beta <= alpha {
+            break;
+          }
         }
         proposed_move += 1;
       }
       return best_score;
     }
-  }
-}
-
-
-mod tests {
-  use crate::board_from_string::board_from_string;
-  use super::*;
-
-  #[test]
-  fn should_not_pass_here() {
-    let board_string: &str = "
-    #.XX.
-    .XO.O
-    XOOOO
-    XXXXO
-    X.X.O
-    ";
-    let board: Box<[u8]> = board_from_string(board_string, 5);
-    let board: Board = Board {
-      board: board,
-      size: 5,
-      player: Player::Black,
-      komi: 5.5, // This is versus the Daedelus
-      opponent_passed: false,
-    };
-    let board_history: BoardHistory = BoardHistory::new();
-
-    let pass_minimax_score: f64 = minimax_score(
-      &pass_move(&board),
-      &board_history,
-      3,
-    );
-
-    let d1_minimax_score: f64 = minimax_score(
-      &make_move(3, &board),
-      &board_history,
-      3,
-    );
-
-    // d1 is a better move than passing!
-    assert!(d1_minimax_score > pass_minimax_score);
   }
 }

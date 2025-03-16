@@ -10,34 +10,24 @@ mod board_from_string;
 mod violates_superko;
 mod make_move;
 mod final_score;
-mod minimax_score;
 mod pass_move;
 mod montecarlo_score;
-mod evaluate_moves;
 mod minimax_mc_strategy;
+mod minimax_ab_strategy;
+mod pick_strategy;
 
 use core::f64;
 use std::collections::HashSet;
 use std::ops::Not;
 use std::process::exit;
 use std::thread::current;
-use evaluate_moves::evaluate_moves;
-use minimax_score::minimax_score;
 use wasm_bindgen::prelude::*;
 use std::panic;
 
 use crate::player::Player;
-use crate::count_liberties_of_group::count_liberties_of_group;
-use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;
 use crate::board::{Board, BoardHistory};
-use crate::is_self_capture::is_self_capture;
-use crate::get_legal_moves::get_legal_moves;
-use crate::board_from_string::board_from_string;
-use crate::final_score::final_score;
-use crate::make_move::make_move;
-use crate::pass_move::pass_move;
-use crate::minimax_mc_strategy::minimax_mc_strategy;
+use crate::pick_strategy::pick_strategy;
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///
@@ -67,7 +57,7 @@ pub fn get_analysis(input_history: &js_sys::Array,
     opponent_passed: false,
   };
 
-  let result: Vec<f64> = minimax_mc_strategy(&board, &board_history, opponent_passed.value_of());
+  let result: Vec<f64> = pick_strategy(&board, &board_history, opponent_passed.value_of());
 
   return js_sys::Float64Array::from(result.as_slice());
 }

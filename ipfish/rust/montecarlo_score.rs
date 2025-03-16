@@ -1,7 +1,7 @@
 use crate::board::Board;
 use crate::board::BoardHistory;
-use crate::final_score;
-use crate::get_adjacent_points;
+use crate::final_score::final_score;
+use crate::get_adjacent_points::get_adjacent_points;
 use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::pass_move::pass_move;
