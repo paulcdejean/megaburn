@@ -51,13 +51,13 @@ pub fn evaluate_moves(board: &Board, board_history: &BoardHistory, opponent_pass
     } else {
       for legality in legal_moves {
         if legality {
-          result.push(montecarlo_score(board, board_history, 100));
+          result.push(montecarlo_score(&make_move(point, board), board_history, 100));
         } else {
           result.push(f64::NEG_INFINITY);
         }
         point += 1;
       }
-      result.push(montecarlo_score(board, board_history, 100) - mc_pass_nerf);
+      result.push(montecarlo_score(&pass_move(board), board_history, 100) - mc_pass_nerf);
     }
   }
   return result;
