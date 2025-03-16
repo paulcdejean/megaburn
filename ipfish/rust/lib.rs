@@ -86,7 +86,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
     &pass_move(&current_board),
     &board_history,
   );
-  result.push(score);
+  result.push(score - 0.01);
 
   return js_sys::Float64Array::from(result.as_slice());
 }
