@@ -73,6 +73,7 @@ use crate::board_from_string::board_from_string;
       size: 5,
       player: Player::Black,
       komi: 7.5,
+      opponent_passed: false,
     };
     let result: Box<[bool]> = get_legal_moves(&board, None);
     assert_eq!(*result, legality);
@@ -103,6 +104,7 @@ use crate::board_from_string::board_from_string;
       size: 5,
       player: Player::Black,
       komi: 7.5,
+      opponent_passed: false,
     };
 
     let result: Box<[bool]> = get_legal_moves(&board, None);
@@ -131,6 +133,7 @@ use crate::board_from_string::board_from_string;
       size: 5,
       player: Player::Black,
       komi: 7.5,
+      opponent_passed: false,
     };
 
     let board_history: BoardHistory = HashSet::new();
@@ -168,6 +171,7 @@ use crate::board_from_string::board_from_string;
       size: 5,
       player: Player::Black,
       komi: 7.5,
+      opponent_passed: false,
     };
     let mut board_history: BoardHistory = HashSet::new();
     board_history.insert(previous_board);

@@ -6,5 +6,6 @@ pub fn pass_move(board: &Board) -> Board {
     size: board.size,
     player: !board.player,
     komi: board.komi,
+    opponent_passed: true,
   };
 }

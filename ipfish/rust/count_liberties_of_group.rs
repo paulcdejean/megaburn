@@ -57,6 +57,7 @@ mod tests {
       size: 5,
       player: Player::Black,
       komi: 7.5,
+      opponent_passed: false,
     };
 
     // Count the liberties for 12 aka c3

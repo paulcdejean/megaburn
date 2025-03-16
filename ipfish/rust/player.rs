@@ -2,7 +2,7 @@ use std::ops::Not;
 
 
 #[repr(u8)]
-#[derive(Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd, Debug)]
 pub enum Player {
   Black = 2,
   White = 3,

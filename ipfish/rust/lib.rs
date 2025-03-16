@@ -59,6 +59,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
     board: current_board,
     player: Player::from(turn.value_of()),
     komi: komi.value_of(),
+    opponent_passed: false,
   };
 
   let mut result: Vec<f64> = Vec::new();

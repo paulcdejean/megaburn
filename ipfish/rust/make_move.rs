@@ -16,6 +16,7 @@ pub fn make_move(point: usize, board: &Board) -> Board {
     size: board.size,
     player: !board.player,
     komi: board.komi,
+    opponent_passed: false,
   };
 
   // Place the stone.

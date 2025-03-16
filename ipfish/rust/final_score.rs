@@ -90,6 +90,7 @@ mod tests {
       size: 5,
       player: Player::Black,
       komi: 7.5, // This is versus the illuminati, komi is critical for this test!
+      opponent_passed: false,
     };
 
     // With the game concluded black is winning by 2.5 points, using ipvgo's scoring system.

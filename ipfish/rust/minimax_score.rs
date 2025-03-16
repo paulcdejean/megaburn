@@ -108,6 +108,7 @@ mod tests {
       size: 5,
       player: Player::Black,
       komi: 5.5, // This is versus the Daedelus
+      opponent_passed: false,
     };
     let board_history: BoardHistory = BoardHistory::new();
 
