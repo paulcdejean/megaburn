@@ -5,9 +5,11 @@ use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::pass_move::pass_move;
 use crate::point_state::PointState;
-use rand::thread_rng;
 use rand::seq::SliceRandom;
 use rand::seq::IndexedRandom;
+use rand::RngCore;
+use rand::SeedableRng;
+use rand_chacha::ChaCha12Rng;
 
 #[repr(i32)]
 #[derive(Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd, Debug)]
@@ -25,16 +27,18 @@ pub enum Winner {
 /// * `board` - The board state to evaluate.
 /// * `simulation_count` - The number of montecarlo simulations to run.
 pub fn montecarlo_score(board: &Board, simulation_count: i32) -> f64 {
+  let mut rng: ChaCha12Rng = ChaCha12Rng::seed_from_u64(js_sys::Math::random().to_bits());
+
   let mut black_wins: i32 = 0;
 
   for _ in 0..simulation_count {
-    black_wins = black_wins + montecarlo_simulation(board.clone()) as i32;
+    black_wins = black_wins + montecarlo_simulation(board.clone(), &mut rng) as i32;
   }
 
-  return f64::from(simulation_count) / f64::from(black_wins);
+  return f64::from(black_wins) / f64::from(simulation_count);
 }
 
-fn play_random_move(board: &Board) -> Option<Board> {
+fn play_random_move(board: &Board, rng: &mut ChaCha12Rng) -> Option<Board> {
   let legal_for_me: Box<[bool]> = get_legal_moves(&board, None);
   let legal_for_opponent: Box<[bool]> = get_legal_moves(&pass_move(board), None);
   let mut possible_moves: Vec<usize> = Vec::new();
@@ -54,10 +58,9 @@ fn play_random_move(board: &Board) -> Option<Board> {
         possible_moves.push(n);
       }
     }
-    
   }
 
-  let chosen_move: Option<&usize> = possible_moves.choose(&mut rand::thread_rng());
+  let chosen_move: Option<&usize> = possible_moves.choose(rng);
   match chosen_move {
     None => {
       if !board.opponent_passed {
@@ -74,9 +77,9 @@ fn play_random_move(board: &Board) -> Option<Board> {
   }
 }
 
-fn montecarlo_simulation(mut board: Board) -> Winner {
+fn montecarlo_simulation(mut board: Board, rng: &mut ChaCha12Rng) -> Winner {
   loop {
-    match play_random_move(&board) {
+    match play_random_move(&board, rng) {
       Some(s) => {board = s;},
       None => break,
     }

@@ -22,7 +22,7 @@ pub fn evaluate_move(board: &Board, board_history: &BoardHistory) -> f64 {
   //   f64::INFINITY,
   // );
 
-  let result = montecarlo_score(board, 100);
+  let result = montecarlo_score(board, 10);
 
   return result;
 }
