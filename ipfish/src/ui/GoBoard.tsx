@@ -26,7 +26,7 @@ function GoBoard(props : GoBoardProps) {
               {[...Array(props.boardSize).keys()].map((column) => {
                 return <GoPoint
                           key={column}
-                          pointState={props.gameClass.getPoint(props.boardSize - row - 1, column)}
+                          pointState={props.boardState[(props.boardSize - row - 1) * props.boardSize + column]}
                           evaluation={props.analysisState.analysis[(props.boardSize - row - 1) * props.boardSize + column]}
                           bestMove={(props.boardSize - row - 1) * props.boardSize + column === props.analysisState.bestMove}
                           updateBoardState={props.updateBoardState}
