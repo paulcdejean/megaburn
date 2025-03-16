@@ -25,7 +25,7 @@ function PassButton(props : PassButtonProps) {
       <button className={getEvaluationClass(props.evaluation, props.bestMove)} type="button" onClick={() => void props.gameClass.passTurn(props.updateBoardState, props.updateAnalysisState)}>
         Pass
         <br />
-        {props.evaluation === Number.NEGATIVE_INFINITY ? "-inf" : props.evaluation}
+        {props.evaluation === Number.NEGATIVE_INFINITY ? "-inf" : props.evaluation.toFixed(3)}
       </button>
     </>
   )
