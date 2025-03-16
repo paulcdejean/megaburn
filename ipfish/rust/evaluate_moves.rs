@@ -15,9 +15,10 @@ use crate::montecarlo_score::montecarlo_score;
 /// * `board_history` - All states the board has historically been in, important for determining superko.
 /// * `point` - The move to evaluate.
 pub fn evaluate_moves(board: &Board, board_history: &BoardHistory, opponent_passed: bool) -> Vec<f64> {
-  let minimax_depth: usize = 7;
+  let minimax_depth: usize = 5;
   let mc_pass_nerf: f64 = 0.2;
-  let endgame_number: usize = 12;
+  let endgame_number: usize = 15;
+  let simulation_count: i32 = 100;
 
   let mut result: Vec<f64> = Vec::new();
   let mut point: usize = 0;
@@ -52,7 +53,7 @@ pub fn evaluate_moves(board: &Board, board_history: &BoardHistory, opponent_pass
     } else {
       for legality in legal_moves {
         if legality {
-          result.push(montecarlo_score(&make_move(point, board), board_history, 100));
+          result.push(montecarlo_score(&make_move(point, board), board_history, simulation_count));
         } else {
           result.push(f64::NEG_INFINITY);
         }
