@@ -27,7 +27,14 @@ pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent
   }
   match opponent_passed {
     false => result.push(minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta)),
-    true => result.push(final_score(board)),
+    true => {
+      let final_score: f64 = final_score(board);
+      if final_score > 0.0 {
+        result.push(final_score);
+      } else {
+        result.push(f64::NEG_INFINITY);
+      }
+    }
   }
   
 
