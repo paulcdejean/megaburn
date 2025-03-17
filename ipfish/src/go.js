@@ -1528,6 +1528,8 @@ async function getPriorityMove(ns, moves) {
       }
     }
   }
-  
-  return [].concat(...scores);
+
+  const result = [].concat(...scores);
+
+  return result;
 }
