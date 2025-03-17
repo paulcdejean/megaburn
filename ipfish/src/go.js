@@ -1,37 +1,37 @@
 /** @param {NS} ns */
-export async function main(ns) {
+// async function main(ns) {
 
-    for (const script of ns.ps()) {
-      if (script.pid === ns.pid) {
-        ;
-      }
-      else if (script.filename === "go.js") { ns.kill(script.pid) }
-    }
+//     for (const script of ns.ps()) {
+//       if (script.pid === ns.pid) {
+//         ;
+//       }
+//       else if (script.filename === "go.js") { ns.kill(script.pid) }
+//     }
   
-    const getRandomOpponent = () => {
-      const opponents = ["Slum Snakes", "The Black Hand", "Tetrads", "Daedalus", "Illuminati"];
-      const randomIndex = Math.floor(Math.random() * opponents.length);
-      return opponents[randomIndex] ?? [];
-    };
+//     const getRandomOpponent = () => {
+//       const opponents = ["Slum Snakes", "The Black Hand", "Tetrads", "Daedalus", "Illuminati"];
+//       const randomIndex = Math.floor(Math.random() * opponents.length);
+//       return opponents[randomIndex] ?? [];
+//     };
   
-    const boardSize = ns.args[0] ?? 13
-    ns.go.resetBoardState(getRandomOpponent(), boardSize)
+//     const boardSize = ns.args[0] ?? 13
+//     ns.go.resetBoardState(getRandomOpponent(), boardSize)
   
-  let result
-  do {
-    let board = createBoard(ns)
+//   let result
+//   do {
+//     let board = createBoard(ns)
 
-    result = await getMove(ns, board, "black", 40, result?.type)
+//     result = await getMove(ns, board, "black", 40, result?.type)
     
-    // Log opponent's next move, once it happens
-    await ns.go.opponentNextTurn();
-    if (result?.type == "gameOver") {
-      ns.go.resetBoardState(getRandomOpponent(), boardSize)
-    }
-    // Keep looping
-  // eslint-disable-next-line no-constant-condition
-  } while (true);
-}
+//     // Log opponent's next move, once it happens
+//     await ns.go.opponentNextTurn();
+//     if (result?.type == "gameOver") {
+//       ns.go.resetBoardState(getRandomOpponent(), boardSize)
+//     }
+//     // Keep looping
+//   // eslint-disable-next-line no-constant-condition
+//   } while (true);
+// }
 
 
 
