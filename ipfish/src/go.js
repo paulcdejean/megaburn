@@ -247,7 +247,7 @@ export async function getMove(
  * Gets a group of reasonable moves based on the current board state, to be passed to the factions' AI to decide on
  */
 //function getMoveOptions(boardState: BoardState, player: GoColor, rng: number, smart = true)
-function getMoveOptions(ns, board, player, smart = true, opponentMove) {
+export function getMoveOptions(ns, board, player, smart = true, opponentMove) {
   const availableSpaces = findDisputedTerritory(ns, board, player, smart);
   const contestedPoints = getDisputedTerritoryMoves(ns, board, availableSpaces);
   const expansionMoves = getExpansionMoveArray(ns, board, availableSpaces);
@@ -1419,7 +1419,7 @@ function isCornerAvailableForMove(ns, board, x1, y1, x2, y2) {
  * Then, blocking the opponent's attempts to create eyes
  * Finally, will look for corner/jump/surround/other moves.
  */
-async function getPriorityMove(ns, moves) {
+export async function getPriorityMove(ns, moves) {
   const scores = []
   const boardLength = ns.go.getBoardState().length
   for (let x = 0; x < boardLength; x++) {
