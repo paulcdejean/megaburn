@@ -178,7 +178,7 @@ export class Game {
       }
       const moves = getMoveOptions(this.ns, boardState, player, smart, opponentMove)
       const priorityMoves = await getPriorityMove(this.ns, moves)
-      const result = new Float64Array(priorityMoves.length + 1)
+      const result = new Float64Array(priorityMoves.length + 1).fill(-42)
 
       // Pass move evaluation hacked to -inf
       result[priorityMoves.length] = Number.NEGATIVE_INFINITY
