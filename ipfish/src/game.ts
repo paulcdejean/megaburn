@@ -3,6 +3,8 @@ import { CurrentTurn } from "./getCurrentTurn";
 import { getBoardFromAPI } from "./getBoardFromAPI"
 import analysisWorker from "./worker/analysis?worker&inline"
 
+import { getMoveOptions,  getPriorityMove, createBoard } from "./go.js"
+
 export type BoardState = Uint8Array
 
 export enum PointState {
@@ -166,9 +168,40 @@ export class Game {
     })
   }
 
+  private async wasniahcAnalysis() : Promise<Analysis> {
+      const boardState = createBoard(this.ns)
+      const smart = true
+      const player = "black"
+      let opponentMove = "notpassing" // This is the string "pass" if they are passing
+      if (this.opponentPassed) {
+        opponentMove = "pass"
+      }
+      const moves = getMoveOptions(this.ns, boardState, player, smart, opponentMove)
+      const priorityMoves = await getPriorityMove(this.ns, moves)
+      const result = new Float64Array(priorityMoves.length + 1)
+
+      // Pass move evaluation hacked to -inf
+      result[priorityMoves.length] = Number.NEGATIVE_INFINITY
+
+      let bestMove = 0
+      let bestScore = Number.NEGATIVE_INFINITY
+
+      for (const priotiryMove of priorityMoves) {
+        result[priotiryMove.x * this.boardSize + priotiryMove.y] = priotiryMove.score
+        if (priotiryMove.score > bestScore) {
+          bestMove = priotiryMove.x * this.boardSize + priotiryMove.y
+          bestScore = priotiryMove.score
+        }
+      }
+      return {
+        analysis: result,
+        bestMove: bestMove,
+      }
+  }
+
   public async analysis() : Promise<Analysis> {
     const analysisStart = performance.now()
-    const analysis = await this.realAnalysis()
+    const analysis = await this.wasniahcAnalysis()
     const analysisTime = performance.now() - analysisStart
     this.ns.tprint(`Completed analysis in ${this.ns.tFormat(analysisTime, true)}`)
     return analysis
