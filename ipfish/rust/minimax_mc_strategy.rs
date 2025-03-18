@@ -12,7 +12,7 @@ use crate::pass_move::pass_move;
 pub fn minimax_mc_strategy(board: &Board, board_history: &BoardHistory, _opponent_passed: bool) -> Vec<f64> {
   let minimax_depth: usize = 1;
 
-  let mut result: Vec<f64> = Vec::new();
+  let mut result: Vec<f64> = Vec::with_capacity(board.board.len() + 1);
   let mut point: usize = 0;
   for legality in get_legal_moves(board, Some(board_history)) {
     if legality {
@@ -22,6 +22,7 @@ pub fn minimax_mc_strategy(board: &Board, board_history: &BoardHistory, _opponen
     }
     point += 1;
   }
+  // Pass move.
   result.push(minimax(&pass_move(board), board_history, minimax_depth));
 
   return result;

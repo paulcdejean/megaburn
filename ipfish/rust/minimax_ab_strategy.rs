@@ -15,7 +15,7 @@ pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent
   let alpha: f64 = f64::NEG_INFINITY;
   let beta: f64 = f64::INFINITY;
 
-  let mut result: Vec<f64> = Vec::new();
+  let mut result: Vec<f64> = Vec::with_capacity(board.board.len() + 1);
   let mut point: usize = 0;
   for legality in get_legal_moves(board, Some(board_history)) {
     if legality {

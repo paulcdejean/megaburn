@@ -1,7 +1,7 @@
 use crate::board::Board;
 
 pub fn get_adjacent_points(point: usize, board: &Board) -> Box<[usize]> {
-  let mut result : Vec<usize> = Vec::new();
+  let mut result : Vec<usize> = Vec::with_capacity(4);
 
   // Down
   if point >= board.size {
