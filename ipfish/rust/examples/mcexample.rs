@@ -24,7 +24,7 @@ fn main() {
   };
 
 
-  let chance_of_winning = montecarlo_score(&board, &board_history, 100000, &mut rng);
+  let chance_of_winning = montecarlo_score(&board, &board_history, 3000, &mut rng);
 
   println!("The chance of winning is {}", chance_of_winning);
 }
