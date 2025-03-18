@@ -1,3 +1,2 @@
-Look at minimax_bug.png and make a test case for it.
-
-Enable autoplay.
+I don't even care how many liberties a group has, just does it have 1 or more than 1.
+Use this to optimize the code...
