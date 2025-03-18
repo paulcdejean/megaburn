@@ -1,9 +1,5 @@
-use std::collections::HashSet;
-
-use crate::count_liberties_of_group::count_liberties_of_group;
-use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;
-use crate::player::Player;
+
 use crate::board::{Board, BoardHistory};
 use crate::is_self_capture::is_self_capture;
 use crate::violates_superko::violates_superko;
@@ -39,9 +35,9 @@ pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> B
 
 #[cfg(test)]
 mod tests {
-  use std::thread::current;
-
-use crate::board_from_string::board_from_string;
+  use std::collections::HashSet;
+  use crate::player::Player;
+  use crate::board_from_string::board_from_string;
   use super::*;
 
   #[test]
@@ -136,7 +132,6 @@ use crate::board_from_string::board_from_string;
       opponent_passed: false,
     };
 
-    let board_history: BoardHistory = HashSet::new();
     let result: Box<[bool]> = get_legal_moves(&board, None);
     assert_eq!(*result, legality);
   }

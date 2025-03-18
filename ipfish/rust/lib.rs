@@ -1,4 +1,3 @@
-#![allow(warnings)]
 mod count_liberties_of_group;
 mod player;
 mod get_adjacent_points;
@@ -18,14 +17,10 @@ mod pick_strategy;
 
 use core::f64;
 use std::collections::HashSet;
-use std::ops::Not;
-use std::process::exit;
-use std::thread::current;
 use wasm_bindgen::prelude::*;
 use std::panic;
 
 use crate::player::Player;
-use crate::point_state::PointState;
 use crate::board::{Board, BoardHistory};
 use crate::pick_strategy::pick_strategy;
 

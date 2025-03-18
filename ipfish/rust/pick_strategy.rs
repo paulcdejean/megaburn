@@ -2,7 +2,6 @@ use crate::minimax_ab_strategy::minimax_ab_strategy;
 use crate::minimax_mc_strategy::minimax_mc_strategy;
 use crate::board::{Board, BoardHistory};
 use crate::montecarlo_score::montecarlo_score;
-use crate::pass_move::pass_move;
 
 /// Heuristically pick a strategy based on the in game situation and give the evaluation of that strategy.
 /// Do some other heuristics too.

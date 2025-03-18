@@ -1,6 +1,6 @@
 use std::vec;
 
-use crate::{board, point_state::PointState};
+use crate::point_state::PointState;
 
 /// Builds an internal board representation from a string.
 /// For the string, . is an empty space, X is a black stone, O is a white stone and # is an offline stone. Other character such as whitespace, are ignored.
@@ -10,6 +10,7 @@ use crate::{board, point_state::PointState};
 ///
 /// * `board_string` - The string representation of the board state.
 /// * `board_size` - The size of the board, which is the square root of the number of points on the board.
+#[allow(dead_code)] // Only used in tests
 pub fn board_from_string(board_str: &str, board_size: usize) -> Box<[u8]> {
   let number_of_points: usize = board_size * board_size;
   let mut result: Vec<u8> = vec![0; number_of_points];
@@ -17,7 +18,7 @@ pub fn board_from_string(board_str: &str, board_size: usize) -> Box<[u8]> {
   let mut n: usize = 0;
 
   for letter in String::from(board_str).chars() {
-    if(n >= number_of_points) {
+    if n >= number_of_points {
       break;
     }
 

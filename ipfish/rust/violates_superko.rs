@@ -1,4 +1,3 @@
-use std::collections::HashSet;
 use crate::board::{Board, BoardHistory};
 use crate::make_move::make_move;
 

@@ -1,7 +1,6 @@
 use crate::count_liberties_of_group::count_liberties_of_group;
 use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;
-use crate::player::Player;
 use crate::board::Board;
 
 pub fn is_self_capture(point: usize, board: &Board) -> bool {
@@ -29,6 +28,7 @@ pub fn is_self_capture(point: usize, board: &Board) -> bool {
 #[cfg(test)]
 mod tests {
   use crate::board_from_string::board_from_string;
+  use crate::player::Player;
   use super::*;
 
   #[test]

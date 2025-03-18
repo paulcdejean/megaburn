@@ -9,7 +9,7 @@ use crate::pass_move::pass_move;
 /// The minimax is a very low depth and doesn't have alpha beta optimization!
 /// This seemed to have very practical results in my tests.
 /// Returns a vec evaluating the strength of different moves, and suitable to be returned to the js.
-pub fn minimax_mc_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool) -> Vec<f64> {
+pub fn minimax_mc_strategy(board: &Board, board_history: &BoardHistory, _opponent_passed: bool) -> Vec<f64> {
   let minimax_depth: usize = 1;
 
   let mut result: Vec<f64> = Vec::new();

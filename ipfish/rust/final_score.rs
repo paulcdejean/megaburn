@@ -71,6 +71,7 @@ fn score_point_territory(point: usize, board: &Board, counted_empty_points: &mut
   }
 }
 
+#[cfg(test)]
 mod tests {
   use crate::board_from_string::board_from_string;
   use super::*;

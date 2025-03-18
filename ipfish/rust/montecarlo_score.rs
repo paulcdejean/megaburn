@@ -6,7 +6,6 @@ use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::pass_move::pass_move;
 use crate::point_state::PointState;
-use rand::seq::SliceRandom;
 use rand::seq::IndexedRandom;
 use rand::SeedableRng;
 use rand_pcg::Pcg64Mcg;

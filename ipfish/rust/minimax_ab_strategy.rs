@@ -44,6 +44,7 @@ pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent
 /// Private function! This is the score according to the minimax algorithm.
 /// This is the value it's trying to minimize and maximize.
 /// Changing the scoring algorithm will significantly alter the behavior of the minimax algorithm.
+#[allow(unused)]
 fn score(board: &Board, board_history: &BoardHistory) -> f64 {
   return final_score(board);
 }
