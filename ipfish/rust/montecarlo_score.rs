@@ -39,7 +39,7 @@ pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_
   return f64::from(black_wins) / f64::from(simulation_count) - 0.5;
 }
 
-fn montecarlo_simulation(mut board: Board, mut board_history: BoardHistory, rng: &mut RNG) -> Winner {
+pub fn montecarlo_simulation(mut board: Board, mut board_history: BoardHistory, rng: &mut RNG) -> Winner {
   for _ in 0..board.board.len() {
     match play_random_move(&board, &mut board_history, rng) {
       Some(s) => {board = s;},
