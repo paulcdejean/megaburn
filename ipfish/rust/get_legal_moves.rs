@@ -11,7 +11,7 @@ use crate::violates_superko::violates_superko;
 /// * `board` - The state of the board we're getting the legal moves for.
 /// * `board_history` - All states the board has historically been in, important for determining superko. If this none then superko isn't calculated.
 pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> Box<[bool]> {
-  let mut result: Vec<bool> = Vec::new();
+  let mut result: Vec<bool> = Vec::with_capacity(board.board.len());
 
   for point in 0..board.board.len() {
     // The move is illegal if there is already a piece there.
