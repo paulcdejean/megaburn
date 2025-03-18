@@ -17,12 +17,16 @@ pub mod pick_strategy;
 
 use core::f64;
 use std::collections::HashSet;
+use rand_pcg::Pcg64Mcg;
+use rand::SeedableRng;
 use wasm_bindgen::prelude::*;
 use std::panic;
 
 use crate::player::Player;
 use crate::board::{Board, BoardHistory};
 use crate::pick_strategy::pick_strategy;
+
+type RNG = Pcg64Mcg;
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///
@@ -52,7 +56,9 @@ pub fn get_analysis(input_history: &js_sys::Array,
     opponent_passed: false,
   };
 
-  let result: Vec<f64> = pick_strategy(&board, &board_history, opponent_passed.value_of());
+  let mut rng: RNG = RNG::seed_from_u64(js_sys::Math::random().to_bits());
+
+  let result: Vec<f64> = pick_strategy(&board, &board_history, opponent_passed.value_of(), &mut rng);
 
   return js_sys::Float64Array::from(result.as_slice());
 }

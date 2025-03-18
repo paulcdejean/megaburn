@@ -7,8 +7,7 @@ use crate::make_move::make_move;
 use crate::pass_move::pass_move;
 use crate::point_state::PointState;
 use rand::seq::IndexedRandom;
-use rand::SeedableRng;
-use rand_pcg::Pcg64Mcg;
+use crate::RNG;
 
 #[repr(i32)]
 #[derive(Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd, Debug)]
@@ -16,8 +15,6 @@ pub enum Winner {
   WhiteWin = 0,
   BlackWin = 1,
 }
-
-type RNG = Pcg64Mcg;
 
 /// Returns the percentage (f64 between 0 and 1) of monte carlo simulations that resulted in a black win.
 /// Doesn't play moves that would be self sacrifice for the oppoent to play during simulation.
@@ -27,13 +24,11 @@ type RNG = Pcg64Mcg;
 ///
 /// * `board` - The board state to evaluate.
 /// * `simulation_count` - The number of montecarlo simulations to run.
-pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_count: i32) -> f64 {
-  let mut rng: RNG = RNG::seed_from_u64(js_sys::Math::random().to_bits());
-
+pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_count: i32, rng: &mut RNG) -> f64 {
   let mut black_wins: i32 = 0;
 
   for _ in 0..simulation_count {
-    black_wins = black_wins + montecarlo_simulation(board.clone(), board_history.clone(), &mut rng) as i32;
+    black_wins = black_wins + montecarlo_simulation(board.clone(), board_history.clone(), rng) as i32;
   }
 
   return f64::from(black_wins) / f64::from(simulation_count) - 0.5;

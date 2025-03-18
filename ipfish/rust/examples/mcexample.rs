@@ -1,16 +1,30 @@
+#![allow(warnings)]
+
 use rand::prelude::*;
+use rand_pcg::Pcg64Mcg;
+use std::collections::HashSet;
+
+use ipfish::montecarlo_score::montecarlo_score;
+use ipfish::board::Board;
+use ipfish::player::Player;
 
 fn main() {
-  let mut rng = rand::rng();
+  let mut rng = Pcg64Mcg::from_rng(&mut rand::rng());
 
-  // Try printing a random unicode code point (probably a bad idea)!
-  println!("char: '{}'", rng.random::<char>());
-  // Try printing a random alphanumeric value instead!
-  println!("alpha: '{}'", rng.sample(rand::distr::Alphanumeric) as char);
+  let empty_fivebyfive_board: Box<[u8]> = vec![1; 25].into_boxed_slice();
+  let mut board_history: HashSet<Box<[u8]>> = HashSet::new();
+  board_history.insert(empty_fivebyfive_board.clone());
 
-  // Generate and shuffle a sequence:
-  let mut nums: Vec<i32> = (1..100).collect();
-  nums.shuffle(&mut rng);
-  // And take a random pick (yes, we didn't need to shuffle first!):
-  let _ = nums.choose(&mut rng);
+  let board: Board = Board {
+    board: empty_fivebyfive_board,
+    komi: 5.5,
+    size: 5,
+    player: Player::Black,
+    opponent_passed: false,
+  };
+
+
+  let chance_of_winning = montecarlo_score(&board, &board_history, 100000, &mut rng);
+
+  println!("The chance of winning is {}", chance_of_winning);
 }
