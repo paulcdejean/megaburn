@@ -11,6 +11,9 @@ fn main() {
   divan::main();
 }
 
+
+/// Depth 2 minimax with MC scoring of 100 simulations per is 62500 simulations per evaluation.
+/// So if this takes 1ms then it will take a minute to evaluate the board.
 #[divan::bench]
 fn bench_montecarlo_score(bencher: Bencher) {
   let empty_fivebyfive_board: Box<[u8]> = vec![1; 25].into_boxed_slice();
@@ -19,14 +22,14 @@ fn bench_montecarlo_score(bencher: Bencher) {
   let mut rng: rand_pcg::Mcg128Xsl64 = Pcg64Mcg::seed_from_u64(black_box(42));
 
   let board: Board = Board {
-    board: black_box(empty_fivebyfive_board),
-    komi: black_box(5.5),
-    size: black_box(5),
-    player: black_box(Player::Black),
-    opponent_passed: black_box(false),
+    board: empty_fivebyfive_board,
+    komi: 5.5,
+    size: 5,
+    player: Player::Black,
+    opponent_passed: false,
   };
 
   bencher.bench_local( || {
-    montecarlo_simulation(board.clone(), board_history.clone(), &mut rng);
+    montecarlo_simulation(board.clone(), black_box(board_history.clone()), black_box(&mut rng));
   });
 }
