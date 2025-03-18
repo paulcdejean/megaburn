@@ -9,7 +9,8 @@
     "build:lint": "eslint .",
     "build:ts": "tsc",
     "build:vite": "vite build --mode production",
-    "test": "cargo test && vitest --run --pass-with-no-tests"
+    "test": "cargo test && vitest --run --pass-with-no-tests",
+    "bench": "cargo bench"
   },
   "devDependencies": {
     "@types/react": "^17.0.52",
