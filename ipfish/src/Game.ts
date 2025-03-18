@@ -188,7 +188,7 @@ export class Game {
 
       for (const priotiryMove of priorityMoves) {
         result[priotiryMove.x + priotiryMove.y * this.boardSize ] = priotiryMove.score
-        if (priotiryMove.score > bestScore && this.getPoint(priotiryMove.x, priotiryMove.y) === PointState.Empty) {
+        if (priotiryMove.score > bestScore && this.getPoint(priotiryMove.y, priotiryMove.x) === PointState.Empty) {
           bestMove = priotiryMove.x + priotiryMove.y * this.boardSize 
           bestScore = priotiryMove.score
         }
