@@ -1,6 +1,6 @@
 use crate::board::Board;
-use crate::count_liberties_of_group::count_liberties_of_group;
 use crate::get_adjacent_points::get_adjacent_points;
+use crate::is_in_atari::is_in_atari;
 use crate::point_state::PointState;
 
 
@@ -19,17 +19,15 @@ pub fn make_move(point: usize, board: &Board) -> Board {
     opponent_passed: false,
   };
 
-  // Place the stone.
-  new_board.board[point] = board.player as u8;
-
-  // Remove captured enemy stones.
+  // Is there are adjacent enemy groups in atari, remove them.
+  // new_board.player is the enemy player.
   for adjacent_point in get_adjacent_points(point, board) {
-    if new_board.board[adjacent_point] == new_board.player as u8 {
-      if count_liberties_of_group(adjacent_point, &new_board) == 0 {
+    if new_board.board[adjacent_point] == new_board.player as u8 && is_in_atari(adjacent_point, &new_board, point) {
         remove_group(adjacent_point, &mut new_board);
-      }
     }
   }
+  // Place the stone.
+  new_board.board[point] = board.player as u8;
 
   return new_board;
 }
