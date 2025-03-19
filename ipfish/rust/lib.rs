@@ -14,6 +14,7 @@ pub mod montecarlo_score;
 pub mod minimax_mc_strategy;
 pub mod minimax_ab_strategy;
 pub mod pick_strategy;
+pub mod is_in_atari;
 
 use core::f64;
 use std::collections::HashSet;
