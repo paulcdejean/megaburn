@@ -1,2 +1,3 @@
-I don't even care how many liberties a group has, just does it have 1 or more than 1.
-Use this to optimize the code...
+use this:
+https://docs.rs/fixedbitset/0.5.7/fixedbitset/struct.FixedBitSet.html
+
