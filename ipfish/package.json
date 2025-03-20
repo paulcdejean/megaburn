@@ -11,7 +11,8 @@
     "build:vite": "vite build --mode production",
     "test": "cargo test && vitest --run --pass-with-no-tests",
     "bench": "cargo bench",
-    "flamegraph": "samply record target/debug/examples/mcexample.exe"
+    "flamegraph": "samply record --save-only -o mcexample.json -- target/debug/examples/mcexample.exe && samply load mcexample.json"
+
   },
   "devDependencies": {
     "@types/react": "^17.0.52",
