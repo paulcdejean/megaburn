@@ -1,8 +1,9 @@
+use crate::get_adjacent_points::get_adjacent_points;
+use crate::is_in_atari::is_in_atari;
+use crate::make_move::make_move;
 use crate::point_state::PointState;
 
 use crate::board::{Board, BoardHistory};
-use crate::is_self_capture::is_self_capture;
-use crate::violates_superko::violates_superko;
 
 /// Returns a sequence of bool where true is a legal move and false is an illegal move.
 ///
@@ -18,20 +19,67 @@ pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> B
     if board.board[point] != PointState::Empty as u8 {
       result.push(false);
     }
+    // The move is illegal if it captures an enemy group and it violates superko.
+    if captures_enemy_group(point, board) {
+      result.push(!violates_superko(point, board, board_history))
+    }
     // The move is illegal if it would lead to a self capture.
     else if is_self_capture(point, board) {
       result.push(false);
     }
-    // The move is illegal if it would repeat a previous board state, otherwise it's legal.
+    // Otherwise it is legal.
     else {
-      match board_history {
-        None => {result.push(true)}
-        Some(s) => result.push(!violates_superko(point, board, s))
-      }
+     result.push(true);
     }
   }
   return result.into_boxed_slice();
 }
+
+fn is_self_capture(point: usize, board: &Board) -> bool {
+  for adjacent_point in get_adjacent_points(point, board) {
+    // If there's an adjacent empty point, it is not self capture
+    if board.board[adjacent_point] == PointState::Empty as u8 {
+      return false;
+    }
+    // If there's an adjacent friendly group that is not in atari, then it's not self capture.
+    else if board.board[adjacent_point] == board.player as u8 {
+      if !is_in_atari(adjacent_point, board, point) {
+        return false;
+      }
+    }
+    // If there's an adjacent enemy group that is in atari, then it's not self capture.
+    // However we already check for this in another place so we don't check that here.
+  }
+  return true;
+}
+
+fn captures_enemy_group(point: usize, board: &Board) -> bool {
+  for adjacent_point in get_adjacent_points(point, board) {
+    // If there's an adjacent enemy group that is in atari, then it captures an enemy group.
+    if board.board[adjacent_point] == !board.player as u8 {
+      if is_in_atari(adjacent_point, board, point) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+fn violates_superko(point: usize, board: &Board, board_history: Option<&BoardHistory>) -> bool {
+  match board_history {
+    None => return false,
+    Some(s) => {
+      let new_position: Box<[u8]> = make_move(point, board).board;
+
+      if s.contains(&new_position) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+}
+
 
 #[cfg(test)]
 mod tests {
