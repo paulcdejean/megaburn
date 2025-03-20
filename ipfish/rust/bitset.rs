@@ -4,9 +4,11 @@ pub struct BitSet {
 
 impl BitSet {
   pub fn insert(&mut self, n: usize) {
+    assert!(n < usize::BITS as usize);
     self.bits |= 1 << n;
   }
   pub fn contains(&self, n: usize) -> bool {
+    assert!(n < usize::BITS as usize);
     return self.bits & (1 << n) > 0;
   }
   pub fn new() -> BitSet {
