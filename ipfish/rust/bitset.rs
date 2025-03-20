@@ -1,4 +1,4 @@
-struct BitSet {
+pub struct BitSet {
   bits: usize,
 }
 
