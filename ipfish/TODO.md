@@ -1,3 +1,1 @@
-use this:
-https://docs.rs/fixedbitset/0.5.7/fixedbitset/struct.FixedBitSet.html
-
+Only check for superko when you're capturing pieces
