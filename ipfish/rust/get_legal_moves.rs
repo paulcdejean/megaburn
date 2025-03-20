@@ -20,7 +20,7 @@ pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> B
       result.push(false);
     }
     // The move is illegal if it captures an enemy group and it violates superko.
-    if captures_enemy_group(point, board) {
+    else if captures_enemy_group(point, board) {
       result.push(!violates_superko(point, board, board_history))
     }
     // The move is illegal if it would lead to a self capture.
