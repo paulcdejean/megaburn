@@ -1,4 +1,3 @@
-pub mod count_liberties_of_group;
 pub mod player;
 pub mod get_adjacent_points;
 pub mod point_state;
