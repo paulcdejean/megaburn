@@ -1,3 +1,4 @@
+use crate::bitset::BitSet;
 use crate::get_adjacent_points::get_adjacent_points;
 use crate::is_in_atari::is_in_atari;
 use crate::make_move::make_move;
@@ -33,6 +34,32 @@ pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> B
     }
   }
   return result.into_boxed_slice();
+}
+
+/// Returns a bitset where the 1 bits are legal moves.
+///
+/// # Arguments
+///
+/// * `board` - The state of the board we're getting the legal moves for.
+/// * `board_history` - All states the board has historically been in, important for determining superko. If this none then superko isn't calculated.
+pub fn get_legal_moves_bitset(board: &Board, board_history: Option<&BoardHistory>) -> BitSet {
+  let mut result: BitSet = BitSet::new();
+  for point in 0..board.board.len() {
+    // The move is illegal if there is already a piece there.
+    if board.board[point] != PointState::Empty as u8 {
+    }
+    // The move is illegal if it captures an enemy group and it violates superko.
+    else if captures_enemy_group(point, board) && violates_superko(point, board, board_history) {
+    }
+    // The move is illegal if it would lead to a self capture.
+    else if is_self_capture(point, board) {
+    }
+    // Otherwise it is legal.
+    else {
+     result.insert(point);
+    }
+  }
+  return result;
 }
 
 fn is_self_capture(point: usize, board: &Board) -> bool {
