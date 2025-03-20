@@ -21,9 +21,23 @@ impl BitSet {
   }
 }
 
+impl Iterator for BitSet{
+  type Item = usize;
+  fn next(&mut self) -> Option<Self::Item> {
+    if self.bits == 0 {
+      return None
+    } else {
+      let trailing_zeros: usize = self.bits.trailing_zeros() as usize;
+      self.bits &= self.bits - 1;
+      return Some(trailing_zeros);
+    }
+  }
+}
+
 #[cfg(test)]
 mod tests {
   use super::*;
+  use std::collections::HashSet;
 
   #[test]
   fn basic_bitset() {
@@ -42,5 +56,17 @@ mod tests {
     assert_eq!(my_bitset.contains(0), true);
 
     assert_eq!(my_bitset.len(), 3);
+
+    let mut hashset: HashSet<usize> = HashSet::new();
+
+    for n in my_bitset {
+      hashset.insert(n);
+    }
+    assert_eq!(hashset.contains(&7), true);
+    assert_eq!(hashset.contains(&12), true);
+    assert_eq!(hashset.contains(&0), true);
+    assert_eq!(hashset.contains(&3), false);
+    assert_eq!(hashset.contains(&14), false);
+
   }
 }

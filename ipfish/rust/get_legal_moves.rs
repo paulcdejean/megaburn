@@ -80,7 +80,6 @@ fn violates_superko(point: usize, board: &Board, board_history: Option<&BoardHis
   }
 }
 
-
 #[cfg(test)]
 mod tests {
   use std::collections::HashSet;
