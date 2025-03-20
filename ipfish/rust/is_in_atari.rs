@@ -15,7 +15,9 @@ use crate::bitset::BitSet;
 /// * `board` - The board state. The 
 /// * `known_liberty` - A point we know is a liberty of the group.
 pub fn is_in_atari(point: usize, board: &Board, known_liberty: usize) -> bool {
-  let mut unchecked_points: Vec<usize> = Vec::from(get_adjacent_points(point, board));
+  let mut unchecked_points: Vec<usize> = Vec::with_capacity(board.board.len());
+  unchecked_points.extend(get_adjacent_points(point, board));
+
   let mut group: BitSet = BitSet::new();
   group.insert(point);
 
@@ -35,7 +37,9 @@ pub fn is_in_atari(point: usize, board: &Board, known_liberty: usize) -> bool {
     }
     // If the point is a friendly point and isn't in the group, then extend the group.
     else if board.board[unchecked_point] == player as u8 && !group.contains(unchecked_point) {
-      unchecked_points.extend_from_slice(&get_adjacent_points(unchecked_point, board));
+      for adjacent_point in get_adjacent_points(unchecked_point, board) {
+        unchecked_points.push(adjacent_point);
+      }
       group.insert(unchecked_point);
     }
     // Otherwise it's an enemy piece or an offline node, both which count as surrounding the group.

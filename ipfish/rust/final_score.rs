@@ -43,7 +43,8 @@ fn score_from_territory(board: &Board) -> f64 {
 fn score_point_territory(point: usize, board: &Board, counted_empty_points: &mut BitSet) -> f64 {
   let mut points_in_territory: BitSet = BitSet::new();
   points_in_territory.insert(point);
-  let mut unchecked_points: Vec<usize> = Vec::from([point]);
+  let mut unchecked_points: Vec<usize> = Vec::with_capacity(board.board.len());
+  unchecked_points.push(point);
   let mut active_player : Option<Player> = None;
 
   while let Some(unchecked_point) = unchecked_points.pop() {
