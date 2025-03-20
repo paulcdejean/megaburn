@@ -17,14 +17,7 @@ impl BitSet {
     }
   }
   pub fn len(&self) -> usize {
-    // Brian kernighans algorithm.
-    let mut result: usize = 0;
-    let mut n: usize = self.bits.clone();
-    while n > 0 {
-      n &= n - 1;
-      result += 1;
-    }
-    return result;
+    return self.bits.count_ones() as usize;
   }
 }
 
