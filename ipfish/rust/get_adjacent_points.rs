@@ -1,6 +1,6 @@
 use crate::board::Board;
 
-pub fn get_adjacent_points(point: usize, board: &Board) -> impl Iterator<Item = usize> {
+pub fn get_adjacent_points(point: usize, board: &Board) -> impl Iterator<Item = usize> + use<> {
   let size = board.size;
   let len = board.board.len();
   [

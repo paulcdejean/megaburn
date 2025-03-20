@@ -34,13 +34,7 @@ pub fn make_move(point: usize, board: &Board) -> Board {
 
 fn remove_group(point: usize, board: &mut Board) {
   board.board[point] = PointState::Empty as u8;
-
-  let mut adjacent_points: Vec<usize> = Vec::with_capacity(board.board.len());
   for adjacent_point in get_adjacent_points(point, board) {
-    adjacent_points.push(adjacent_point);
-  }
-
-  for adjacent_point in adjacent_points {
     if board.board[adjacent_point] == board.player as u8 {
       remove_group(adjacent_point, board);
     }
