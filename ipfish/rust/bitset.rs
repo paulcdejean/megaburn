@@ -34,5 +34,8 @@ mod tests {
     assert_eq!(my_bitset.contains(1), false);
     assert_eq!(my_bitset.contains(0), false);
     assert_eq!(my_bitset.contains(24), false);
+
+    my_bitset.insert(0);
+    assert_eq!(my_bitset.contains(0), true);
   }
 }
