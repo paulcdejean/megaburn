@@ -15,6 +15,7 @@ pub mod minimax_mc_strategy;
 pub mod minimax_ab_strategy;
 pub mod pick_strategy;
 pub mod is_in_atari;
+pub mod bitset;
 
 use core::f64;
 use std::collections::HashSet;
