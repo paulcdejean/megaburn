@@ -36,7 +36,9 @@ pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> B
 #[cfg(test)]
 mod tests {
   use std::collections::HashSet;
-  use crate::player::Player;
+  use rustc_hash::FxBuildHasher;
+
+use crate::player::Player;
   use crate::board_from_string::board_from_string;
   use super::*;
 
@@ -168,7 +170,7 @@ mod tests {
       komi: 7.5,
       opponent_passed: false,
     };
-    let mut board_history: BoardHistory = HashSet::new();
+    let mut board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());
     board_history.insert(previous_board);
     board_history.insert(current_board);
     

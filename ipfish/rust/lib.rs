@@ -17,11 +17,12 @@ pub mod is_in_atari;
 pub mod bitset;
 
 use core::f64;
-use std::collections::HashSet;
 use rand_pcg::Pcg64Mcg;
 use rand::SeedableRng;
 use wasm_bindgen::prelude::*;
 use std::panic;
+use rustc_hash::FxBuildHasher;
+use std::collections::HashSet;
 
 use crate::player::Player;
 use crate::board::{Board, BoardHistory};
@@ -44,7 +45,7 @@ pub fn get_analysis(input_history: &js_sys::Array,
   }));
 
   let current_board: Box<[u8]> = js_sys::Uint8Array::new(&input_history.iter().last().unwrap()).to_vec().into_boxed_slice();
-  let mut board_history: BoardHistory = HashSet::new();
+  let mut board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());
   for board in input_history.iter() {
     board_history.insert(js_sys::Uint8Array::new(&board).to_vec().into_boxed_slice());
   }

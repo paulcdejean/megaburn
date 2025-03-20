@@ -1,3 +1,5 @@
+use rustc_hash::FxBuildHasher;
+
 use crate::player::Player;
 use std::collections::HashSet;
 
@@ -15,4 +17,4 @@ pub struct Board {
   pub opponent_passed: bool,
 }
 
-pub type BoardHistory = HashSet<Box<[u8]>>;
+pub type BoardHistory = HashSet<Box<[u8]>, FxBuildHasher>;
