@@ -1,4 +1,4 @@
-use fixedbitset::FixedBitSet;
+use std::collections::HashSet;
 
 use crate::board::Board;
 use crate::player::Player;
@@ -17,7 +17,7 @@ use crate::point_state::PointState;
 /// * `known_liberty` - A point we know is a liberty of the group.
 pub fn is_in_atari(point: usize, board: &Board, known_liberty: usize) -> bool {
   let mut unchecked_points: Vec<usize> = Vec::from(get_adjacent_points(point, board));
-  let mut group: FixedBitSet = FixedBitSet::with_capacity(board.board.len());
+  let mut group: HashSet<usize> = HashSet::from([point]);
 
   let player: Player;
   if board.board[point] == Player::Black as u8 {
@@ -34,7 +34,7 @@ pub fn is_in_atari(point: usize, board: &Board, known_liberty: usize) -> bool {
       return false
     }
     // If the point is a friendly point and isn't in the group, then extend the group.
-    else if board.board[unchecked_point] == player as u8 && !group.contains(unchecked_point) {
+    else if board.board[unchecked_point] == player as u8 && !group.contains(&unchecked_point) {
       unchecked_points.extend_from_slice(&get_adjacent_points(unchecked_point, board));
       group.insert(unchecked_point);
     }
