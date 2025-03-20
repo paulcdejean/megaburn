@@ -16,6 +16,16 @@ impl BitSet {
       bits: 0
     }
   }
+  pub fn len(&self) -> usize {
+    // Brian kernighans algorithm.
+    let mut result: usize = 0;
+    let mut n: usize = self.bits.clone();
+    while n > 0 {
+      n &= n - 1;
+      result += 1;
+    }
+    return result;
+  }
 }
 
 #[cfg(test)]
@@ -37,5 +47,7 @@ mod tests {
 
     my_bitset.insert(0);
     assert_eq!(my_bitset.contains(0), true);
+
+    assert_eq!(my_bitset.len(), 3);
   }
 }

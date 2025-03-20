@@ -1,9 +1,8 @@
-use std::collections::HashSet;
-
 use crate::board::Board;
 use crate::player::Player;
 use crate::point_state::PointState;
 use crate::get_adjacent_points::get_adjacent_points;
+use crate::bitset::BitSet;
 
 /// Counts all the stones and territory, to determine the winner.
 /// Positive value = win for black.
@@ -29,11 +28,11 @@ fn score_from_stones(board: &Board) -> f64 {
 }
 
 fn score_from_territory(board: &Board) -> f64 {
-  let mut counted_empty_points: HashSet<usize> = HashSet::new();
+  let mut counted_empty_points:BitSet = BitSet::new();
   let mut territory_score: f64 = 0.0;
 
   for point in 0..board.board.len() {
-    if board.board[point] == PointState::Empty as u8 && !counted_empty_points.contains(&point) {
+    if board.board[point] == PointState::Empty as u8 && !counted_empty_points.contains(point) {
       territory_score += score_point_territory(point, &board, &mut counted_empty_points);
     }
   }
@@ -41,14 +40,15 @@ fn score_from_territory(board: &Board) -> f64 {
   return territory_score;
 }
 
-fn score_point_territory(point: usize, board: &Board, counted_empty_points: &mut HashSet<usize>) -> f64 {
-  let mut points_in_territory: HashSet<usize> = HashSet::from([point]);
+fn score_point_territory(point: usize, board: &Board, counted_empty_points: &mut BitSet) -> f64 {
+  let mut points_in_territory: BitSet = BitSet::new();
+  points_in_territory.insert(point);
   let mut unchecked_points: Vec<usize> = Vec::from([point]);
   let mut active_player : Option<Player> = None;
 
   while let Some(unchecked_point) = unchecked_points.pop() {
     for adjacent_point in get_adjacent_points(unchecked_point, &board) {
-      if board.board[adjacent_point] == PointState::Empty as u8 && !points_in_territory.contains(&adjacent_point) {
+      if board.board[adjacent_point] == PointState::Empty as u8 && !points_in_territory.contains(adjacent_point) {
         unchecked_points.push(adjacent_point);
         points_in_territory.insert(adjacent_point);
         counted_empty_points.insert(adjacent_point);
