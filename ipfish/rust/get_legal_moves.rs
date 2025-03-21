@@ -82,7 +82,7 @@ mod tests {
   use std::collections::HashSet;
   use rustc_hash::FxBuildHasher;
 
-use crate::player::Player;
+  use crate::player::Player;
   use crate::board_from_string::board_from_string;
   use super::*;
 
@@ -117,6 +117,7 @@ use crate::player::Player;
       komi: 7.5,
       opponent_passed: false,
     };
+
     let legal_moves: BitSet = get_legal_moves(&board, None);
     for n in 0..25 as usize {
       if legal_moves.contains(n) {
@@ -245,4 +246,46 @@ use crate::player::Player;
       }
     }
   }
+
+  #[test]
+  fn atari_refactor_test() {
+    let current_board: Box<[u8]>  = board_from_string("
+    .OO.#
+    OOO..
+    .OOOX
+    OOOO.
+    #O#.X
+    ", 5);
+    let legality: [bool; 25] = [
+      false, false, false, true, false,
+      false, false, false, false, true,
+      false, // Self capture
+      false, false, false, false,
+      false, false, false, true, true,
+      false, // Self capture
+      false, false, true, false,
+    ];
+
+    let board: Board = Board {
+      board: current_board.clone(),
+      size: 5,
+      player: Player::Black,
+      komi: 7.5,
+      opponent_passed: false,
+    };
+
+    let sadly_self_capture = is_self_capture(10, &board);
+    assert_eq!(sadly_self_capture, true, "Sadly a3 is self capture");
+    
+    let legal_moves: BitSet = get_legal_moves(&board, None);
+    for n in 0..25 as usize {
+      if legal_moves.contains(n) {
+        assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
+      } else {
+        assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
+      }
+    }
+  }
 }
+
+

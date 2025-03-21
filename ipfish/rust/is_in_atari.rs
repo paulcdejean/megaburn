@@ -22,8 +22,39 @@ pub fn is_in_atari(point: usize, board: &Board, known_liberty: usize, group: &mu
       return false;
     // If it's a friendly stone that's not in the group, add it to the group and recur.
     } else if board.board[adjacent_point] == board.board[point] && !group.contains(adjacent_point) {
-      return is_in_atari(adjacent_point, board, known_liberty, group);
+      if !is_in_atari(adjacent_point, board, known_liberty, group) {
+        return false;
+      }
     }
   }
   return true;
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use crate::player::Player;
+  use crate::board_from_string::board_from_string;
+  #[test]
+  fn test_atari_hallucination() {
+    let board:Box<[u8]> = board_from_string("
+    .OO.#
+    OOO..
+    .OOOX
+    OOOO.
+    #O#.X
+    ", 5);
+
+    let board: Board = Board {
+      board: board,
+      size: 5,
+      player: Player::Black,
+      komi: 7.5,
+      opponent_passed: false,
+    };
+
+    let not_in_atari: bool = is_in_atari(11, &board, 10, &mut BitSet::new());
+    assert_eq!(not_in_atari, false, "This white group is definitely not in atari");
+  }
+
 }
