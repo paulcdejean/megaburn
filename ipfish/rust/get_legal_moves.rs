@@ -148,8 +148,14 @@ use crate::player::Player;
       komi: 7.5,
       opponent_passed: false,
     };
-    let result: Box<[bool]> = get_legal_moves(&board, None);
-    assert_eq!(*result, legality);
+    let legal_moves: BitSet = get_legal_moves_bitset(&board, None);
+    for n in 0..25 as usize {
+      if legal_moves.contains(n) {
+        assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
+      } else {
+        assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
+      }
+    }
   }
   #[test]
   fn self_capture_legality() {
