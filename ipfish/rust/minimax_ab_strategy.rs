@@ -2,7 +2,7 @@ use core::f64;
 
 use crate::board::{Board, BoardHistory};
 use crate::final_score::final_score;
-use crate::get_legal_moves::get_legal_moves;
+use crate::get_legal_moves::get_legal_moves_bitset;
 use crate::make_move::make_move;
 use crate::player::Player;
 use crate::pass_move::pass_move;
@@ -15,29 +15,21 @@ pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent
   let alpha: f64 = f64::NEG_INFINITY;
   let beta: f64 = f64::INFINITY;
 
-  let mut result: Vec<f64> = Vec::with_capacity(board.board.len() + 1);
-  let mut point: usize = 0;
-  for legality in get_legal_moves(board, Some(board_history)) {
-    if legality {
-      result.push(minimax_alphabeta(&make_move(point, board), board_history, minimax_depth, alpha, beta));
-    } else {
-      result.push(f64::NEG_INFINITY);
-    }
-    point += 1;
+  let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
+
+  for point in get_legal_moves_bitset(board, Some(board_history)) {
+    result[point] = minimax_alphabeta(&make_move(point, board), board_history, minimax_depth, alpha, beta);
   }
+
   match opponent_passed {
-    false => result.push(minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta)),
+    false => result[board.board.len()] =  minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta),
     true => {
       let final_score: f64 = final_score(board);
       if final_score > 0.0 {
-        result.push(final_score);
-      } else {
-        result.push(f64::NEG_INFINITY);
+        result[board.board.len()] = final_score;
       }
     }
   }
-  
-
   return result;
 }
 
@@ -71,49 +63,40 @@ fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, 
     if board.player == Player::Black { // Maximizing
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = score(board, board_history);
-
-      let mut proposed_move: usize = 0;
-      for legality in get_legal_moves(board, Some(board_history)) {
-        if legality {
-          let minimax_score: f64 = minimax_alphabeta(
-            &make_move(proposed_move, board),
-            &deeper_history,
-            depth - 1,
-            alpha,
-            beta,
-          );
-          // Maximizing.
-          best_score = best_score.max(minimax_score);
-          alpha = alpha.max(best_score);
-          if beta <= alpha {
-            break;
-          }
+      for point in get_legal_moves_bitset(board, Some(board_history)) {
+        let minimax_score: f64 = minimax_alphabeta(
+          &make_move(point, board),
+          &deeper_history,
+          depth - 1,
+          alpha,
+          beta,
+        );
+        // Maximizing.
+        best_score = best_score.max(minimax_score);
+        alpha = alpha.max(best_score);
+        if beta <= alpha {
+          break;
         }
-        proposed_move += 1;
       }
       return best_score;
     } else { // Minimizing.
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = score(board, board_history);
 
-      let mut proposed_move: usize = 0;
-      for legality in get_legal_moves(board, Some(board_history)) {
-        if legality {
-          let minimax_score: f64 = minimax_alphabeta(
-            &make_move(proposed_move, board),
-            &deeper_history,
-            depth - 1,
-            alpha,
-            beta,
-          );
-          // Minimizing.
-          best_score = best_score.min(minimax_score);
-          beta = beta.min(best_score);
-          if beta <= alpha {
-            break;
-          }
+      for point in get_legal_moves_bitset(board, Some(board_history)) {
+        let minimax_score: f64 = minimax_alphabeta(
+          &make_move(point, board),
+          &deeper_history,
+          depth - 1,
+          alpha,
+          beta,
+        );
+        // Minimizing.
+        best_score = best_score.min(minimax_score);
+        beta = beta.min(best_score);
+        if beta <= alpha {
+          break;
         }
-        proposed_move += 1;
       }
       return best_score;
     }

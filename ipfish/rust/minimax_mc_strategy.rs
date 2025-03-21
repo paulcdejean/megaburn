@@ -15,7 +15,7 @@ use crate::RNG;
 pub fn minimax_mc_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng:&mut RNG) -> Vec<f64> {
   let minimax_depth: usize = 1;
 
-  let mut result = vec![f64::NEG_INFINITY; board.board.len() + 1];
+  let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
 
   for point in get_legal_moves_bitset(board, Some(board_history)) {
