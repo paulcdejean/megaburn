@@ -1,5 +1,4 @@
 use crate::board::Board;
-use crate::player::Player;
 use crate::get_adjacent_points::get_adjacent_points;
 use crate::point_state::PointState;
 use crate::bitset::BitSet;
@@ -14,35 +13,17 @@ use crate::bitset::BitSet;
 /// * `point` - A point of the group that we're checking if it's in atari.
 /// * `board` - The board state. The 
 /// * `known_liberty` - A point we know is a liberty of the group.
-pub fn is_in_atari(point: usize, board: &Board, known_liberty: usize) -> bool {
-  let mut unchecked_points: Vec<usize> = Vec::with_capacity(board.board.len());
-  unchecked_points.extend(get_adjacent_points(point, board));
-
-  let mut group: BitSet = BitSet::new();
+/// * `group` - For non recursive calls, pass a new bitset.
+pub fn is_in_atari(point: usize, board: &Board, known_liberty: usize, group: &mut BitSet) -> bool {
   group.insert(point);
-
-  let player: Player;
-  if board.board[point] == Player::Black as u8 {
-    player = Player::Black;
-  } else if board.board[point] == Player::White as u8 {
-    player = Player::White;
-  } else {
-    panic!("Can't get the group of an empty of offline point!");
-  }
-
-  while let Some(unchecked_point) = unchecked_points.pop() {
-    // If it has a liberty that's not the known liberty, then it is not in atari.
-    if board.board[unchecked_point] == PointState::Empty as u8 && unchecked_point != known_liberty {
-      return false
+  for adjacent_point in get_adjacent_points(point, board) {
+    // It's not in atari if there's an adjacent empty point that's not the known liberty.
+    if board.board[adjacent_point] == PointState::Empty as u8 && adjacent_point != known_liberty {
+      return false;
+    // If it's a friendly stone that's not in the group, add it to the group and recur.
+    } else if board.board[adjacent_point] == board.board[point] && !group.contains(adjacent_point) {
+      return is_in_atari(adjacent_point, board, known_liberty, group);
     }
-    // If the point is a friendly point and isn't in the group, then extend the group.
-    else if board.board[unchecked_point] == player as u8 && !group.contains(unchecked_point) {
-      for adjacent_point in get_adjacent_points(unchecked_point, board) {
-        unchecked_points.push(adjacent_point);
-      }
-      group.insert(unchecked_point);
-    }
-    // Otherwise it's an enemy piece or an offline node, both which count as surrounding the group.
   }
   return true;
 }
