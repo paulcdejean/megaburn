@@ -2,7 +2,7 @@ use crate::board::Board;
 use crate::board::BoardHistory;
 use crate::final_score::final_score;
 use crate::get_adjacent_points::get_adjacent_points;
-use crate::get_legal_moves::get_legal_moves_bitset;
+use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::pass_move::pass_move;
 use crate::point_state::PointState;
@@ -52,8 +52,8 @@ pub fn montecarlo_simulation(mut board: Board, mut board_history: BoardHistory, 
 
 fn play_random_move(board: &Board, board_history: &mut BoardHistory, rng: &mut RNG) -> Option<Board> {
   let mut possible_moves: Vec<usize> = Vec::new();
-  let legal_for_opponent = get_legal_moves_bitset(&pass_move(board), Some(board_history));
-  for legal_move in get_legal_moves_bitset(&board, Some(board_history)) {
+  let legal_for_opponent = get_legal_moves(&pass_move(board), Some(board_history));
+  for legal_move in get_legal_moves(&board, Some(board_history)) {
     // Only play in spaces surrounded by friendlies/walls if they're legal for the opponent.
     let mut true_eye: bool = true;
     for adjacent_point in get_adjacent_points(legal_move, &board) {

@@ -2,7 +2,7 @@ use core::f64;
 
 use crate::board::{Board, BoardHistory};
 use crate::final_score::final_score;
-use crate::get_legal_moves::get_legal_moves_bitset;
+use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::player::Player;
 use crate::pass_move::pass_move;
@@ -17,7 +17,7 @@ pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent
 
   let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
-  for point in get_legal_moves_bitset(board, Some(board_history)) {
+  for point in get_legal_moves(board, Some(board_history)) {
     result[point] = minimax_alphabeta(&make_move(point, board), board_history, minimax_depth, alpha, beta);
   }
 
@@ -63,7 +63,7 @@ fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, 
     if board.player == Player::Black { // Maximizing
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = score(board, board_history);
-      for point in get_legal_moves_bitset(board, Some(board_history)) {
+      for point in get_legal_moves(board, Some(board_history)) {
         let minimax_score: f64 = minimax_alphabeta(
           &make_move(point, board),
           &deeper_history,
@@ -83,7 +83,7 @@ fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, 
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = score(board, board_history);
 
-      for point in get_legal_moves_bitset(board, Some(board_history)) {
+      for point in get_legal_moves(board, Some(board_history)) {
         let minimax_score: f64 = minimax_alphabeta(
           &make_move(point, board),
           &deeper_history,
