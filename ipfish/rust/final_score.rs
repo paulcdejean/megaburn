@@ -12,7 +12,7 @@ use crate::bitset::BitSet;
 ///
 /// * `board` - The board state to score.
 pub fn final_score(board: &Board) -> f64 {
-  return 0.0 + score_from_stones(board) + score_from_territory(board) - board.komi;
+  return score_from_stones(board) + score_from_territory(board) - board.komi;
 }
 
 fn score_from_stones(board: &Board) -> f64 {

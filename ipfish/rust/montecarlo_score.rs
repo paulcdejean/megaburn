@@ -84,3 +84,47 @@ fn play_random_move(board: &Board, board_history: &mut BoardHistory, rng: &mut R
     },
   }
 }
+
+
+#[cfg(test)]
+mod tests {
+
+  use crate::player::Player;
+  use crate::board_from_string::board_from_string;
+  use super::*;
+  use rand::prelude::*;
+  use rand_pcg::Pcg64Mcg;
+  use std::collections::HashSet;
+  use rustc_hash::FxBuildHasher;
+  
+  #[test]
+  fn black_should_always_win() {
+    let board: Box<[u8]> = board_from_string("
+    ..X#.
+    XX.X#
+    XXXX.
+    .X..X
+    ", 5);
+
+    let board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());
+    let mut rng = Pcg64Mcg::from_rng(&mut rand::rng());
+
+    let board: Board = Board {
+      board: board.clone(),
+      size: 5,
+      player: Player::Black,
+      komi: 7.5,
+      opponent_passed: false,
+    };
+
+    let score = final_score(&board);
+    println!("Final score = {}", score);
+    assert!(score > 0.0);
+
+    let winner = montecarlo_simulation(board, board_history, &mut rng);
+
+    assert_eq!(winner, Winner::BlackWin, "Black literally can not lose...")
+    // Black literally can not lose this position.
+
+  }
+}
