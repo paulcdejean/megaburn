@@ -2,7 +2,7 @@ use core::f64;
 
 use crate::board::{Board, BoardHistory};
 use crate::montecarlo_score::montecarlo_score;
-use crate::get_legal_moves::get_legal_moves;
+use crate::get_legal_moves::get_legal_moves_bitset;
 use crate::make_move::make_move;
 use crate::player::Player;
 use crate::pass_move::pass_move;
@@ -15,21 +15,16 @@ use crate::RNG;
 pub fn minimax_mc_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng:&mut RNG) -> Vec<f64> {
   let minimax_depth: usize = 1;
 
-  let mut result: Vec<f64> = Vec::with_capacity(board.board.len() + 1);
-  let mut point: usize = 0;
-  for legality in get_legal_moves(board, Some(board_history)) {
-    if legality {
-      result.push(minimax(&make_move(point, board), board_history, minimax_depth, rng));
-    } else {
-      result.push(f64::NEG_INFINITY);
-    }
-    point += 1;
+  let mut result = vec![f64::NEG_INFINITY; board.board.len() + 1];
+
+
+  for point in get_legal_moves_bitset(board, Some(board_history)) {
+    result[point] = minimax(&make_move(point, board), board_history, minimax_depth, rng);
   }
 
   // Pass move.
-  match opponent_passed {
-    false => result.push(minimax(&pass_move(board), board_history, minimax_depth, rng)),
-    true => result.push(f64::NEG_INFINITY),
+  if opponent_passed {
+    result[board.board.len()] = minimax(&pass_move(board), board_history, minimax_depth, rng);
   }
   return result;
 }
@@ -56,45 +51,36 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
   if depth < 1 {
     return score(board, board_history, rng);
   } else {
+    let current_board_score = score(board, board_history, rng);
     let mut deeper_history: BoardHistory = board_history.clone();
     deeper_history.insert(board.board.clone());
 
     if board.player == Player::Black { // Maximizing
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = score(board, board_history, rng);
-
-      let mut proposed_move: usize = 0;
-      for legality in get_legal_moves(board, Some(board_history)) {
-        if legality {
-          let minimax_score: f64 = minimax(
-            &make_move(proposed_move, board),
-            &deeper_history,
-            depth - 1,
-            rng,
-          );
-          // Maximizing.
-          best_score = best_score.max(minimax_score);
-        }
-        proposed_move += 1;
+      let mut best_score: f64 = current_board_score;
+      for point in get_legal_moves_bitset(board, Some(board_history)) {
+        let minimax_score: f64 = minimax(
+          &make_move(point, board),
+          &deeper_history,
+          depth - 1,
+          rng,
+        );
+        // Maximizing.
+        best_score = best_score.max(minimax_score);
       }
       return best_score;
     } else { // Minimizing.
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = score(board, board_history, rng);
-
-      let mut proposed_move: usize = 0;
-      for legality in get_legal_moves(board, Some(board_history)) {
-        if legality {
-          let minimax_score: f64 = minimax(
-            &make_move(proposed_move, board),
-            &deeper_history,
-            depth - 1,
-            rng,
-          );
-          // Minimizing.
-          best_score = best_score.min(minimax_score);
-        }
-        proposed_move += 1;
+      let mut best_score: f64 = current_board_score;
+      for point in get_legal_moves_bitset(board, Some(board_history)) {
+        let minimax_score: f64 = minimax(
+          &make_move(point, board),
+          &deeper_history,
+          depth - 1,
+          rng,
+        );
+        // Minimizing.
+        best_score = best_score.min(minimax_score);
       }
       return best_score;
     }
