@@ -40,7 +40,7 @@ fn is_self_capture(point: usize, board: &Board) -> bool {
     }
     // If there's an adjacent friendly group that is not in atari, then it's not self capture.
     else if board.board[adjacent_point] == board.player as u8 {
-      if !is_in_atari(adjacent_point, board, point) {
+      if !is_in_atari(adjacent_point, board, point, &mut BitSet::new()) {
         return false;
       }
     }
@@ -54,7 +54,7 @@ fn captures_enemy_group(point: usize, board: &Board) -> bool {
   for adjacent_point in get_adjacent_points(point, board) {
     // If there's an adjacent enemy group that is in atari, then it captures an enemy group.
     if board.board[adjacent_point] == !board.player as u8 {
-      if is_in_atari(adjacent_point, board, point) {
+      if is_in_atari(adjacent_point, board, point, &mut BitSet::new()) {
         return true;
       }
     }
