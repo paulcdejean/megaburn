@@ -45,16 +45,17 @@ pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> B
 pub fn get_legal_moves_bitset(board: &Board, board_history: Option<&BoardHistory>) -> BitSet {
   let mut result: BitSet = BitSet::new();
   for point in 0..board.board.len() {
-    // The move is illegal if there is already a piece there.
+    // The move is always illegal if there is already a piece there.
     if board.board[point] != PointState::Empty as u8 {
     }
-    // The move is illegal if it captures an enemy group and it violates superko.
-    else if captures_enemy_group(point, board) && violates_superko(point, board, board_history) {
+    // Captures are always legal, even if they're otherwise self captures. Unless they violate superko.
+    else if captures_enemy_group(point, board) && !violates_superko(point, board, board_history) {
+      result.insert(point);
     }
-    // The move is illegal if it would lead to a self capture.
+    // Self captures that are not enemy captures are illegal.
     else if is_self_capture(point, board) {
     }
-    // Otherwise it is legal.
+    // Other moves are legal.
     else {
      result.insert(point);
     }
@@ -179,8 +180,14 @@ use crate::player::Player;
       opponent_passed: false,
     };
 
-    let result: Box<[bool]> = get_legal_moves(&board, None);
-    assert_eq!(*result, legality);
+    let legal_moves: BitSet = get_legal_moves_bitset(&board, None);
+    for n in 0..25 as usize {
+      if legal_moves.contains(n) {
+        assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
+      } else {
+        assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
+      }
+    }
   }
 
   #[test]
@@ -208,8 +215,14 @@ use crate::player::Player;
       opponent_passed: false,
     };
 
-    let result: Box<[bool]> = get_legal_moves(&board, None);
-    assert_eq!(*result, legality);
+    let legal_moves: BitSet = get_legal_moves_bitset(&board, None);
+    for n in 0..25 as usize {
+      if legal_moves.contains(n) {
+        assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
+      } else {
+        assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
+      }
+    }
   }
 
   #[test]
@@ -248,10 +261,13 @@ use crate::player::Player;
     board_history.insert(previous_board);
     board_history.insert(current_board);
     
-
-    let result: Box<[bool]> = get_legal_moves(&board, Some(&board_history));
-    // Test the ko before testing the whole thing.
-    assert_eq!(legality[20], result[20]);
-    assert_eq!(legality, *result);
+    let legal_moves: BitSet = get_legal_moves_bitset(&board, Some(&board_history));
+    for n in 0..25 as usize {
+      if legal_moves.contains(n) {
+        assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
+      } else {
+        assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
+      }
+    }
   }
 }

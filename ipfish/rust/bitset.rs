@@ -1,3 +1,4 @@
+#[derive(Clone, Copy, Eq, PartialEq)]
 pub struct BitSet {
   bits: usize,
 }
