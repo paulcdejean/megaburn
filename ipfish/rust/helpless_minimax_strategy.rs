@@ -84,7 +84,8 @@ fn minimax_helpless(board: &Board, board_history: &BoardHistory, depth: usize, h
         // Maximizing.
         best_score = best_score.max(minimax_score);
       }
-      return best_score;
+      let pass_score: f64 = score(board, speed_penalty, helpless_player);
+      return best_score.max(pass_score);
     } else {
       let mut best_score = f64::INFINITY;
       for point in get_legal_moves(board, Some(board_history)) {
@@ -97,7 +98,8 @@ fn minimax_helpless(board: &Board, board_history: &BoardHistory, depth: usize, h
         // Minimizing.
         best_score = best_score.min(minimax_score);
       }
-      return best_score;
+      let pass_score: f64 = score(board, speed_penalty, helpless_player);
+      return best_score.min(pass_score);
     }
   }
 }
