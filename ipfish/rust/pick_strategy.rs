@@ -1,5 +1,5 @@
 use crate::minimax_ab_strategy::minimax_ab_strategy;
-use crate::minimax_mc_strategy::minimax_mc_strategy;
+use crate::minimax_mc_filtered_strategy::minimax_mc_filtered_strategy;
 use crate::board::{Board, BoardHistory};
 use crate::montecarlo_score::montecarlo_score;
 use crate::RNG;
@@ -15,7 +15,7 @@ pub fn pick_strategy(board: &Board, board_history: &BoardHistory, opponent_passe
   if position_evaluation > winning_position {
     result = minimax_ab_strategy(board, board_history, opponent_passed);
   } else {
-    result = minimax_mc_strategy(board, board_history, opponent_passed, rng);
+    result = minimax_mc_filtered_strategy(board, board_history, opponent_passed, rng);
   }
 
   return result;

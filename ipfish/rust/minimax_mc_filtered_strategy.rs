@@ -1,4 +1,6 @@
+#![allow(warnings)]
 use core::f64;
+use std::collections::BTreeSet;
 
 use crate::board::{Board, BoardHistory};
 use crate::montecarlo_score::montecarlo_score;
@@ -6,23 +8,65 @@ use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::player::Player;
 use crate::pass_move::pass_move;
+use crate::final_score::final_score;
 use crate::RNG;
+use std::cmp::Ordering;
+
+struct MCResult {
+  point: usize,
+  score: f64,
+}
+impl Ord for MCResult {
+  fn cmp(&self, other: &Self) -> Ordering {
+    self.score.total_cmp(&other.score)
+  }
+}
+impl PartialOrd for MCResult {
+  fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+      Some(self.score.total_cmp(&other.score))
+  }
+}
+impl PartialEq for MCResult {
+  fn eq(&self, other: &Self) -> bool {
+      self.score == other.score
+  }
+}
+impl Eq for MCResult {}
 
 /// This uses minimax, with montecarlo as the scoring function.
 /// However it will only check the top moves at further depths.
 /// Returns a vec evaluating the strength of different moves, and suitable to be returned to the js.
 pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng:&mut RNG) -> Vec<f64> {
   let minimax_depth: usize = 2;
+  let top_move_number: usize = 3;
+  let simulation_count: i32 = 100;
   let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
-
+  let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
 
   for point in get_legal_moves(board, Some(board_history)) {
-    result[point] = minimax(&make_move(point, board), board_history, minimax_depth, rng);
+    let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
+    mc_results.insert(MCResult {
+      point: point,
+      score: mc_score,
+    });
+  }
+
+  let mut n: usize = 0;
+  while let Some(mc_result) = mc_results.pop_last() {
+    if n < top_move_number {
+      result[mc_result.point] = mc_result.score;
+    } else {
+      result[mc_result.point] = mc_result.score - 1.0;
+    }
+    n += 1;
   }
 
   // Pass move.
   if opponent_passed {
-    result[board.board.len()] = minimax(&pass_move(board), board_history, minimax_depth, rng);
+    let result_score: f64 = final_score(board);
+    if result_score > 0.0 {
+      result[board.board.len()] = montecarlo_score(&pass_move(board), board_history, 50, rng);
+    }
   }
   return result;
 }
