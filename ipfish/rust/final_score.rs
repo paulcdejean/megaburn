@@ -27,48 +27,51 @@ fn score_from_stones(board: &Board) -> f64 {
   return stone_score;
 }
 
+#[derive(Clone, Copy, Eq, PartialEq)]
+enum SeenStones {
+  None,
+  Black,
+  White,
+  Both,
+}
+
 fn score_from_territory(board: &Board) -> f64 {
-  let mut counted_empty_points:BitSet = BitSet::new();
-  let mut territory_score: f64 = 0.0;
+  let mut counted_empty_points: BitSet = BitSet::new();
+  let mut result: f64 = 0.0;
 
   for point in 0..board.board.len() {
     if board.board[point] == PointState::Empty as u8 && !counted_empty_points.contains(point) {
-      territory_score += score_point_territory(point, &board, &mut counted_empty_points);
+      let mut group: BitSet = BitSet::new();
+      result += score_group_territory(point, board, &mut group, &mut SeenStones::None);
+      counted_empty_points |= group;
     }
-  }
-
-  return territory_score;
+  }  
+  return result;
 }
 
-fn score_point_territory(point: usize, board: &Board, counted_empty_points: &mut BitSet) -> f64 {
-  let mut points_in_territory: BitSet = BitSet::new();
-  points_in_territory.insert(point);
-  let mut unchecked_points: Vec<usize> = Vec::with_capacity(board.board.len());
-  unchecked_points.push(point);
-  let mut active_player : Option<Player> = None;
-
-  while let Some(unchecked_point) = unchecked_points.pop() {
-    for adjacent_point in get_adjacent_points(unchecked_point, &board) {
-      if board.board[adjacent_point] == PointState::Empty as u8 && !points_in_territory.contains(adjacent_point) {
-        unchecked_points.push(adjacent_point);
-        points_in_territory.insert(adjacent_point);
-        counted_empty_points.insert(adjacent_point);
-      } else if board.board[adjacent_point] == PointState::White as u8 {
-        if *active_player.get_or_insert(Player::White) == Player::Black {
-          return 0.0
-        }
-      } else if board.board[adjacent_point] == PointState::Black as u8 {
-        if *active_player.get_or_insert(Player::Black) == Player::White {
-          return 0.0
-        }
-      }
+fn score_group_territory(point: usize, board: &Board, group: &mut BitSet, seen_stones: &mut SeenStones) -> f64 {
+  group.insert(point);
+  for adjacent_point in get_adjacent_points(point, board) {
+    if board.board[adjacent_point] == PointState::Empty as u8 && !group.contains(adjacent_point) {
+      score_group_territory(adjacent_point, board, group, seen_stones);
+    }
+    // If the adjacent point is a stone, factor it as the color surrounding the group.
+    else if board.board[adjacent_point] == PointState::Black as u8 && *seen_stones == SeenStones::None {
+      *seen_stones = SeenStones::Black;
+    } else if board.board[adjacent_point] == PointState::Black as u8 && *seen_stones == SeenStones::White {
+      *seen_stones = SeenStones::Both;
+    } else if board.board[adjacent_point] == PointState::White as u8 && *seen_stones == SeenStones::None {
+      *seen_stones = SeenStones::Black;
+    } else if board.board[adjacent_point] == PointState::White as u8 && *seen_stones == SeenStones::Black {
+      *seen_stones = SeenStones::Both;
     }
   }
 
-  match active_player {
-    None => f64::NEG_INFINITY,
-    Some(Player::White) => points_in_territory.len() as f64 * -1.0,
-    Some(Player::Black) => points_in_territory.len() as f64,
+  match *seen_stones {
+    SeenStones::None => 0.0,
+    SeenStones::Both => 0.0,
+    SeenStones::Black => group.len() as f64,
+    SeenStones::White => group.len() as f64 * -1.0,
   }
 }
 
@@ -98,5 +101,25 @@ mod tests {
     // With the game concluded black is winning by 2.5 points, using ipvgo's scoring system.
     let result: f64 = final_score(&board);
     assert_eq!(result, 2.5);
+  }
+  #[test]
+  fn glitch_with_offline_eyes() {
+    let board: Box<[u8]> = board_from_string("
+    ..X#.
+    XX.X#
+    XXXX.
+    .X..X
+    ", 5);
+    let board: Board = Board {
+      board: board,
+      size: 5,
+      player: Player::Black,
+      komi: 5.5, // This is versus the illuminati, komi is critical for this test!
+      opponent_passed: false,
+    };
+
+    // With the game concluded black is winning by 2.5 points, using ipvgo's scoring system.
+    let result: f64 = final_score(&board);
+    assert_eq!(result, 11.5);
   }
 }

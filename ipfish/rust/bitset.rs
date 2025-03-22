@@ -1,3 +1,5 @@
+use std::ops::{BitOr, BitOrAssign};
+
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub struct BitSet {
   bits: usize,
@@ -19,6 +21,21 @@ impl BitSet {
   }
   pub fn len(&self) -> usize {
     return self.bits.count_ones() as usize;
+  }
+}
+
+impl BitOr for BitSet {
+  type Output = Self;
+  fn bitor(self, rhs: Self) -> Self::Output {
+      return BitSet {
+        bits: self.bits | rhs.bits
+      };
+  }
+}
+
+impl BitOrAssign for BitSet {
+  fn bitor_assign(&mut self, rhs: Self) {
+      self.bits = self.bits | rhs.bits;
   }
 }
 
