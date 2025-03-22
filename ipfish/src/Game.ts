@@ -41,7 +41,9 @@ export class Game {
 
   constructor(ns : NS, opponent : GoOpponent, boardSize :  5 | 7 | 9 | 13) {
     this.ns = ns
-    ns.go.resetBoardState(opponent, boardSize)
+    if (ns.go.getGameState().currentPlayer == "None") {
+      ns.go.resetBoardState(opponent, boardSize)
+    }
     this.boardSize = ns.go.getBoardState().length as 5 | 7 | 9 | 13 | 19 // 19 is secret opponent
     this.boardHistory = [getBoardFromAPI(this.ns)]
     this.komi = this.ns.go.getGameState().komi

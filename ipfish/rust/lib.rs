@@ -13,6 +13,7 @@ pub mod minimax_ab_strategy;
 pub mod pick_strategy;
 pub mod is_in_atari;
 pub mod bitset;
+pub mod minimax_mc_filtered_strategy;
 
 use core::f64;
 use rand_pcg::Pcg64Mcg;
