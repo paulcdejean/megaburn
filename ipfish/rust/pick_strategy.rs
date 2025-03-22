@@ -23,5 +23,5 @@ pub fn pick_strategy(board: &Board, board_history: &BoardHistory, opponent_passe
   // For the first move, artifically boost the center point.
   let center_point: usize = board.board.len() / 2;
   result[center_point] = result[center_point] + 0.2;
-  return result;  
+  return result;
 }

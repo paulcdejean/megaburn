@@ -55,17 +55,6 @@ fn score(board: &Board, speed_penalty: f64, helpless_player: Player) -> f64 {
   }
 }
 
-/// Returns the evaluation of a board position using minimax algorithm to a specified depth.
-/// This is called recursively an exponential number of times.
-/// With high enough depth it can solve the game but your computer will explode.
-///
-/// # Arguments
-///
-/// * `board` - The board state to evaluate.
-/// * `board_history` - The board history of the current state.
-/// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
-/// * `alpha` - The highest score seen so far. Pass -infinity for non recursive calls.
-/// * `beta` - The lower score seen so far. Pass +infinity for non recursive calls.
 fn minimax_helpless(board: &Board, board_history: &BoardHistory, depth: usize, helpless_player: Player, speed_penalty: f64) -> f64 {
   // Terminating condition
   if depth < 1 {
