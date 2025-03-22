@@ -3,7 +3,7 @@ use core::f64;
 use crate::bitset::BitSet;
 use crate::board::{Board, BoardHistory};
 use crate::final_score::{final_score, score_group_territory, SeenStones};
-use crate::get_legal_moves::get_legal_moves;
+use crate::get_legal_moves::{get_legal_moves, captures_enemy_group};
 use crate::make_move::make_move;
 use crate::player::Player;
 use crate::pass_move::pass_move;
@@ -84,11 +84,18 @@ fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, 
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = score(board);
 
-      // HACK HACK HACK, for white exclude points in black's territory.
-      let mut legal_moves = get_legal_moves(board, Some(board_history));
-
+      // <BEGIN HACK>, for white exclude points in black's territory. Unless they capture an enemy group.
+      let mut legal_moves: BitSet = get_legal_moves(board, Some(board_history));
+      let mut capture_moves: BitSet = BitSet::new();
+      for legal_move in legal_moves {
+        if captures_enemy_group(legal_move, board) {
+          capture_moves.insert(legal_move);
+        }
+      }
       let points_not_in_black_territory = !get_points_in_territory(board, Player::Black);
       legal_moves &= points_not_in_black_territory;
+      legal_moves |= capture_moves;
+      // <END HACK>
 
       for point in legal_moves {
         let minimax_score: f64 = minimax_alphabeta(

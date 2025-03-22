@@ -50,7 +50,7 @@ fn is_self_capture(point: usize, board: &Board) -> bool {
   return true;
 }
 
-fn captures_enemy_group(point: usize, board: &Board) -> bool {
+pub fn captures_enemy_group(point: usize, board: &Board) -> bool {
   for adjacent_point in get_adjacent_points(point, board) {
     // If there's an adjacent enemy group that is in atari, then it captures an enemy group.
     if board.board[adjacent_point] == !board.player as u8 {
