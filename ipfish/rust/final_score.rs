@@ -28,7 +28,7 @@ fn score_from_stones(board: &Board) -> f64 {
 }
 
 #[derive(Clone, Copy, Eq, PartialEq)]
-enum SeenStones {
+pub enum SeenStones {
   None,
   Black,
   White,
@@ -50,7 +50,7 @@ fn score_from_territory(board: &Board) -> f64 {
   return result;
 }
 
-fn score_group_territory(point: usize, board: &Board, group: &mut BitSet, seen_stones: &mut SeenStones) -> f64 {
+pub fn score_group_territory(point: usize, board: &Board, group: &mut BitSet, seen_stones: &mut SeenStones) -> f64 {
   group.insert(point);
   for adjacent_point in get_adjacent_points(point, board) {
     if board.board[adjacent_point] == PointState::Empty as u8 && !group.contains(adjacent_point) {

@@ -1,4 +1,4 @@
-use std::ops::{BitOr, BitOrAssign};
+use std::ops::{BitOr, BitOrAssign, BitAnd, BitAndAssign, Not};
 
 #[derive(Clone, Copy, Eq, PartialEq)]
 pub struct BitSet {
@@ -32,10 +32,31 @@ impl BitOr for BitSet {
       };
   }
 }
-
 impl BitOrAssign for BitSet {
   fn bitor_assign(&mut self, rhs: Self) {
       self.bits = self.bits | rhs.bits;
+  }
+}
+impl BitAnd for BitSet {
+  type Output = Self;
+  fn bitand(self, rhs: Self) -> Self::Output {
+      return BitSet {
+        bits: self.bits & rhs.bits
+      };
+  }
+}
+impl BitAndAssign for BitSet {
+  fn bitand_assign(&mut self, rhs: Self) {
+      self.bits = self.bits & rhs.bits;
+  }
+}
+impl Not for BitSet {
+  type Output = Self;
+
+  fn not(self) -> Self::Output {
+    return BitSet {
+      bits: !self.bits
+    }
   }
 }
 
