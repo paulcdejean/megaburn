@@ -11,7 +11,7 @@ use crate::pass_move::pass_move;
 /// This is good as a "finisher" and terrible at opening the game.
 /// It will try and maximize the result score.
 pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool) -> Vec<f64> {
-  let minimax_depth: usize = 7;
+  let minimax_depth: usize = 8;
   let alpha: f64 = f64::NEG_INFINITY;
   let beta: f64 = f64::INFINITY;
 
