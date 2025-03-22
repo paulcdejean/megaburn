@@ -1,8 +1,8 @@
 use std::collections::HashSet;
 use ipfish::montecarlo_score::montecarlo_simulation;
 use divan::{Bencher, black_box};
+use ipfish::RNG;
 use rand::SeedableRng;
-use rand_pcg::Pcg64Mcg;
 use ipfish::board::{Board, BoardHistory};
 use ipfish::player::Player;
 use rustc_hash::FxBuildHasher;
@@ -20,7 +20,7 @@ fn bench_montecarlo_score(bencher: Bencher) {
   let empty_fivebyfive_board: Box<[u8]> = vec![1; 25].into_boxed_slice();
   let mut board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());
   board_history.insert(empty_fivebyfive_board.clone());
-  let mut rng: rand_pcg::Mcg128Xsl64 = Pcg64Mcg::seed_from_u64(black_box(42));
+  let mut rng: RNG = RNG::seed_from_u64(black_box(42));
 
   let board: Board = Board {
     board: empty_fivebyfive_board,

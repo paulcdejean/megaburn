@@ -93,7 +93,6 @@ mod tests {
   use crate::board_from_string::board_from_string;
   use super::*;
   use rand::prelude::*;
-  use rand_pcg::Pcg64Mcg;
   use std::collections::HashSet;
   use rustc_hash::FxBuildHasher;
   
@@ -107,7 +106,7 @@ mod tests {
     ", 5);
 
     let board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());
-    let mut rng = Pcg64Mcg::from_rng(&mut rand::rng());
+    let mut rng: RNG = RNG::from_rng(&mut rand::rng());
 
     let board: Board = Board {
       board: board.clone(),

@@ -8,9 +8,10 @@ use rustc_hash::FxBuildHasher;
 use ipfish::montecarlo_score::montecarlo_score;
 use ipfish::board::{Board, BoardHistory};
 use ipfish::player::Player;
+use ipfish::RNG;
 
 fn main() {
-  let mut rng = Pcg64Mcg::from_rng(&mut rand::rng());
+  let mut rng = RNG::from_rng(&mut rand::rng());
 
   let empty_fivebyfive_board: Box<[u8]> = vec![1; 25].into_boxed_slice();
   let mut board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());

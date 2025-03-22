@@ -18,17 +18,21 @@ struct MCResult {
 }
 impl Ord for MCResult {
   fn cmp(&self, other: &Self) -> Ordering {
-    self.score.total_cmp(&other.score)
+    if self.score < other.score {
+      Ordering::Less
+    } else {
+      Ordering::Greater
+    }
   }
 }
 impl PartialOrd for MCResult {
   fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-      Some(self.score.total_cmp(&other.score))
+      Some(self.cmp(other))
   }
 }
 impl PartialEq for MCResult {
   fn eq(&self, other: &Self) -> bool {
-      self.score == other.score
+      self.point == other.point &&  self.score == other.score
   }
 }
 impl Eq for MCResult {}
@@ -38,8 +42,9 @@ impl Eq for MCResult {}
 /// Returns a vec evaluating the strength of different moves, and suitable to be returned to the js.
 pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng:&mut RNG) -> Vec<f64> {
   let minimax_depth: usize = 2;
-  let top_move_number: usize = 3;
-  let simulation_count: i32 = 100;
+  let top_move_number: usize = 5;
+  let simulation_count: i32 = 500;
+  let pass_simulation_count: i32 = 50;
   let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
   let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
 
@@ -65,7 +70,7 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
   if opponent_passed {
     let result_score: f64 = final_score(board);
     if result_score > 0.0 {
-      result[board.board.len()] = montecarlo_score(&pass_move(board), board_history, 50, rng);
+      result[board.board.len()] = montecarlo_score(&pass_move(board), board_history, pass_simulation_count, rng);
     }
   }
   return result;
