@@ -53,7 +53,7 @@ Top level is 2500 simulations
 /// Returns a vec evaluating the strength of different moves, and suitable to be returned to the js.
 pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng:&mut RNG) -> Vec<f64> {
   let minimax_depth: usize = 1;
-  let simulation_count: i32 = 100;
+  let simulation_count: i32 = 50;
 
   let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
