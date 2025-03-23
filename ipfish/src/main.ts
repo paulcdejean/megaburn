@@ -1,8 +1,21 @@
  
-import { NS } from "@ns";
+import { NS, AutocompleteData, GoOpponent } from "@ns";
 import IpFish from "./ui/IpFish";
 import { Game } from "./Game"
 import analysisWorker from "./worker/analysis?worker&inline"
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function autocomplete(data: AutocompleteData, args: string[]) {
+  return [
+    "daedalus",
+    "netburners",
+    "slumsnakes",
+    "blackhand",
+    "tetrads",
+    "illuminati",
+    "analysis",
+  ];
+}
 
 export async function main(ns: NS): Promise<void> {
   ns.disableLog("ALL")
@@ -30,10 +43,21 @@ export async function main(ns: NS): Promise<void> {
   })
   ns.tprint(`Go worker ${initalized}`)
 
-  if (ns.args[0] === "auto") {
+  if (ns.args[0] !== "analysis") {
+    const argmap: Record<string, GoOpponent> = {
+      "daedalus": "Daedalus",
+      "netburners": "Netburners",
+      "slumsnakes": "Slum Snakes",
+      "blackhand": "The Black Hand",
+      "tetrads": "Tetrads",
+      "illuminati": "Illuminati",
+    }
+
+    const opponent : GoOpponent = argmap[ns.args[0] as string]
+
     while (true) {
       const squareCount = boardSize ** 2
-      const game = new Game(ns, "Daedalus", boardSize, worker)
+      const game = new Game(ns, opponent, boardSize, worker)
       while (ns.go.getCurrentPlayer() !== "None") {
         const analysis = await game.analysis()
         if (analysis.bestMove == squareCount) {
