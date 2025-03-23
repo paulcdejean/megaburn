@@ -137,6 +137,21 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
     if board.player == Player::Black { // Maximizing
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = f64::NEG_INFINITY;
+
+      let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
+      for point in get_legal_moves(board, Some(board_history)) {
+        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
+        mc_results.insert(MCResult {
+          point: point,
+          score: mc_score,
+        });
+      }
+
+      let new_black_best: f64 = match mc_results.last() {
+        None => black_best,
+        Some(s) => s.score,
+      };
+
       for point in get_legal_moves(board, Some(board_history)) {
         let minimax_score: f64 = minimax(
           &make_move(point, board),
@@ -164,8 +179,8 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
         });
       }
 
-      let new_white_best = match mc_results.first() {
-        None => f64::INFINITY,
+      let new_white_best: f64 = match mc_results.first() {
+        None => white_best,
         Some(s) => s.score,
       };
 
