@@ -37,16 +37,28 @@ impl PartialEq for MCResult {
 }
 impl Eq for MCResult {}
 
+/*
+Top level gives alpha and beta values.
+Alpha is black's best chance to win
+Beta is white's best chance to win
+Top level is 2500 simulations
+
+
+
+
+ */
+
 /// This uses minimax, with montecarlo as the scoring function.
 /// However it will only check the top moves at further depths.
 /// Returns a vec evaluating the strength of different moves, and suitable to be returned to the js.
 pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng:&mut RNG) -> Vec<f64> {
-  let minimax_depth: usize = 2;
+  let minimax_depth: usize = 1;
   let top_move_number: usize = 5;
-  let simulation_count: i32 = 500;
-  let pass_simulation_count: i32 = 50;
+  let simulation_count: i32 = 100;
   let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
   let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
+
+  let random_move_strength: f64 = montecarlo_score(board, board_history, simulation_count, rng);
 
   for point in get_legal_moves(board, Some(board_history)) {
     let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
@@ -56,21 +68,20 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
     });
   }
 
-  let mut n: usize = 0;
+  let median_score: f64 = mc_results.iter().nth(mc_results.len() / 2).unwrap().score;
   while let Some(mc_result) = mc_results.pop_last() {
-    if n < top_move_number {
-      result[mc_result.point] = mc_result.score;
+    if mc_result.score > median_score {
+      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng);
     } else {
       result[mc_result.point] = mc_result.score - 1.0;
     }
-    n += 1;
   }
 
   // Pass move.
   if opponent_passed {
     let result_score: f64 = final_score(board);
     if result_score > 0.0 {
-      result[board.board.len()] = montecarlo_score(&pass_move(board), board_history, pass_simulation_count, rng);
+      result[board.board.len()] = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
     }
   }
   return result;

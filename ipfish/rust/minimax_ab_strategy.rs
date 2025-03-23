@@ -23,10 +23,14 @@ pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent
     result[point] = minimax_alphabeta(&make_move(point, board), board_history, minimax_depth, alpha, beta);
   }
 
+  let result_score: f64 = final_score(board);
   match opponent_passed {
-    false => result[board.board.len()] = minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta),
+    false => {
+      if result_score > 0.0 {
+        result[board.board.len()] = minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta)
+      } 
+    },
     true => {
-      let result_score: f64 = final_score(board);
       if result_score > 0.0 {
         result[board.board.len()] = result_score;
       }

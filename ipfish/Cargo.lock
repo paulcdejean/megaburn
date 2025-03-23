@@ -112,6 +112,7 @@ dependencies = [
  "divan",
  "js-sys",
  "rand",
+ "rand_chacha",
  "rand_pcg",
  "rustc-hash",
  "wasm-bindgen",
