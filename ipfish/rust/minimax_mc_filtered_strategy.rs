@@ -67,14 +67,23 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
       score: mc_score,
     });
   }
+
   let median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
     None => pass_move_strength,
+    Some(s) => s.score,
+  };
+  let white_best = match mc_results.first() {
+    None => f64::INFINITY,
+    Some(s) => s.score,
+  };
+  let black_best = match mc_results.last() {
+    None => f64::NEG_INFINITY,
     Some(s) => s.score,
   };
   
   while let Some(mc_result) = mc_results.pop_last() {
     if mc_result.score > median_score {
-      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng, median_score, simulation_count);
+      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng, simulation_count, black_best, white_best);
     } else {
       result[mc_result.point] = mc_result.score - 1.0;
     }
@@ -116,7 +125,7 @@ fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG, simulation_
 /// * `board` - The board state to evaluate.
 /// * `board_history` - The board history of the current state.
 /// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
-fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, bad_score: f64, simulation_count: i32) -> f64 {
+fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, simulation_count: i32, black_best: f64, white_best: f64) -> f64 {
   // Terminating condition
   if depth < 1 {
     return score(board, board_history, rng, simulation_count);
@@ -134,8 +143,9 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
           &deeper_history,
           depth - 1,
           rng,
-          bad_score,
           simulation_count,
+          black_best,
+          white_best,
         );
         // Maximizing.
         best_score = best_score.max(minimax_score);
@@ -144,14 +154,16 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
     } else { // Minimizing.
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = f64::INFINITY;
+
       for point in get_legal_moves(board, Some(board_history)) {
         let minimax_score: f64 = minimax(
           &make_move(point, board),
           &deeper_history,
           depth - 1,
           rng,
-          bad_score,
           simulation_count,
+          black_best,
+          white_best,
         );
         // Minimizing.
         best_score = best_score.min(minimax_score);
