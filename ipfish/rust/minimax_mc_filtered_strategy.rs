@@ -155,9 +155,18 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
       let mut best_score: f64 = f64::INFINITY;
 
+      let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
       for point in get_legal_moves(board, Some(board_history)) {
+        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
+        mc_results.insert(MCResult {
+          point: point,
+          score: mc_score,
+        });
+      }
+
+      for mc_result in mc_results {
         let minimax_score: f64 = minimax(
-          &make_move(point, board),
+          &make_move(mc_result.point, board),
           &deeper_history,
           depth - 1,
           rng,
@@ -168,6 +177,7 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
         // Minimizing.
         best_score = best_score.min(minimax_score);
       }
+
       return best_score;
     }
   }
