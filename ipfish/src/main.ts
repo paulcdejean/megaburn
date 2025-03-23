@@ -5,6 +5,7 @@ import { Game } from "./Game"
 import analysisWorker from "./worker/analysis?worker&inline"
 
 export async function main(ns: NS): Promise<void> {
+  ns.disableLog("ALL")
   const boardSize = 5
   const worker = new analysisWorker()
 
@@ -59,7 +60,6 @@ export async function main(ns: NS): Promise<void> {
 }
 
 export async function ipfish(ns: NS, game : Game): Promise<void> {
-  ns.disableLog("ALL")
   ns.clearLog()
   // Cleans up react element after exit
   ns.atExit(() => {
