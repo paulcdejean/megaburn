@@ -52,13 +52,14 @@ Top level is 2500 simulations
 /// However it will only check the top moves at further depths.
 /// Returns a vec evaluating the strength of different moves, and suitable to be returned to the js.
 pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng:&mut RNG) -> Vec<f64> {
-  let minimax_depth: usize = 1;
+  let minimax_depth: usize = 2;
   let top_move_number: usize = 5;
   let simulation_count: i32 = 100;
   let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
   let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
 
   let random_move_strength: f64 = montecarlo_score(board, board_history, simulation_count, rng);
+  let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
 
   for point in get_legal_moves(board, Some(board_history)) {
     let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
@@ -68,10 +69,14 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
     });
   }
 
-  let median_score: f64 = mc_results.iter().nth(mc_results.len() / 2).unwrap().score;
+  let median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
+    None => pass_move_strength,
+    Some(s) => s.score,
+  };
+  
   while let Some(mc_result) = mc_results.pop_last() {
     if mc_result.score > median_score {
-      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng);
+      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng, simulation_count, median_score);
     } else {
       result[mc_result.point] = mc_result.score - 1.0;
     }
@@ -91,8 +96,8 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
 /// Private function! This is the score according to the minimax algorithm.
 /// This is the value it's trying to minimize and maximize.
 /// Changing the scoring algorithm will significantly alter the behavior of the minimax algorithm.
-fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG) -> f64 {
-  return montecarlo_score(board, board_history, 100, rng);
+fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG, simulation_count: i32) -> f64 {
+  return montecarlo_score(board, board_history, simulation_count, rng);
 }
 
 /// Returns the evaluation of a board position using minimax algorithm to a specified depth.
@@ -104,41 +109,62 @@ fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG) -> f64 {
 /// * `board` - The board state to evaluate.
 /// * `board_history` - The board history of the current state.
 /// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
-fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG) -> f64 {
+fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, simulation_count: i32, median_score: f64) -> f64 {
   // Terminating condition
   if depth < 1 {
-    return score(board, board_history, rng);
+    return score(board, board_history, rng, simulation_count);
   } else {
-    let current_board_score = score(board, board_history, rng);
     let mut deeper_history: BoardHistory = board_history.clone();
     deeper_history.insert(board.board.clone());
+    let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
 
     if board.player == Player::Black { // Maximizing
-      // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = current_board_score;
+      // We want moves that improve the baseline score.
+      let mut best_score: f64 = median_score;
+      let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
+
       for point in get_legal_moves(board, Some(board_history)) {
-        let minimax_score: f64 = minimax(
-          &make_move(point, board),
-          &deeper_history,
-          depth - 1,
-          rng,
-        );
-        // Maximizing.
-        best_score = best_score.max(minimax_score);
+        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
+        mc_results.insert(MCResult {
+          point: point,
+          score: mc_score,
+        });
+        // Maximizing...
+        best_score.max(mc_score);
+      }
+
+      let new_median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
+        None => pass_move_strength,
+        Some(s) => s.score,
+      };
+      while let Some(mc_result) = mc_results.pop_last() {
+        if mc_result.score > new_median_score {
+          best_score.max(minimax(&make_move(mc_result.point, board), board_history, depth -1, rng, simulation_count, new_median_score));
+        }
       }
       return best_score;
     } else { // Minimizing.
-      // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = current_board_score;
+      // We want moves that improve the baseline score.
+      let mut best_score: f64 = median_score;
+      let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
+
       for point in get_legal_moves(board, Some(board_history)) {
-        let minimax_score: f64 = minimax(
-          &make_move(point, board),
-          &deeper_history,
-          depth - 1,
-          rng,
-        );
-        // Minimizing.
-        best_score = best_score.min(minimax_score);
+        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
+        mc_results.insert(MCResult {
+          point: point,
+          score: mc_score,
+        });
+        // Minimizing...
+        best_score.min(mc_score);
+      }
+      let new_median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
+        None => pass_move_strength,
+        Some(s) => s.score,
+      };
+      while let Some(mc_result) = mc_results.pop_last() {
+        if mc_result.score < new_median_score {
+          best_score.min(minimax(&make_move(mc_result.point, board), board_history, depth -1, rng, simulation_count, new_median_score));
+        }
       }
       return best_score;
     }
