@@ -56,13 +56,22 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
   let simulation_count: i32 = 100;
 
   let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
-  let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
 
   let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
-  for point in get_legal_moves(board, Some(board_history)) {
+  let legal_moves: crate::bitset::BitSet = get_legal_moves(board, Some(board_history));
+  for point in legal_moves {
     let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
-    if mc_score > pass_move_strength {
-      result[point] = minimax(&make_move(point, board), board_history, minimax_depth, rng, simulation_count);
+    mc_results.insert(MCResult { point: point, score: mc_score });
+  }
+
+  let median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
+    None => f64::NEG_INFINITY,
+    Some(s) => s.score,
+  };
+
+  for mc_result in mc_results {
+    if mc_result.score > median_score {
+      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng, simulation_count);
     }
   }
 
