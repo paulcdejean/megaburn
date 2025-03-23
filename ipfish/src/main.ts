@@ -53,7 +53,14 @@ export async function main(ns: NS): Promise<void> {
       "illuminati": "Illuminati",
     }
 
-    const opponent : GoOpponent = argmap[ns.args[0] as string]
+    let opponent : GoOpponent
+    
+    if (ns.args[0] as string in argmap) {
+      opponent = argmap[ns.args[0] as string]
+    } else {
+      opponent = "Daedalus"
+    }
+    
 
     while (true) {
       const squareCount = boardSize ** 2
