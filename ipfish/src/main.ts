@@ -26,11 +26,25 @@ export async function ipfish(ns: NS, game : Game): Promise<void> {
   ns.ui.moveTail(1020, 50)
   ns.ui.renderTail()
 
-  const initalAnalysisState = await game.analysis()
+  let analysisState = await game.analysis()
+  const squareCount = game.boardSize ** 2
+
+  while (ns.go.getCurrentPlayer() !== "None") {
+    if (analysisState.bestMove == squareCount) {
+      await game.passTurn()
+    } else {
+      const bestMoveColumn = Math.floor(analysisState.bestMove % game.boardSize)
+      const bestMoveRow = Math.floor(analysisState.bestMove / game.boardSize)
+      await game.makeMove(bestMoveRow, bestMoveColumn)
+    }
+    analysisState = await game.analysis()
+  }
+
+  ns.exit()
 
   ns.printRaw(React.createElement(IpFish, {game: game,
                                            initalBoardState: game.getBoard(),
-                                           initalAnalysisState: initalAnalysisState,
+                                           initalAnalysisState: analysisState,
                                            komi: game.komi,
                                            initialTurn: game.turn,
                                           }))
