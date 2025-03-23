@@ -113,7 +113,6 @@ export class Game {
     }
 
     if (this.ns.go.getCurrentPlayer() === "None") {
-      if(this.worker !== undefined) this.worker.terminate()
       return true
     }
     return false
