@@ -1,7 +1,7 @@
 import { NS, GoOpponent } from "@ns";
 import { CurrentTurn } from "./getCurrentTurn";
 import { getBoardFromAPI } from "./getBoardFromAPI"
-import analysisWorker from "./worker/analysis?worker&inline"
+
 
 export type BoardState = Uint8Array
 
@@ -36,10 +36,9 @@ export class Game {
   public readonly komi : number
   public turn : CurrentTurn
   private worker : Worker
-  private workerInit : boolean = false
   private opponentPassed : boolean = false
 
-  constructor(ns : NS, opponent : GoOpponent, boardSize :  5 | 7 | 9 | 13) {
+  constructor(ns : NS, opponent : GoOpponent, boardSize :  5 | 7 | 9 | 13, worker : Worker) {
     this.ns = ns
     if (ns.go.getGameState().currentPlayer == "None") {
       ns.go.resetBoardState(opponent, boardSize)
@@ -49,10 +48,7 @@ export class Game {
     this.komi = this.ns.go.getGameState().komi
     this.turn = CurrentTurn.Black
 
-    this.worker = new analysisWorker()
-    ns.atExit(() => {
-      if(this.worker !== undefined) this.worker.terminate()
-    }, "Game")
+    this.worker = worker
   }
 
   public getBoard() : BoardState {
@@ -124,26 +120,6 @@ export class Game {
   }
 
   private async realAnalysis() : Promise<Analysis> {
-    if (!this.workerInit) {
-      const initalized = await new Promise((resolve, reject) => {
-        if (this.worker === undefined) {
-          reject("Worker non existent during init")
-        } else {
-          this.worker.onmessage = (event : MessageEvent<string>) => {
-            resolve(event.data) 
-          }
-          this.worker.onerror = (event) => {
-            reject(`Worker init onerror triggered ${event.message}`)
-          }
-          this.worker.onmessageerror = (event) => {
-            reject(`Worker init onmessageerror triggered ${event.data}`)
-          }
-        }
-      })
-      this.ns.tprint(`Go worker ${initalized}`)
-      this.workerInit = true
-    }
-
     const analysisBoard : AnalaysisBoard = {
       boardHistory: this.boardHistory,
       komi: this.komi,

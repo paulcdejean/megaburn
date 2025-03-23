@@ -2,14 +2,37 @@
 import { NS } from "@ns";
 import IpFish from "./ui/IpFish";
 import { Game } from "./Game"
+import analysisWorker from "./worker/analysis?worker&inline"
 
 export async function main(ns: NS): Promise<void> {
   const boardSize = 5
+  const worker = new analysisWorker()
+
+  ns.atExit(() => {
+    if(worker !== undefined) worker.terminate()
+  }, "worker")
+
+  const initalized = await new Promise((resolve, reject) => {
+    if (worker === undefined) {
+      reject("Worker non existent during init")
+    } else {
+      worker.onmessage = (event : MessageEvent<string>) => {
+        resolve(event.data) 
+      }
+      worker.onerror = (event) => {
+        reject(`Worker init onerror triggered ${event.message}`)
+      }
+      worker.onmessageerror = (event) => {
+        reject(`Worker init onmessageerror triggered ${event.data}`)
+      }
+    }
+  })
+  ns.tprint(`Go worker ${initalized}`)
 
   if (ns.args[0] === "auto") {
     while (true) {
       const squareCount = boardSize ** 2
-      const game = new Game(ns, "Daedalus", boardSize)
+      const game = new Game(ns, "Daedalus", boardSize, worker)
       while (ns.go.getCurrentPlayer() !== "None") {
         const analysis = await game.analysis()
         if (analysis.bestMove == squareCount) {
@@ -25,7 +48,7 @@ export async function main(ns: NS): Promise<void> {
       }
     }
   } else {
-    const game = new Game(ns, "Daedalus", boardSize)
+    const game = new Game(ns, "Daedalus", boardSize, worker)
     await ipfish(ns, game)
 
     while (true) {
