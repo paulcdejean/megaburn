@@ -102,7 +102,7 @@ export class Game {
     }
   }
 
-  public async passTurn(boardCallback? : (boardState: BoardState) => void, analysisCallBack? : (analysisState: Analysis) => void) {
+  public async passTurn(boardCallback? : (boardState: BoardState) => void, analysisCallBack? : (analysisState: Analysis) => void) : Promise<boolean> {
     const opponentMove = await this.ns.go.passTurn()
     const boardAfterWhiteMoved = getBoardFromAPI(this.ns)
     if(opponentMove.type === "move" && opponentMove.x !== null && opponentMove.y !== null) {
@@ -118,8 +118,9 @@ export class Game {
 
     if (this.ns.go.getCurrentPlayer() === "None") {
       if(this.worker !== undefined) this.worker.terminate()
-      this.ns.exit()
+      return true
     }
+    return false
   }
 
   private async realAnalysis() : Promise<Analysis> {
@@ -169,10 +170,10 @@ export class Game {
   }
 
   public async analysis() : Promise<Analysis> {
-    const analysisStart = performance.now()
+    // const analysisStart = performance.now()
     const analysis = await this.realAnalysis()
-    const analysisTime = performance.now() - analysisStart
-    this.ns.tprint(`Completed analysis in ${this.ns.tFormat(analysisTime, true)}`)
+    // const analysisTime = performance.now() - analysisStart
+    // this.ns.tprint(`Completed analysis in ${this.ns.tFormat(analysisTime, true)}`)
     return analysis
   }
 }

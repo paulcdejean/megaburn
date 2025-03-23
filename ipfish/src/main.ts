@@ -4,12 +4,35 @@ import IpFish from "./ui/IpFish";
 import { Game } from "./Game"
 
 export async function main(ns: NS): Promise<void> {
-  const game = new Game(ns, "Daedalus", 5)
-  await ipfish(ns, game)
+  const boardSize = 5
 
-  while(true) {
-    await ns.asleep(2000)
+  if (ns.args[0] === "auto") {
+    while (true) {
+      const squareCount = boardSize ** 2
+      const game = new Game(ns, "Daedalus", boardSize)
+      while (ns.go.getCurrentPlayer() !== "None") {
+        const analysis = await game.analysis()
+        if (analysis.bestMove == squareCount) {
+          const isGameOver = await game.passTurn()
+          if (isGameOver) {
+            break
+          }
+        } else {
+          const bestMoveColumn = Math.floor(analysis.bestMove % game.boardSize)
+          const bestMoveRow = Math.floor(analysis.bestMove / game.boardSize)
+          await game.makeMove(bestMoveRow, bestMoveColumn)
+        }
+      }
+    }
+  } else {
+    const game = new Game(ns, "Daedalus", boardSize)
+    await ipfish(ns, game)
+
+    while (true) {
+      await ns.asleep(2000)
+    }
   }
+
 }
 
 export async function ipfish(ns: NS, game : Game): Promise<void> {
@@ -26,21 +49,8 @@ export async function ipfish(ns: NS, game : Game): Promise<void> {
   ns.ui.moveTail(1020, 50)
   ns.ui.renderTail()
 
-  let analysisState = await game.analysis()
-  const squareCount = game.boardSize ** 2
+  const analysisState = await game.analysis()
 
-  while (ns.go.getCurrentPlayer() !== "None") {
-    if (analysisState.bestMove == squareCount) {
-      await game.passTurn()
-    } else {
-      const bestMoveColumn = Math.floor(analysisState.bestMove % game.boardSize)
-      const bestMoveRow = Math.floor(analysisState.bestMove / game.boardSize)
-      await game.makeMove(bestMoveRow, bestMoveColumn)
-    }
-    analysisState = await game.analysis()
-  }
-
-  ns.exit()
 
   ns.printRaw(React.createElement(IpFish, {game: game,
                                            initalBoardState: game.getBoard(),
