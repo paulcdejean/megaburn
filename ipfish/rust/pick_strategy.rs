@@ -9,11 +9,14 @@ use crate::RNG;
 /// Do some other heuristics too.
 pub fn pick_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng:&mut RNG) -> Vec<f64> {
   // Play tengen first move on boards that only have 1 or two offline nodes.
-  if board_history.len() <= 1 && get_legal_moves(board, Some(board_history)).len() > 22 {
+  if board_history.len() <= 1 {
+    let legal_moves: crate::bitset::BitSet = get_legal_moves(board, Some(board_history));
     let tengen = board.board.len() / 2;
-    let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
-    result[tengen] = f64::INFINITY;
-    return result;
+    if legal_moves.len() > 22 && legal_moves.contains(tengen) {
+      let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
+      result[tengen] = f64::INFINITY;
+      return result;
+    }
   }
 
   let position_evaluation: f64 = montecarlo_score(board, board_history, 100, rng);
