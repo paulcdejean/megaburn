@@ -56,11 +56,10 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
   let top_move_number: usize = 5;
   let simulation_count: i32 = 100;
   let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
-  let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
-
   let random_move_strength: f64 = montecarlo_score(board, board_history, simulation_count, rng);
   let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
 
+  let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
   for point in get_legal_moves(board, Some(board_history)) {
     let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
     mc_results.insert(MCResult {
@@ -68,7 +67,6 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
       score: mc_score,
     });
   }
-
   let median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
     None => pass_move_strength,
     Some(s) => s.score,
@@ -76,7 +74,7 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
   
   while let Some(mc_result) = mc_results.pop_last() {
     if mc_result.score > median_score {
-      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng, simulation_count, median_score);
+      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng, median_score);
     } else {
       result[mc_result.point] = mc_result.score - 1.0;
     }
@@ -109,62 +107,53 @@ fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG, simulation_
 /// * `board` - The board state to evaluate.
 /// * `board_history` - The board history of the current state.
 /// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
-fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, simulation_count: i32, median_score: f64) -> f64 {
+/// Returns the evaluation of a board position using minimax algorithm to a specified depth.
+/// This is called recursively an exponential number of times.
+/// With high enough depth it can solve the game but your computer will explode.
+///
+/// # Arguments
+///
+/// * `board` - The board state to evaluate.
+/// * `board_history` - The board history of the current state.
+/// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
+fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, bad_score: f64) -> f64 {
   // Terminating condition
   if depth < 1 {
-    return score(board, board_history, rng, simulation_count);
+    return score(board, board_history, rng, 100);
   } else {
+    let current_board_score = score(board, board_history, rng, 100);
     let mut deeper_history: BoardHistory = board_history.clone();
     deeper_history.insert(board.board.clone());
-    let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
+    let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, 100, rng);
 
     if board.player == Player::Black { // Maximizing
-      // We want moves that improve the baseline score.
-      let mut best_score: f64 = median_score;
-      let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
-
+      // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
+      let mut best_score: f64 = current_board_score;
       for point in get_legal_moves(board, Some(board_history)) {
-        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
-        mc_results.insert(MCResult {
-          point: point,
-          score: mc_score,
-        });
-        // Maximizing...
-        best_score.max(mc_score);
-      }
-
-      let new_median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
-        None => pass_move_strength,
-        Some(s) => s.score,
-      };
-      while let Some(mc_result) = mc_results.pop_last() {
-        if mc_result.score > new_median_score {
-          best_score.max(minimax(&make_move(mc_result.point, board), board_history, depth -1, rng, simulation_count, new_median_score));
-        }
+        let minimax_score: f64 = minimax(
+          &make_move(point, board),
+          &deeper_history,
+          depth - 1,
+          rng,
+          bad_score,
+        );
+        // Maximizing.
+        best_score = best_score.max(minimax_score);
       }
       return best_score;
     } else { // Minimizing.
-      // We want moves that improve the baseline score.
-      let mut best_score: f64 = median_score;
-      let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
-
+      // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
+      let mut best_score: f64 = current_board_score;
       for point in get_legal_moves(board, Some(board_history)) {
-        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
-        mc_results.insert(MCResult {
-          point: point,
-          score: mc_score,
-        });
-        // Minimizing...
-        best_score.min(mc_score);
-      }
-      let new_median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
-        None => pass_move_strength,
-        Some(s) => s.score,
-      };
-      while let Some(mc_result) = mc_results.pop_last() {
-        if mc_result.score < new_median_score {
-          best_score.min(minimax(&make_move(mc_result.point, board), board_history, depth -1, rng, simulation_count, new_median_score));
-        }
+        let minimax_score: f64 = minimax(
+          &make_move(point, board),
+          &deeper_history,
+          depth - 1,
+          rng,
+          bad_score,
+        );
+        // Minimizing.
+        best_score = best_score.min(minimax_score);
       }
       return best_score;
     }
