@@ -127,24 +127,7 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
 
     if board.player == Player::Black { // Maximizing
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = bad_score;
-
-      // Get mc scores of all moves in the position.
-      let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
-      for point in get_legal_moves(board, Some(board_history)) {
-        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, 100, rng);
-        mc_results.insert(MCResult {
-          point: point,
-          score: mc_score,
-        });
-        // Maximizing!
-        best_score.max(mc_score);
-      }
-      let median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
-        None => pass_move_strength,
-        Some(s) => s.score,
-      };
-
+      let mut best_score: f64 = f64::NEG_INFINITY;
       for point in get_legal_moves(board, Some(board_history)) {
         let minimax_score: f64 = minimax(
           &make_move(point, board),
@@ -159,24 +142,7 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
       return best_score;
     } else { // Minimizing.
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = bad_score;
-
-      // Get mc scores of all moves in the position.
-      let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
-      for point in get_legal_moves(board, Some(board_history)) {
-        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, 100, rng);
-        mc_results.insert(MCResult {
-          point: point,
-          score: mc_score,
-        });
-        // Minimizing!
-        best_score.min(mc_score);
-      }
-      let median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
-        None => pass_move_strength,
-        Some(s) => s.score,
-      };
-
+      let mut best_score: f64 = f64::INFINITY;
       for point in get_legal_moves(board, Some(board_history)) {
         let minimax_score: f64 = minimax(
           &make_move(point, board),
