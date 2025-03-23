@@ -74,7 +74,7 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
   
   while let Some(mc_result) = mc_results.pop_last() {
     if mc_result.score > median_score {
-      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng, median_score);
+      result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng, median_score, simulation_count);
     } else {
       result[mc_result.point] = mc_result.score - 1.0;
     }
@@ -116,14 +116,14 @@ fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG, simulation_
 /// * `board` - The board state to evaluate.
 /// * `board_history` - The board history of the current state.
 /// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
-fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, bad_score: f64) -> f64 {
+fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, bad_score: f64, simulation_count: i32) -> f64 {
   // Terminating condition
   if depth < 1 {
-    return score(board, board_history, rng, 100);
+    return score(board, board_history, rng, simulation_count);
   } else {
     let mut deeper_history: BoardHistory = board_history.clone();
     deeper_history.insert(board.board.clone());
-    let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, 100, rng);
+    let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
 
     if board.player == Player::Black { // Maximizing
       // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
@@ -135,6 +135,7 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
           depth - 1,
           rng,
           bad_score,
+          simulation_count,
         );
         // Maximizing.
         best_score = best_score.max(minimax_score);
@@ -150,6 +151,7 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
           depth - 1,
           rng,
           bad_score,
+          simulation_count,
         );
         // Minimizing.
         best_score = best_score.min(minimax_score);
