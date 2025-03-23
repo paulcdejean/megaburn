@@ -16,9 +16,19 @@ pub fn pick_strategy(board: &Board, board_history: &BoardHistory, opponent_passe
     return result;
   }
 
+  let position_evaluation: f64 = montecarlo_score(board, board_history, 100, rng);
+
+  // If we're dead loss, just pass rather than playing stupid moves.
+  let losing_position: f64 = -0.40;
+  if position_evaluation < losing_position {
+    let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
+    result[board.board.len()] = f64::INFINITY;
+    return result;
+  }
+
   // Switch to alphabeta if we're in a winning position.
   let winning_position: f64 = 0.35;
-  let position_evaluation: f64 = montecarlo_score(board, board_history, 100, rng);
+  
   let result: Vec<f64>;
   if position_evaluation > winning_position {
     result = minimax_ab_strategy(board, board_history, opponent_passed);
