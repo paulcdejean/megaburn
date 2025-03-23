@@ -84,24 +84,6 @@ fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG, simulation_
   return montecarlo_score(board, board_history, simulation_count, rng);
 }
 
-/// Returns the evaluation of a board position using minimax algorithm to a specified depth.
-/// This is called recursively an exponential number of times.
-/// With high enough depth it can solve the game but your computer will explode.
-///
-/// # Arguments
-///
-/// * `board` - The board state to evaluate.
-/// * `board_history` - The board history of the current state.
-/// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
-/// Returns the evaluation of a board position using minimax algorithm to a specified depth.
-/// This is called recursively an exponential number of times.
-/// With high enough depth it can solve the game but your computer will explode.
-///
-/// # Arguments
-///
-/// * `board` - The board state to evaluate.
-/// * `board_history` - The board history of the current state.
-/// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
 fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, simulation_count: i32) -> f64 {
   // Depth zero doesn't make much sense, but lets include it anyway.
   if depth < 1 {
