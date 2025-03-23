@@ -164,20 +164,28 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
         });
       }
 
-      for mc_result in mc_results {
-        let minimax_score: f64 = minimax(
-          &make_move(mc_result.point, board),
-          &deeper_history,
-          depth - 1,
-          rng,
-          simulation_count,
-          black_best,
-          white_best,
-        );
-        // Minimizing.
-        best_score = best_score.min(minimax_score);
-      }
+      let new_white_best = match mc_results.first() {
+        None => f64::INFINITY,
+        Some(s) => s.score,
+      };
 
+      for mc_result in mc_results {
+        if mc_result.score > black_best {
+          // This is trash!
+        } else {
+          let minimax_score: f64 = minimax(
+            &make_move(mc_result.point, board),
+            &deeper_history,
+            depth - 1,
+            rng,
+            simulation_count,
+            black_best,
+            new_white_best,
+          );
+          // Minimizing.
+          best_score = best_score.min(minimax_score);
+        }
+      }
       return best_score;
     }
   }
