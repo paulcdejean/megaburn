@@ -16,7 +16,7 @@ pub mod bitset;
 pub mod minimax_mc_filtered_strategy;
 
 use core::f64;
-use rand_chacha::ChaCha12Rng;
+use rand_pcg::Pcg64Mcg;
 use rand::SeedableRng;
 use wasm_bindgen::prelude::*;
 use std::panic;
@@ -27,7 +27,7 @@ use crate::player::Player;
 use crate::board::{Board, BoardHistory};
 use crate::pick_strategy::pick_strategy;
 
-pub type RNG = ChaCha12Rng;
+pub type RNG = Pcg64Mcg;
 
 /// Performs an analysis on a a ipvgo board. Higher number = better move.
 ///

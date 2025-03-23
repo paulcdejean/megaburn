@@ -53,10 +53,9 @@ Top level is 2500 simulations
 /// Returns a vec evaluating the strength of different moves, and suitable to be returned to the js.
 pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng:&mut RNG) -> Vec<f64> {
   let minimax_depth: usize = 2;
-  let top_move_number: usize = 5;
-  let simulation_count: i32 = 100;
+  let simulation_count: i32 = 50;
+
   let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
-  let random_move_strength: f64 = montecarlo_score(board, board_history, simulation_count, rng);
   let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
 
   let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
@@ -126,48 +125,50 @@ fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG, simulation_
 /// * `board_history` - The board history of the current state.
 /// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
 fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, simulation_count: i32, black_best: f64, white_best: f64) -> f64 {
-  // Terminating condition
+  // Depth zero doesn't make much sense, but lets include it anyway.
   if depth < 1 {
     return score(board, board_history, rng, simulation_count);
-  } else {
+  }
+
+  // We can't prune here...
+  else if depth == 1 {
+    // Try and improve on passing...
+    let mut best_score: f64 = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
+
+    if board.player == Player::White {
+      for point in get_legal_moves(board, Some(board_history)) {
+        let mc_score: f64 = montecarlo_score(
+          &make_move(point, board),
+          board_history,
+          simulation_count,
+          rng,
+        );
+        // Minimizing!
+        best_score = best_score.min(mc_score);
+      }
+    } else {
+      for point in get_legal_moves(board, Some(board_history)) {
+        let mc_score: f64 = montecarlo_score(
+          &make_move(point, board),
+          board_history,
+          simulation_count,
+          rng,
+        );
+        // Maximizing!
+        best_score = best_score.max(mc_score);
+      }
+    }
+    return best_score;
+  }
+  // The recursive part, but we try and prune here if
+  else {
     let mut deeper_history: BoardHistory = board_history.clone();
     deeper_history.insert(board.board.clone());
     let pass_move_strength: f64 = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
 
-    if board.player == Player::Black { // Maximizing
-      // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
-      let mut best_score: f64 = f64::NEG_INFINITY;
-
-      let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
-      for point in get_legal_moves(board, Some(board_history)) {
-        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
-        mc_results.insert(MCResult {
-          point: point,
-          score: mc_score,
-        });
-      }
-
-      let new_black_best: f64 = match mc_results.last() {
-        None => black_best,
-        Some(s) => s.score,
-      };
-
-      for point in get_legal_moves(board, Some(board_history)) {
-        let minimax_score: f64 = minimax(
-          &make_move(point, board),
-          &deeper_history,
-          depth - 1,
-          rng,
-          simulation_count,
-          black_best,
-          white_best,
-        );
-        // Maximizing.
-        best_score = best_score.max(minimax_score);
-      }
-      return best_score;
-    } else { // Minimizing.
-      // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
+    if board.player == Player::Black {
+      panic!("We shouldn't be deep enough to hit this!")
+    } else {
       let mut best_score: f64 = f64::INFINITY;
 
       let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
@@ -179,29 +180,23 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
         });
       }
 
-      let new_white_best: f64 = match mc_results.first() {
-        None => white_best,
-        Some(s) => s.score,
-      };
-
-      for mc_result in mc_results {
-        if mc_result.score > black_best {
-          // This is trash!
-        } else {
+      match mc_results.first() {
+        None => {
+          return pass_move_strength;
+        },
+        Some(s) => {
           let minimax_score: f64 = minimax(
-            &make_move(mc_result.point, board),
+            &make_move(s.point, board),
             &deeper_history,
             depth - 1,
             rng,
             simulation_count,
             black_best,
-            new_white_best,
+            white_best,
           );
-          // Minimizing.
-          best_score = best_score.min(minimax_score);
+          return minimax_score;
         }
-      }
-      return best_score;
+      };
     }
   }
 }
