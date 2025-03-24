@@ -3,7 +3,7 @@ use core::f64;
 use crate::bitset::BitSet;
 use crate::board::{Board, BoardHistory};
 use crate::final_score::{SeenStones, final_score, score_group_territory};
-use crate::get_legal_moves::{captures_enemy_group, get_legal_moves};
+use crate::get_legal_moves::{captures_enemy_group, get_legal_moves, get_legal_moves_strict};
 use crate::make_move::make_move;
 use crate::pass_move::pass_move;
 use crate::player::Player;
@@ -23,7 +23,7 @@ pub fn minimax_ab_strategy(
 
     let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
-    for point in get_legal_moves(board, board_history) {
+    for point in get_legal_moves_strict(board, board_history) {
         result[point] = minimax_alphabeta(
             &make_move(point, board),
             board_history,

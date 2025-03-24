@@ -1,6 +1,6 @@
 use crate::RNG;
 use crate::board::{Board, BoardHistory};
-use crate::get_legal_moves::get_legal_moves;
+use crate::get_legal_moves::get_legal_moves_strict;
 use crate::minimax_ab_strategy::minimax_ab_strategy;
 use crate::minimax_mc_filtered_strategy::minimax_mc_filtered_strategy;
 use crate::montecarlo_score::montecarlo_score;
@@ -15,7 +15,7 @@ pub fn pick_strategy(
 ) -> Vec<f64> {
     // Play tengen first move on boards that only have 1 or two offline nodes.
     if board_history.len() <= 1 {
-        let legal_moves: crate::bitset::BitSet = get_legal_moves(board, board_history);
+        let legal_moves: crate::bitset::BitSet = get_legal_moves_strict(board, board_history);
         let tengen = board.board.len() / 2;
         if legal_moves.len() > 22 && legal_moves.contains(tengen) {
             let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];

@@ -8,7 +8,6 @@ pub mod is_in_atari;
 pub mod make_move;
 pub mod minimax_ab_strategy;
 pub mod minimax_mc_filtered_strategy;
-pub mod minimax_mc_strategy;
 pub mod montecarlo_score;
 pub mod pass_move;
 pub mod pick_strategy;

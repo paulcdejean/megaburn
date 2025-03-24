@@ -5,6 +5,40 @@ use crate::make_move::make_move;
 use crate::point_state::PointState;
 
 use crate::board::{Board, BoardHistory};
+/// Returns a bitset where the 1 bits are legal moves. This version checks for superko even for non captures.
+/// This stricter version should be used for checking the first move. While the less strict version is good enough for montecarlo.
+///
+/// # Arguments
+///
+/// * `board` - The state of the board we're getting the legal moves for.
+/// * `board_history` - All states the board has historically been in, important for determining superko. If this none then superko isn't calculated.
+pub fn get_legal_moves_strict(board: &Board, board_history: &BoardHistory) -> BitSet {
+    let mut result: BitSet = BitSet::new();
+    for point in 0..board.board.len() {
+        // The move is always illegal if there is already a piece there.
+        if board.board[point] != PointState::Empty as u8 {
+            // Illegal.
+        } else if violates_superko(point, board, board_history) {
+            // Illegal.
+        }
+        // Captures are always legal, even if they're otherwise self captures. Unless they violate superko.
+        else if captures_enemy_group(point, board) {
+            // Legal! Even if it's "self capture"
+            result.insert(point);
+        }
+        // Self captures that are not enemy captures are illegal.
+        else if is_self_capture(point, board) {
+            // Illegal.
+        }
+        // Other moves are legal.
+        else {
+            // Legal!
+            result.insert(point);
+        }
+    }
+    return result;
+}
+
 /// Returns a bitset where the 1 bits are legal moves.
 ///
 /// # Arguments
