@@ -40,7 +40,9 @@ export class Game {
 
   constructor(ns : NS, opponent : GoOpponent, boardSize :  5 | 7 | 9 | 13, worker : Worker) {
     this.ns = ns
-    if (ns.go.getGameState().currentPlayer == "None") {
+    // Start a new game if there isn't one. Also start a new game if the current one is greater than 7x7.
+    // This is because our rust currently only supports 5x5 and maybe 7x7.
+    if (ns.go.getGameState().currentPlayer === "None" || ns.go.getBoardState().length > 7) {
       ns.go.resetBoardState(opponent, boardSize)
     }
     this.boardSize = ns.go.getBoardState().length as 5 | 7 | 9 | 13 | 19 // 19 is secret opponent
