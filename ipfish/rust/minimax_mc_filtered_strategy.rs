@@ -18,11 +18,7 @@ struct MCResult {
 }
 impl Ord for MCResult {
     fn cmp(&self, other: &Self) -> Ordering {
-        if self.score < other.score {
-            Ordering::Less
-        } else {
-            Ordering::Greater
-        }
+        if self.score < other.score { Ordering::Less } else { Ordering::Greater }
     }
 }
 impl PartialOrd for MCResult {
@@ -51,12 +47,7 @@ Top level is 2500 simulations
 /// This uses minimax, with montecarlo as the scoring function.
 /// However it will only check the top moves at further depths.
 /// Returns a vec evaluating the strength of different moves, and suitable to be returned to the js.
-pub fn minimax_mc_filtered_strategy(
-    board: &Board,
-    board_history: &BoardHistory,
-    opponent_passed: bool,
-    rng: &mut RNG,
-) -> Vec<f64> {
+pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng: &mut RNG) -> Vec<f64> {
     let minimax_depth: usize = 1;
     let simulation_count: i32 = 50;
 
@@ -65,16 +56,8 @@ pub fn minimax_mc_filtered_strategy(
     let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
     let legal_moves: crate::bitset::BitSet = get_legal_moves_strict(board, board_history);
     for point in legal_moves {
-        let mc_score: f64 = montecarlo_score(
-            &make_move(point, board),
-            board_history,
-            simulation_count,
-            rng,
-        );
-        mc_results.insert(MCResult {
-            point: point,
-            score: mc_score,
-        });
+        let mc_score: f64 = montecarlo_score(&make_move(point, board), board_history, simulation_count, rng);
+        mc_results.insert(MCResult { point: point, score: mc_score });
     }
 
     let median_score: f64 = match mc_results.iter().nth(mc_results.len() / 2) {
@@ -84,13 +67,7 @@ pub fn minimax_mc_filtered_strategy(
 
     for mc_result in mc_results {
         if mc_result.score > median_score {
-            result[mc_result.point] = minimax(
-                &make_move(mc_result.point, board),
-                board_history,
-                minimax_depth,
-                rng,
-                simulation_count,
-            );
+            result[mc_result.point] = minimax(&make_move(mc_result.point, board), board_history, minimax_depth, rng, simulation_count);
         }
     }
 
@@ -98,8 +75,7 @@ pub fn minimax_mc_filtered_strategy(
     if opponent_passed {
         let result_score: f64 = final_score(board);
         if result_score > 0.0 {
-            result[board.board.len()] =
-                montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
+            result[board.board.len()] = montecarlo_score(&pass_move(board), board_history, simulation_count, rng);
         }
     }
     return result;
@@ -112,13 +88,7 @@ fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG, simulation_
     return montecarlo_score(board, board_history, simulation_count, rng);
 }
 
-fn minimax(
-    board: &Board,
-    board_history: &BoardHistory,
-    depth: usize,
-    rng: &mut RNG,
-    simulation_count: i32,
-) -> f64 {
+fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, simulation_count: i32) -> f64 {
     // Depth zero doesn't make much sense, but lets include it anyway.
     if depth < 1 {
         return score(board, board_history, rng, simulation_count);
@@ -128,28 +98,17 @@ fn minimax(
         let mut deeper_history: BoardHistory = board_history.clone();
         deeper_history.insert(board.board.clone());
         // Try and improve on passing...
-        let mut best_score: f64 =
-            montecarlo_score(&pass_move(board), &deeper_history, simulation_count, rng);
+        let mut best_score: f64 = montecarlo_score(&pass_move(board), &deeper_history, simulation_count, rng);
 
         if board.player == Player::White {
             for point in get_legal_moves(board, board_history) {
-                let mc_score: f64 = montecarlo_score(
-                    &make_move(point, board),
-                    &deeper_history,
-                    simulation_count,
-                    rng,
-                );
+                let mc_score: f64 = montecarlo_score(&make_move(point, board), &deeper_history, simulation_count, rng);
                 // Minimizing!
                 best_score = best_score.min(mc_score);
             }
         } else {
             for point in get_legal_moves(board, board_history) {
-                let mc_score: f64 = montecarlo_score(
-                    &make_move(point, board),
-                    &deeper_history,
-                    simulation_count,
-                    rng,
-                );
+                let mc_score: f64 = montecarlo_score(&make_move(point, board), &deeper_history, simulation_count, rng);
                 // Maximizing!
                 best_score = best_score.max(mc_score);
             }

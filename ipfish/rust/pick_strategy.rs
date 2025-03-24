@@ -7,12 +7,7 @@ use crate::montecarlo_score::montecarlo_score;
 
 /// Heuristically pick a strategy based on the in game situation and give the evaluation of that strategy.
 /// Do some other heuristics too.
-pub fn pick_strategy(
-    board: &Board,
-    board_history: &BoardHistory,
-    opponent_passed: bool,
-    rng: &mut RNG,
-) -> Vec<f64> {
+pub fn pick_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng: &mut RNG) -> Vec<f64> {
     // Play tengen first move on boards that only have 1 or two offline nodes.
     if board_history.len() <= 1 {
         let legal_moves: crate::bitset::BitSet = get_legal_moves_strict(board, board_history);

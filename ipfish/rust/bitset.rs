@@ -25,9 +25,7 @@ impl BitSet {
 impl BitOr for BitSet {
     type Output = Self;
     fn bitor(self, rhs: Self) -> Self::Output {
-        return BitSet {
-            bits: self.bits | rhs.bits,
-        };
+        return BitSet { bits: self.bits | rhs.bits };
     }
 }
 impl BitOrAssign for BitSet {
@@ -38,9 +36,7 @@ impl BitOrAssign for BitSet {
 impl BitAnd for BitSet {
     type Output = Self;
     fn bitand(self, rhs: Self) -> Self::Output {
-        return BitSet {
-            bits: self.bits & rhs.bits,
-        };
+        return BitSet { bits: self.bits & rhs.bits };
     }
 }
 impl BitAndAssign for BitSet {

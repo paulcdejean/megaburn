@@ -42,8 +42,7 @@ fn score_from_territory(board: &Board) -> f64 {
     for point in 0..board.board.len() {
         if board.board[point] == PointState::Empty as u8 && !counted_empty_points.contains(point) {
             let mut group: BitSet = BitSet::new();
-            let group_territory =
-                score_group_territory(point, board, &mut group, &mut SeenStones::None);
+            let group_territory = score_group_territory(point, board, &mut group, &mut SeenStones::None);
             result += group_territory;
             counted_empty_points |= group;
         }
@@ -51,34 +50,20 @@ fn score_from_territory(board: &Board) -> f64 {
     return result;
 }
 
-pub fn score_group_territory(
-    point: usize,
-    board: &Board,
-    group: &mut BitSet,
-    seen_stones: &mut SeenStones,
-) -> f64 {
+pub fn score_group_territory(point: usize, board: &Board, group: &mut BitSet, seen_stones: &mut SeenStones) -> f64 {
     group.insert(point);
     for adjacent_point in get_adjacent_points(point, board) {
-        if board.board[adjacent_point] == PointState::Empty as u8 && !group.contains(adjacent_point)
-        {
+        if board.board[adjacent_point] == PointState::Empty as u8 && !group.contains(adjacent_point) {
             score_group_territory(adjacent_point, board, group, seen_stones);
         }
         // If the adjacent point is a stone, factor it as the color surrounding the group.
-        else if board.board[adjacent_point] == PointState::Black as u8
-            && *seen_stones == SeenStones::None
-        {
+        else if board.board[adjacent_point] == PointState::Black as u8 && *seen_stones == SeenStones::None {
             *seen_stones = SeenStones::Black;
-        } else if board.board[adjacent_point] == PointState::Black as u8
-            && *seen_stones == SeenStones::White
-        {
+        } else if board.board[adjacent_point] == PointState::Black as u8 && *seen_stones == SeenStones::White {
             *seen_stones = SeenStones::Both;
-        } else if board.board[adjacent_point] == PointState::White as u8
-            && *seen_stones == SeenStones::None
-        {
+        } else if board.board[adjacent_point] == PointState::White as u8 && *seen_stones == SeenStones::None {
             *seen_stones = SeenStones::White;
-        } else if board.board[adjacent_point] == PointState::White as u8
-            && *seen_stones == SeenStones::Black
-        {
+        } else if board.board[adjacent_point] == PointState::White as u8 && *seen_stones == SeenStones::Black {
             *seen_stones = SeenStones::Both;
         }
     }

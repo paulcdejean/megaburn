@@ -12,11 +12,7 @@ use crate::point_state::PointState;
 /// This uses minimax with alpha beta pruning. For the scoring function it just uses the game result.
 /// This is good as a "finisher" and terrible at opening the game.
 /// It will try and maximize the result score.
-pub fn minimax_ab_strategy(
-    board: &Board,
-    board_history: &BoardHistory,
-    opponent_passed: bool,
-) -> Vec<f64> {
+pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool) -> Vec<f64> {
     let minimax_depth: usize = 7;
     let alpha: f64 = f64::NEG_INFINITY;
     let beta: f64 = f64::INFINITY;
@@ -24,21 +20,14 @@ pub fn minimax_ab_strategy(
     let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
     for point in get_legal_moves_strict(board, board_history) {
-        result[point] = minimax_alphabeta(
-            &make_move(point, board),
-            board_history,
-            minimax_depth,
-            alpha,
-            beta,
-        );
+        result[point] = minimax_alphabeta(&make_move(point, board), board_history, minimax_depth, alpha, beta);
     }
 
     let result_score: f64 = final_score(board);
     match opponent_passed {
         false => {
             if result_score > 0.0 {
-                result[board.board.len()] =
-                    minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta)
+                result[board.board.len()] = minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta)
             }
         }
         true => {
@@ -68,13 +57,7 @@ fn score(board: &Board) -> f64 {
 /// * `depth` - The maximum, or remaining, depth to search. 0 means to just score the current board.
 /// * `alpha` - The highest score seen so far. Pass -infinity for non recursive calls.
 /// * `beta` - The lower score seen so far. Pass +infinity for non recursive calls.
-fn minimax_alphabeta(
-    board: &Board,
-    board_history: &BoardHistory,
-    depth: usize,
-    mut alpha: f64,
-    mut beta: f64,
-) -> f64 {
+fn minimax_alphabeta(board: &Board, board_history: &BoardHistory, depth: usize, mut alpha: f64, mut beta: f64) -> f64 {
     // Terminating condition
     if depth < 1 {
         return score(board);
@@ -87,13 +70,7 @@ fn minimax_alphabeta(
             // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
             let mut best_score: f64 = score(board);
             for point in get_legal_moves(board, board_history) {
-                let minimax_score: f64 = minimax_alphabeta(
-                    &make_move(point, board),
-                    &deeper_history,
-                    depth - 1,
-                    alpha,
-                    beta,
-                );
+                let minimax_score: f64 = minimax_alphabeta(&make_move(point, board), &deeper_history, depth - 1, alpha, beta);
                 // Maximizing.
                 best_score = best_score.max(minimax_score);
                 alpha = alpha.max(best_score);
@@ -121,13 +98,7 @@ fn minimax_alphabeta(
             // <END HACK>
 
             for point in legal_moves {
-                let minimax_score: f64 = minimax_alphabeta(
-                    &make_move(point, board),
-                    &deeper_history,
-                    depth - 1,
-                    alpha,
-                    beta,
-                );
+                let minimax_score: f64 = minimax_alphabeta(&make_move(point, board), &deeper_history, depth - 1, alpha, beta);
                 // Minimizing.
                 best_score = best_score.min(minimax_score);
                 beta = beta.min(best_score);

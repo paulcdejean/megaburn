@@ -30,10 +30,6 @@ fn bench_montecarlo_score(bencher: Bencher) {
     };
 
     bencher.bench_local(|| {
-        montecarlo_simulation(
-            board.clone(),
-            black_box(board_history.clone()),
-            black_box(&mut rng),
-        );
+        montecarlo_simulation(board.clone(), black_box(board_history.clone()), black_box(&mut rng));
     });
 }

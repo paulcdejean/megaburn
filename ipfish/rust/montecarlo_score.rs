@@ -24,27 +24,17 @@ pub enum Winner {
 ///
 /// * `board` - The board state to evaluate.
 /// * `simulation_count` - The number of montecarlo simulations to run.
-pub fn montecarlo_score(
-    board: &Board,
-    board_history: &BoardHistory,
-    simulation_count: i32,
-    rng: &mut RNG,
-) -> f64 {
+pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_count: i32, rng: &mut RNG) -> f64 {
     let mut black_wins: i32 = 0;
 
     for _ in 0..simulation_count {
-        black_wins =
-            black_wins + montecarlo_simulation(board.clone(), board_history.clone(), rng) as i32;
+        black_wins = black_wins + montecarlo_simulation(board.clone(), board_history.clone(), rng) as i32;
     }
 
     return f64::from(black_wins) / f64::from(simulation_count) - 0.5;
 }
 
-pub fn montecarlo_simulation(
-    mut board: Board,
-    mut board_history: BoardHistory,
-    rng: &mut RNG,
-) -> Winner {
+pub fn montecarlo_simulation(mut board: Board, mut board_history: BoardHistory, rng: &mut RNG) -> Winner {
     for _ in 0..board.board.len() {
         match play_random_move(&board, &mut board_history, rng) {
             Some(s) => {
@@ -62,11 +52,7 @@ pub fn montecarlo_simulation(
     }
 }
 
-fn play_random_move(
-    board: &Board,
-    board_history: &mut BoardHistory,
-    rng: &mut RNG,
-) -> Option<Board> {
+fn play_random_move(board: &Board, board_history: &mut BoardHistory, rng: &mut RNG) -> Option<Board> {
     let mut possible_moves: Vec<usize> = Vec::new();
     let legal_for_opponent = get_legal_moves(&pass_move(board), board_history);
     for legal_move in get_legal_moves(&board, board_history) {
@@ -74,9 +60,7 @@ fn play_random_move(
         let mut true_eye: bool = true;
         for adjacent_point in get_adjacent_points(legal_move, &board) {
             // It's not a true eye, if there's an adjacent empty square or enemy piece
-            if board.board[adjacent_point] == !board.player as u8
-                || board.board[adjacent_point] == PointState::Empty as u8
-            {
+            if board.board[adjacent_point] == !board.player as u8 || board.board[adjacent_point] == PointState::Empty as u8 {
                 true_eye = false;
                 break;
             }

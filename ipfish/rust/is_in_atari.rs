@@ -18,13 +18,10 @@ pub fn is_in_atari(point: usize, board: &Board, known_liberty: usize, group: &mu
     group.insert(point);
     for adjacent_point in get_adjacent_points(point, board) {
         // It's not in atari if there's an adjacent empty point that's not the known liberty.
-        if board.board[adjacent_point] == PointState::Empty as u8 && adjacent_point != known_liberty
-        {
+        if board.board[adjacent_point] == PointState::Empty as u8 && adjacent_point != known_liberty {
             return false;
         // If it's a friendly stone that's not in the group, add it to the group and recur.
-        } else if board.board[adjacent_point] == board.board[point]
-            && !group.contains(adjacent_point)
-        {
+        } else if board.board[adjacent_point] == board.board[point] && !group.contains(adjacent_point) {
             if !is_in_atari(adjacent_point, board, known_liberty, group) {
                 return false;
             }
@@ -60,9 +57,6 @@ mod tests {
         };
 
         let not_in_atari: bool = is_in_atari(11, &board, 10, &mut BitSet::new());
-        assert_eq!(
-            not_in_atari, false,
-            "This white group is definitely not in atari"
-        );
+        assert_eq!(not_in_atari, false, "This white group is definitely not in atari");
     }
 }

@@ -52,9 +52,7 @@ pub fn get_legal_moves(board: &Board, board_history: &BoardHistory) -> BitSet {
         if board.board[point] != PointState::Empty as u8 {
         }
         // Captures are always legal, even if they're otherwise self captures. Unless they violate superko.
-        else if captures_enemy_group(point, board)
-            && !violates_superko(point, board, board_history)
-        {
+        else if captures_enemy_group(point, board) && !violates_superko(point, board, board_history) {
             result.insert(point);
         }
         // Self captures that are not enemy captures are illegal.
@@ -151,17 +149,9 @@ mod tests {
         let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
-                assert_eq!(
-                    legality[n], true,
-                    "Move {} marked as legal when it should be illegal",
-                    n
-                );
+                assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
             } else {
-                assert_eq!(
-                    false, legality[n],
-                    "Move {} marked as illegal when it should be legal",
-                    n
-                );
+                assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
             }
         }
     }
@@ -199,17 +189,9 @@ mod tests {
         let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
-                assert_eq!(
-                    legality[n], true,
-                    "Move {} marked as legal when it should be illegal",
-                    n
-                );
+                assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
             } else {
-                assert_eq!(
-                    false, legality[n],
-                    "Move {} marked as illegal when it should be legal",
-                    n
-                );
+                assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
             }
         }
     }
@@ -227,8 +209,8 @@ mod tests {
             5,
         );
         let legality: [bool; 25] = [
-            true, true, false, false, true, true, false, false, false, false, false, true, false,
-            false, true, true, false, false, true, true, true, true, true, true, true,
+            true, true, false, false, true, true, false, false, false, false, false, true, false, false, true, true, false, false, true, true, true, true,
+            true, true, true,
         ];
 
         let board: Board = Board {
@@ -242,17 +224,9 @@ mod tests {
         let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
-                assert_eq!(
-                    legality[n], true,
-                    "Move {} marked as legal when it should be illegal",
-                    n
-                );
+                assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
             } else {
-                assert_eq!(
-                    false, legality[n],
-                    "Move {} marked as illegal when it should be legal",
-                    n
-                );
+                assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
             }
         }
     }
@@ -280,8 +254,7 @@ mod tests {
             5,
         );
         let legality: [bool; 25] = [
-            false, true, false, true, true, true, false, false, false, false, false, false, false,
-            false, false, false, false, false, false, false, // Ko!
+            false, true, false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, // Ko!
             true, true, true, false, false,
         ];
 
@@ -299,17 +272,9 @@ mod tests {
         let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
-                assert_eq!(
-                    legality[n], true,
-                    "Move {} marked as legal when it should be illegal",
-                    n
-                );
+                assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
             } else {
-                assert_eq!(
-                    false, legality[n],
-                    "Move {} marked as illegal when it should be legal",
-                    n
-                );
+                assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
             }
         }
     }
@@ -327,10 +292,8 @@ mod tests {
             5,
         );
         let legality: [bool; 25] = [
-            false, false, false, true, false, false, false, false, false, true,
-            false, // Self capture
-            false, false, false, false, false, false, false, true, true,
-            false, // Self capture
+            false, false, false, true, false, false, false, false, false, true, false, // Self capture
+            false, false, false, false, false, false, false, true, true, false, // Self capture
             false, false, true, false,
         ];
 
@@ -349,17 +312,9 @@ mod tests {
         let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
-                assert_eq!(
-                    legality[n], true,
-                    "Move {} marked as legal when it should be illegal",
-                    n
-                );
+                assert_eq!(legality[n], true, "Move {} marked as legal when it should be illegal", n);
             } else {
-                assert_eq!(
-                    false, legality[n],
-                    "Move {} marked as illegal when it should be legal",
-                    n
-                );
+                assert_eq!(false, legality[n], "Move {} marked as illegal when it should be legal", n);
             }
         }
     }

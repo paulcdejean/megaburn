@@ -22,9 +22,7 @@ pub fn make_move(point: usize, board: &Board) -> Board {
     // Is there are adjacent enemy groups in atari, remove them.
     // new_board.player is the enemy player.
     for adjacent_point in get_adjacent_points(point, board) {
-        if new_board.board[adjacent_point] == new_board.player as u8
-            && is_in_atari(adjacent_point, &new_board, point, &mut BitSet::new())
-        {
+        if new_board.board[adjacent_point] == new_board.player as u8 && is_in_atari(adjacent_point, &new_board, point, &mut BitSet::new()) {
             remove_group(adjacent_point, &mut new_board);
         }
     }
