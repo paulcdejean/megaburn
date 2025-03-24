@@ -22,7 +22,7 @@ pub fn minimax_mc_strategy(
 
     let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
-    for point in get_legal_moves(board, Some(board_history)) {
+    for point in get_legal_moves(board, board_history) {
         result[point] = minimax(&make_move(point, board), board_history, minimax_depth, rng);
     }
 
@@ -62,7 +62,7 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
             // Maximizing
             // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
             let mut best_score: f64 = current_board_score;
-            for point in get_legal_moves(board, Some(board_history)) {
+            for point in get_legal_moves(board, board_history) {
                 let minimax_score: f64 =
                     minimax(&make_move(point, board), &deeper_history, depth - 1, rng);
                 // Maximizing.
@@ -73,7 +73,7 @@ fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut 
             // Minimizing.
             // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
             let mut best_score: f64 = current_board_score;
-            for point in get_legal_moves(board, Some(board_history)) {
+            for point in get_legal_moves(board, board_history) {
                 let minimax_score: f64 =
                     minimax(&make_move(point, board), &deeper_history, depth - 1, rng);
                 // Minimizing.

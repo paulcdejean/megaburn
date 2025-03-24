@@ -11,7 +11,7 @@ use crate::board::{Board, BoardHistory};
 ///
 /// * `board` - The state of the board we're getting the legal moves for.
 /// * `board_history` - All states the board has historically been in, important for determining superko. If this none then superko isn't calculated.
-pub fn get_legal_moves(board: &Board, board_history: Option<&BoardHistory>) -> BitSet {
+pub fn get_legal_moves(board: &Board, board_history: &BoardHistory) -> BitSet {
     let mut result: BitSet = BitSet::new();
     for point in 0..board.board.len() {
         // The move is always illegal if there is already a piece there.
@@ -64,18 +64,13 @@ pub fn captures_enemy_group(point: usize, board: &Board) -> bool {
     return false;
 }
 
-fn violates_superko(point: usize, board: &Board, board_history: Option<&BoardHistory>) -> bool {
-    match board_history {
-        None => return false,
-        Some(s) => {
-            let new_position: Box<[u8]> = make_move(point, board).board;
+fn violates_superko(point: usize, board: &Board, board_history: &BoardHistory) -> bool {
+    let new_position: Box<[u8]> = make_move(point, board).board;
 
-            if s.contains(&new_position) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+    if board_history.contains(&new_position) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -118,7 +113,8 @@ mod tests {
             opponent_passed: false,
         };
 
-        let legal_moves: BitSet = get_legal_moves(&board, None);
+        let board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());
+        let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
                 assert_eq!(
@@ -165,8 +161,8 @@ mod tests {
             komi: 7.5,
             opponent_passed: false,
         };
-
-        let legal_moves: BitSet = get_legal_moves(&board, None);
+        let board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());
+        let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
                 assert_eq!(
@@ -208,8 +204,8 @@ mod tests {
             komi: 7.5,
             opponent_passed: false,
         };
-
-        let legal_moves: BitSet = get_legal_moves(&board, None);
+        let board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());
+        let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
                 assert_eq!(
@@ -266,7 +262,7 @@ mod tests {
         board_history.insert(previous_board);
         board_history.insert(current_board);
 
-        let legal_moves: BitSet = get_legal_moves(&board, Some(&board_history));
+        let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
                 assert_eq!(
@@ -315,7 +311,8 @@ mod tests {
         let sadly_self_capture = is_self_capture(10, &board);
         assert_eq!(sadly_self_capture, true, "Sadly a3 is self capture");
 
-        let legal_moves: BitSet = get_legal_moves(&board, None);
+        let board_history: BoardHistory = HashSet::with_hasher(FxBuildHasher::default());
+        let legal_moves: BitSet = get_legal_moves(&board, &board_history);
         for n in 0..25 as usize {
             if legal_moves.contains(n) {
                 assert_eq!(

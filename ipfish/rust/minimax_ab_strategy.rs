@@ -23,7 +23,7 @@ pub fn minimax_ab_strategy(
 
     let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
-    for point in get_legal_moves(board, Some(board_history)) {
+    for point in get_legal_moves(board, board_history) {
         result[point] = minimax_alphabeta(
             &make_move(point, board),
             board_history,
@@ -86,7 +86,7 @@ fn minimax_alphabeta(
             // Maximizing
             // We start out with the current state of the board, as if we were to pass, and we want to find a move that improves that.
             let mut best_score: f64 = score(board);
-            for point in get_legal_moves(board, Some(board_history)) {
+            for point in get_legal_moves(board, board_history) {
                 let minimax_score: f64 = minimax_alphabeta(
                     &make_move(point, board),
                     &deeper_history,
@@ -108,7 +108,7 @@ fn minimax_alphabeta(
             let mut best_score: f64 = score(board);
 
             // <BEGIN HACK>, for white exclude points in black's territory. Unless they capture an enemy group.
-            let mut legal_moves: BitSet = get_legal_moves(board, Some(board_history));
+            let mut legal_moves: BitSet = get_legal_moves(board, board_history);
             let mut capture_moves: BitSet = BitSet::new();
             for legal_move in legal_moves {
                 if captures_enemy_group(legal_move, board) {

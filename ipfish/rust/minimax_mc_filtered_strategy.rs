@@ -63,7 +63,7 @@ pub fn minimax_mc_filtered_strategy(
     let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
     let mut mc_results: BTreeSet<MCResult> = BTreeSet::new();
-    let legal_moves: crate::bitset::BitSet = get_legal_moves(board, Some(board_history));
+    let legal_moves: crate::bitset::BitSet = get_legal_moves(board, board_history);
     for point in legal_moves {
         let mc_score: f64 = montecarlo_score(
             &make_move(point, board),
@@ -132,7 +132,7 @@ fn minimax(
             montecarlo_score(&pass_move(board), &deeper_history, simulation_count, rng);
 
         if board.player == Player::White {
-            for point in get_legal_moves(board, Some(board_history)) {
+            for point in get_legal_moves(board, board_history) {
                 let mc_score: f64 = montecarlo_score(
                     &make_move(point, board),
                     &deeper_history,
@@ -143,7 +143,7 @@ fn minimax(
                 best_score = best_score.min(mc_score);
             }
         } else {
-            for point in get_legal_moves(board, Some(board_history)) {
+            for point in get_legal_moves(board, board_history) {
                 let mc_score: f64 = montecarlo_score(
                     &make_move(point, board),
                     &deeper_history,

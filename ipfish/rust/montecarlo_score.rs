@@ -68,8 +68,8 @@ fn play_random_move(
     rng: &mut RNG,
 ) -> Option<Board> {
     let mut possible_moves: Vec<usize> = Vec::new();
-    let legal_for_opponent = get_legal_moves(&pass_move(board), Some(board_history));
-    for legal_move in get_legal_moves(&board, Some(board_history)) {
+    let legal_for_opponent = get_legal_moves(&pass_move(board), board_history);
+    for legal_move in get_legal_moves(&board, board_history) {
         // Only play in spaces surrounded by friendlies/walls if they're legal for the opponent.
         let mut true_eye: bool = true;
         for adjacent_point in get_adjacent_points(legal_move, &board) {
