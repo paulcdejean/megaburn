@@ -34,6 +34,9 @@ pub type RNG = Pcg64Mcg;
 /// # Arguments
 ///
 /// * `board_history` - All states the board has historically been in. The last element of the array is the current board position.
+/// * `komi` - The extra points white gets for the final score.
+/// * `turn` - Whether it's black or white's turn to play. Currently only black has been tested. Trying to analyze for white may crash or lead to bad moves.
+/// * `opponent_passed` - Whether the opponent passed last turn. This has important implications for analyzing the value of passing.
 #[wasm_bindgen]
 pub fn get_analysis(
     input_history: &js_sys::Array,
