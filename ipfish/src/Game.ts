@@ -120,6 +120,15 @@ export class Game {
     return false
   }
 
+  public getAnalysisBoard() : AnalaysisBoard {
+    return {
+      boardHistory: this.boardHistory,
+      komi: this.komi,
+      turn: this.turn,
+      passed: this.opponentPassed,
+    }
+  }
+
   private async realAnalysis() : Promise<Analysis> {
     const analysisBoard : AnalaysisBoard = {
       boardHistory: this.boardHistory,

@@ -126,6 +126,7 @@ pub fn get_lines(input_history: &js_sys::Array, komi: &js_sys::Number, turn: &js
       for line in mc_line.line {
         line_array.push(&js_sys::Number::from(line as i32));
       }
+      result.push(&line_object);
     }
     
     return result;

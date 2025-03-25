@@ -1,10 +1,10 @@
  
 import { NS, AutocompleteData, GoOpponent } from "@ns";
 import IpFish from "./ui/IpFish";
-import { Game } from "./Game"
+import { AnalaysisBoard, Game } from "./Game"
 import { analysisWorker } from "./analysisWorker";
 import { autoPlay } from "./autoPlay";
-import { get_lines } from "@rust"
+import { get_lines, MCLine } from "@rust"
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -25,10 +25,16 @@ export async function main(ns: NS): Promise<void> {
   const boardSize = 5
 
 
+  const worker = await analysisWorker(ns);
+
+  const game = new Game(ns, "Daedalus", boardSize, worker)
+
+  const analysisBoard : AnalaysisBoard = game.getAnalysisBoard()
+
+  const lines : MCLine[] = get_lines(analysisBoard.boardHistory, analysisBoard.komi, analysisBoard.turn, analysisBoard.passed)
+  ns.tprint(JSON.stringify(lines))
 
   ns.exit()
-
-  const worker = await analysisWorker(ns);
   if (ns.args[0] !== "analysis") {
     const argmap: Record<string, GoOpponent> = {
       "daedalus": "Daedalus",
@@ -51,7 +57,7 @@ export async function main(ns: NS): Promise<void> {
     await ipfish(ns, game)
 
     while (true) {
-      await ns.asleep(2000)
+      // await ns.asleep(2000)
     }
   }
 }
