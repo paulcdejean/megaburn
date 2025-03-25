@@ -2,7 +2,10 @@
 import { NS, AutocompleteData, GoOpponent } from "@ns";
 import IpFish from "./ui/IpFish";
 import { Game } from "./Game"
-import analysisWorker from "./worker/analysis?worker&inline"
+import { analysisWorker } from "./analysisWorker";
+import { autoPlay } from "./autoPlay";
+import { get_lines } from "@rust"
+
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function autocomplete(data: AutocompleteData, args: string[]) {
@@ -20,29 +23,12 @@ export function autocomplete(data: AutocompleteData, args: string[]) {
 export async function main(ns: NS): Promise<void> {
   ns.disableLog("ALL")
   const boardSize = 5
-  const worker = new analysisWorker()
 
-  ns.atExit(() => {
-    if(worker !== undefined) worker.terminate()
-  }, "worker")
 
-  const initalized = await new Promise((resolve, reject) => {
-    if (worker === undefined) {
-      reject("Worker non existent during init")
-    } else {
-      worker.onmessage = (event : MessageEvent<string>) => {
-        resolve(event.data) 
-      }
-      worker.onerror = (event) => {
-        reject(`Worker init onerror triggered ${event.message}`)
-      }
-      worker.onmessageerror = (event) => {
-        reject(`Worker init onmessageerror triggered ${event.data}`)
-      }
-    }
-  })
-  ns.tprint(`Go worker ${initalized}`)
 
+  ns.exit()
+
+  const worker = await analysisWorker(ns);
   if (ns.args[0] !== "analysis") {
     const argmap: Record<string, GoOpponent> = {
       "daedalus": "Daedalus",
@@ -52,31 +38,14 @@ export async function main(ns: NS): Promise<void> {
       "tetrads": "Tetrads",
       "illuminati": "Illuminati",
     }
-
     let opponent : GoOpponent
     if (ns.args[0] as string in argmap) {
       opponent = argmap[ns.args[0] as string]
     } else {
       opponent = "Daedalus"
     }
-
-    while (true) {
-      const squareCount = boardSize ** 2
-      const game = new Game(ns, opponent, boardSize, worker)
-      while (ns.go.getCurrentPlayer() !== "None") {
-        const analysis = await game.analysis()
-        if (analysis.bestMove == squareCount) {
-          const isGameOver = await game.passTurn()
-          if (isGameOver) {
-            break
-          }
-        } else {
-          const bestMoveColumn = Math.floor(analysis.bestMove % game.boardSize)
-          const bestMoveRow = Math.floor(analysis.bestMove / game.boardSize)
-          await game.makeMove(bestMoveRow, bestMoveColumn)
-        }
-      }
-    }
+    // Will run forever.
+    await autoPlay(ns, boardSize, opponent, worker)
   } else {
     const game = new Game(ns, "Daedalus", boardSize, worker)
     await ipfish(ns, game)
@@ -85,7 +54,6 @@ export async function main(ns: NS): Promise<void> {
       await ns.asleep(2000)
     }
   }
-
 }
 
 export async function ipfish(ns: NS, game : Game): Promise<void> {
