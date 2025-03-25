@@ -6,6 +6,7 @@ pub mod get_adjacent_points;
 pub mod get_legal_moves;
 pub mod is_in_atari;
 pub mod make_move;
+pub mod mc_lines;
 pub mod minimax_ab_strategy;
 pub mod minimax_mc_filtered_strategy;
 pub mod montecarlo_score;
@@ -13,16 +14,15 @@ pub mod pass_move;
 pub mod pick_strategy;
 pub mod player;
 pub mod point_state;
-pub mod mc_lines;
 
 use core::f64;
+use mc_lines::{MCLine, mc_lines};
 use rand::SeedableRng;
 use rand_pcg::Pcg64Mcg;
 use rustc_hash::FxBuildHasher;
 use std::collections::HashSet;
 use std::panic;
 use wasm_bindgen::prelude::*;
-use mc_lines::{mc_lines, MCLine};
 
 use crate::board::{Board, BoardHistory};
 use crate::pick_strategy::pick_strategy;
@@ -64,7 +64,6 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
 
     return js_sys::Float64Array::from(result.as_slice());
 }
-
 
 #[wasm_bindgen(typescript_custom_section)]
 const TS_APPEND_CONTENT: &'static str = r#"
@@ -108,26 +107,33 @@ pub fn get_lines(input_history: &js_sys::Array, komi: &js_sys::Number, turn: &js
 
     #[allow(unused)]
     let mc_lines: Vec<MCLine> = mc_lines(&board, &board_history, opponent_passed.value_of(), &mut rng);
-    
+
     // TEMP
     let mut mc_lines: Vec<MCLine> = Vec::new();
     mc_lines.push(MCLine {
-      score: 9.9,
-      line: vec![1, 2 ,3]
+        score: 9.9,
+        line: vec![1, 2, 3],
     });
     // TEMP
 
-    let result: js_sys::Array = js_sys::Array::new();
-    for mc_line in mc_lines {
-      let line_object: js_sys::Object = js_sys::Object::new();
-      let line_array: js_sys::Array = js_sys::Array::new();
-      let _ = js_sys::Reflect::set(&line_object, &js_sys::JsString::from("score"), &js_sys::Number::from(mc_line.score));
-      let _ = js_sys::Reflect::set(&line_object, &js_sys::JsString::from("line"), &line_array);
-      for line in mc_line.line {
-        line_array.push(&js_sys::Number::from(line as i32));
-      }
-      result.push(&line_object);
+    let result: Result<js_sys::Array, JsValue> = mc_lines_vec_to_result(mc_lines);
+    match result {
+        Ok(v) => return v,
+        Err(e) => wasm_bindgen::throw_val(e),
     }
-    
-    return result;
+}
+
+fn mc_lines_vec_to_result(input: Vec<MCLine>) -> Result<js_sys::Array, JsValue> {
+    let result: js_sys::Array = js_sys::Array::new();
+    for mc_line in input {
+        let line_object: js_sys::Object = js_sys::Object::new();
+        let line_array: js_sys::Array = js_sys::Array::new();
+        js_sys::Reflect::set(&line_object, &js_sys::JsString::from("score"), &js_sys::Number::from(mc_line.score))?;
+        js_sys::Reflect::set(&line_object, &js_sys::JsString::from("line"), &line_array)?;
+        for line in mc_line.line {
+            line_array.push(&js_sys::Number::from(line as i32));
+        }
+        result.push(&line_object);
+    }
+    return Ok(result);
 }
