@@ -49,7 +49,7 @@ Top level is 2500 simulations
 /// Returns a vec evaluating the strength of different moves, and suitable to be returned to the js.
 pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory, opponent_passed: bool, rng: &mut RNG) -> Vec<f64> {
     let minimax_depth: usize = 1;
-    let simulation_count: i32 = 50;
+    let simulation_count: u32 = 50;
 
     let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
@@ -84,11 +84,11 @@ pub fn minimax_mc_filtered_strategy(board: &Board, board_history: &BoardHistory,
 /// Private function! This is the score according to the minimax algorithm.
 /// This is the value it's trying to minimize and maximize.
 /// Changing the scoring algorithm will significantly alter the behavior of the minimax algorithm.
-fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG, simulation_count: i32) -> f64 {
+fn score(board: &Board, board_history: &BoardHistory, rng: &mut RNG, simulation_count: u32) -> f64 {
     return montecarlo_score(board, board_history, simulation_count, rng);
 }
 
-fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, simulation_count: i32) -> f64 {
+fn minimax(board: &Board, board_history: &BoardHistory, depth: usize, rng: &mut RNG, simulation_count: u32) -> f64 {
     // Depth zero doesn't make much sense, but lets include it anyway.
     if depth < 1 {
         return score(board, board_history, rng, simulation_count);

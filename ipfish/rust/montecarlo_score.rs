@@ -24,7 +24,7 @@ pub enum Winner {
 ///
 /// * `board` - The board state to evaluate.
 /// * `simulation_count` - The number of montecarlo simulations to run.
-pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_count: i32, rng: &mut RNG) -> f64 {
+pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_count: u32, rng: &mut RNG) -> f64 {
     let mut black_wins: i32 = 0;
 
     for _ in 0..simulation_count {
