@@ -1,7 +1,4 @@
-#![allow(warnings)]
-
 use rand::prelude::*;
-use rand_pcg::Pcg64Mcg;
 use rustc_hash::FxBuildHasher;
 use std::collections::HashSet;
 
