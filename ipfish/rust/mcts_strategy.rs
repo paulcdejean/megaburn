@@ -1,26 +1,5 @@
-#![allow(warnings)]
-
-/*
-
-Node:
-
-* Board state
-* Player to play
-* Opponent passed
-* Child nodes
-
-
-UCT:
-
-win_ratio_of_the_child + constant * sqrt(ln(number_of_visits_parent / number_of_visits_child))
-
-
-*/
-
 use core::f64;
-use hashbrown::hash_map::EntryRef;
 use hashbrown::HashMap;
-use rand::seq;
 
 use crate::board::{Board, BoardHistory};
 use crate::montecarlo_score::montecarlo_score;
@@ -71,16 +50,43 @@ fn initialize_tree(board: Board) -> MCTree {
 /// * `board_history` - The historical board states, used for superko.
 /// * `playout_count` - The number of MC playouts to do on leaf nodes. We do actual MC playouts because no neural network.
 fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_count: u32, rng: &mut RNG) {
-  let mut sequence:Vec<usize> = get_favorite_sequence(tree);
+  let mut sequence: Vec<usize> = get_favorite_sequence(tree);
+  // Rust discord gave me permission to use unwrap.
   let leaf: &mut Node = tree.get_mut(&sequence).unwrap();
-
   leaf.blackwins = montecarlo_score(&leaf.board, board_history, simulation_count, rng);
   leaf.whitewins = simulation_count as f64 - leaf.blackwins;
-  leaf.children.insert(get_legal_moves(&leaf.board, board_history));
 
+  // Populate children.
+  let child_moves: BitSet = get_legal_moves(&leaf.board, board_history);
+  leaf.favored_child.insert(child_moves.first());
+  leaf.children.insert(child_moves);
+  // We need to clone here, because the board could move around in memory once we start inserting into the HashMap.
+  let leaf_board: Board = leaf.board.clone();
+  for child in child_moves {
+    let child_node: Node = Node {
+      board: make_move(child, &leaf_board),
+      blackwins: 0.0,
+      whitewins: 0.0,
+      uct: f64::INFINITY,
+      children: None,
+      favored_child: None,
+    };
+    sequence.push(child);
+    tree.insert(sequence.clone(), child_node);
+    sequence.pop(); 
+  }
+
+  // Backpropegation of winrates and UCT scores.
+  // TODO
 }
 
-fn get_favorite_sequence(tree: &mut HashMap<Vec<usize>, Node>) -> Vec<usize> {
+/// Get the move sequence that we want to explore next, as per the algorithm.
+/// This will be a board position that we have not scored yet.
+/// Also known as a leaf node.
+/// # Arguments
+///
+/// * `tree` - The tree to get a leaf of.
+fn get_favorite_sequence(tree: &mut MCTree) -> Vec<usize> {
   let mut sequence: Vec<usize> = Vec::new();
   while let Some(node) = tree.get(&sequence) {
     match node.favored_child {

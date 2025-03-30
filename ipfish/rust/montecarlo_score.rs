@@ -7,6 +7,8 @@ use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::pass_move::pass_move;
 use crate::point_state::PointState;
+use crate::bitset::BitSet;
+
 use rand::seq::IndexedRandom;
 
 #[repr(i32)]

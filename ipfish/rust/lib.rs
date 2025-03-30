@@ -7,9 +7,6 @@ pub mod get_adjacent_points;
 pub mod get_legal_moves;
 pub mod is_in_atari;
 pub mod make_move;
-pub mod mc_lines;
-pub mod minimax_ab_strategy;
-pub mod minimax_mc_filtered_strategy;
 pub mod montecarlo_score;
 pub mod pass_move;
 pub mod pick_strategy;
@@ -18,7 +15,6 @@ pub mod point_state;
 pub mod mcts_strategy;
 
 use core::f64;
-use mc_lines::MCLine;
 use rand::SeedableRng;
 use rand_pcg::Pcg64Mcg;
 use rustc_hash::FxBuildHasher;

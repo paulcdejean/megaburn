@@ -20,6 +20,9 @@ impl BitSet {
     pub fn len(&self) -> usize {
         return self.bits.count_ones() as usize;
     }
+    pub fn first(&self) -> usize {
+        return self.bits.leading_zeros() as usize;
+    }
 }
 
 impl BitOr for BitSet {
