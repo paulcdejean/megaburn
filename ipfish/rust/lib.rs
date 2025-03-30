@@ -7,12 +7,12 @@ pub mod get_adjacent_points;
 pub mod get_legal_moves;
 pub mod is_in_atari;
 pub mod make_move;
+pub mod mcts_strategy;
 pub mod montecarlo_score;
 pub mod pass_move;
 pub mod pick_strategy;
 pub mod player;
 pub mod point_state;
-pub mod mcts_strategy;
 
 use core::f64;
 use rand::SeedableRng;
