@@ -11,7 +11,7 @@ use crate::bitset::BitSet;
 
 use rand::seq::IndexedRandom;
 
-#[repr(i32)]
+#[repr(u32)]
 #[derive(Clone, Copy, Eq, Hash, Ord, PartialEq, PartialOrd, Debug)]
 pub enum Winner {
     WhiteWin = 0,
@@ -26,14 +26,13 @@ pub enum Winner {
 ///
 /// * `board` - The board state to evaluate.
 /// * `simulation_count` - The number of montecarlo simulations to run.
-pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_count: u32, rng: &mut RNG) -> f64 {
-    let mut black_wins: i32 = 0;
+pub fn montecarlo_score(board: &Board, board_history: &BoardHistory, simulation_count: u32, rng: &mut RNG) -> u32 {
+    let mut black_wins: u32 = 0;
 
     for _ in 0..simulation_count {
-        black_wins = black_wins + montecarlo_simulation(board.clone(), board_history.clone(), rng) as i32;
+        black_wins += montecarlo_simulation(board.clone(), board_history.clone(), rng) as u32;
     }
-
-    return f64::from(black_wins) / f64::from(simulation_count) - 0.5;
+    return black_wins;
 }
 
 pub fn montecarlo_simulation(mut board: Board, mut board_history: BoardHistory, rng: &mut RNG) -> Winner {

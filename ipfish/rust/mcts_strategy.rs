@@ -53,7 +53,7 @@ fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_coun
   let mut sequence: Vec<usize> = get_favorite_sequence(tree);
   // Rust discord gave me permission to use unwrap.
   let leaf: &mut Node = tree.get_mut(&sequence).unwrap();
-  leaf.blackwins = montecarlo_score(&leaf.board, board_history, simulation_count, rng);
+  leaf.blackwins = montecarlo_score(&leaf.board, board_history, simulation_count, rng) as f64;
   leaf.whitewins = simulation_count as f64 - leaf.blackwins;
 
   // Populate children.
