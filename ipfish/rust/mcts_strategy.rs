@@ -1,5 +1,5 @@
 use core::f64;
-use hashbrown::HashMap;
+use std::collections::HashMap;
 
 use crate::player::Player;
 use crate::RNG;
@@ -80,7 +80,7 @@ fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_coun
 
     // Backpropegation of winrates and UCT scores.
     while sequence.pop().is_some() {
-        let parent_node: &mut Node = tree.get_mut(&sequence).expect("Parent node not found during mcts playout backpropegation!");
+        let parent_node: &Node = tree.get(&sequence).expect("Parent node not found during mcts playout backpropegation!");
 
         // Update wins.
         let parent_blackwins: f64 = parent_node.blackwins + mc_wins;
@@ -102,6 +102,7 @@ fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_coun
             );
         }
 
+        // Parent needs to be updated down here because I keep fighting with the borrow checker...
         let parent_node: &mut Node = tree.get_mut(&sequence).expect("Parent node not found during mcts playout backpropegation!");
         parent_node.blackwins = parent_blackwins;
         parent_node.whitewins = parent_whitewins;
