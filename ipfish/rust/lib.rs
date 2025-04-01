@@ -58,7 +58,7 @@ pub fn get_analysis(input_history: &js_sys::Array, komi: &js_sys::Number, turn: 
 
     let mut rng: RNG = RNG::seed_from_u64(js_sys::Math::random().to_bits());
 
-    let result: Vec<f64> = pick_strategy(&board, &board_history, opponent_passed.value_of(), &mut rng);
+    let result: Vec<f64> = pick_strategy(board, board_history, opponent_passed.value_of(), &mut rng);
 
     return js_sys::Float64Array::from(result.as_slice());
 }
