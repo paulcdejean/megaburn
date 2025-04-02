@@ -153,11 +153,14 @@ fn uct_score(player: Player, parent_blackwins: f64, parent_whitewins: f64, child
 fn get_favorite_sequence(tree: &mut MCTree) -> Vec<usize> {
     assert!(tree.len() > 0);
     let mut sequence: Vec<usize> = Vec::new();
-    while let Some(node) = tree.get(&sequence) {
+    loop {
+        let node = match tree.get(&sequence) {
+            Some(s) => s,
+            None => panic!("No tree element {:?}", sequence),
+        };
         match node.favored_child.get() {
             Some(s) => sequence.push(s),
             None => return sequence,
         }
     }
-    panic!("This shouldn't be reached. Did you pass a MCTree with no root?");
 }
