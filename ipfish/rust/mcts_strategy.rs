@@ -12,6 +12,7 @@ use crate::montecarlo_score::montecarlo_score;
 
 const UCT_CONST: f64 = 42.0;
 
+#[derive(Clone, Debug)]
 pub struct Node {
     pub blackwins: Cell<f64>,
     pub whitewins: Cell<f64>,
@@ -156,7 +157,7 @@ fn get_favorite_sequence(tree: &mut MCTree) -> Vec<usize> {
     loop {
         let node = match tree.get(&sequence) {
             Some(s) => s,
-            None => panic!("No tree element {:?}", sequence),
+            None => panic!("No tree element {:?}. Tree dump: {:?}", sequence, tree),
         };
         match node.favored_child.get() {
             Some(s) => sequence.push(s),
