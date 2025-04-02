@@ -18,7 +18,7 @@ const UCT_CONST: f64 = 42.0;
 pub struct Node {
     pub blackwins: Cell<f64>,
     pub whitewins: Cell<f64>,
-    pub favored_child: Cell<usize>,
+    pub favored_child: Cell<Option<usize>>,
     pub board: Board,
     pub children: BitSet,
 }
@@ -81,21 +81,37 @@ fn initialize_tree(board: Board, board_history: &BoardHistory) -> MCTree {
 fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_count: u32, rng: &mut RNG) {
     // This returns a sequences to a not yet existing leaf.
     let mut sequence: Vec<usize> = get_favorite_sequence(tree);
-    let favored_move: usize = sequence.pop().expect("Somehow the favored sequence was empty?");
-    let parent_node: &Node = tree.get(&sequence).expect("Somehow the favored sequence doesn't have a parent?");
-    let new_board: Board = make_move(favored_move, &parent_node.board);
-    let leaf_blackwins: f64 = montecarlo_score(&new_board, board_history, simulation_count, rng) as f64;
-    let leaf_whitewins: f64 = simulation_count as f64 - leaf_blackwins;
-    let leaf_children: BitSet = get_legal_moves(&new_board, &board_history);
-    let leaf: Node = Node {
-        blackwins: Cell::new(leaf_blackwins),
-        whitewins: Cell::new(leaf_whitewins),
-        favored_child: Cell::new(leaf_children.first()),
-        board: new_board,
-        children: leaf_children,
-    };
-    sequence.push(favored_move);
-    tree.insert(sequence.clone(), leaf);
+    let leaf_blackwins: f64;
+    let leaf_whitewins: f64;
+    match tree.get(&sequence) {
+        // This is the usual case.
+        None => {
+            let favored_move: usize = sequence.pop().expect("Somehow the favored sequence was empty?");
+            let parent_node: &Node = tree.get(&sequence).expect("Somehow the favored sequence doesn't have a parent?");
+            let new_board: Board = make_move(favored_move, &parent_node.board);
+            leaf_blackwins = montecarlo_score(&new_board, board_history, simulation_count, rng) as f64;
+            leaf_whitewins = simulation_count as f64 - leaf_blackwins;
+            let leaf_children: BitSet = get_legal_moves(&new_board, &board_history);
+            let leaf: Node = Node {
+                blackwins: Cell::new(leaf_blackwins),
+                whitewins: Cell::new(leaf_whitewins),
+                favored_child: Cell::new(leaf_children.first()),
+                board: new_board,
+                children: leaf_children,
+            };
+            sequence.push(favored_move);
+            tree.insert(sequence.clone(), leaf);
+        }
+        // Happens in endgame, when there's no legal followup moves.
+        // We just do another simulation cause why not.
+        Some(s) => {
+            assert!(s.favored_child.get().is_none());
+            leaf_blackwins = s.blackwins.get() + montecarlo_score(&s.board, board_history, simulation_count, rng) as f64;
+            leaf_whitewins = s.whitewins.get() + simulation_count as f64 - leaf_blackwins;
+            s.blackwins.set(leaf_blackwins);
+            s.whitewins.set(leaf_whitewins);
+        }
+    }
 
     // Backpropegation of winrates and UCT scores.
     while sequence.pop().is_some() {
@@ -113,7 +129,7 @@ fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_coun
             match tree.get(&child_sequence) {
                 // Unexplored children get top priority.
                 None => {
-                    parent_node.favored_child.set(child);
+                    parent_node.favored_child.set(Some(child));
                     break;
                 }
                 Some(s) => {
@@ -127,7 +143,7 @@ fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_coun
                     );
                     if uct_score > best_uct_score {
                         best_uct_score = uct_score;
-                        parent_node.favored_child.set(child);
+                        parent_node.favored_child.set(Some(child));
                     }
                 }
             }
@@ -158,7 +174,10 @@ fn get_favorite_sequence(tree: &mut MCTree) -> Vec<usize> {
     let mut sequence: Vec<usize> = Vec::new();
     loop {
         match tree.get(&sequence) {
-            Some(s) => sequence.push(s.favored_child.get()),
+            Some(node) => match node.favored_child.get() {
+                Some(s) => sequence.push(s),
+                None => return sequence,
+            },
             None => return sequence,
         }
     }

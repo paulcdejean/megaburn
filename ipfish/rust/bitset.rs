@@ -20,8 +20,11 @@ impl BitSet {
     pub fn len(&self) -> usize {
         return self.bits.count_ones() as usize;
     }
-    pub fn first(&self) -> usize {
-        return self.bits.trailing_zeros() as usize;
+    pub fn first(&self) -> Option<usize> {
+        if self.empty() { None } else { Some(self.bits.trailing_zeros() as usize) }
+    }
+    pub fn empty(&self) -> bool {
+        self.bits == 0
     }
 }
 
