@@ -20,19 +20,19 @@ pub fn minimax_ab_strategy(board: &Board, board_history: &BoardHistory, opponent
     let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
 
     for point in get_legal_moves_strict(board, board_history) {
-        result[point] = minimax_alphabeta(&make_move(point, board), board_history, minimax_depth, alpha, beta);
+        result[point] = minimax_alphabeta(&make_move(point, board), board_history, minimax_depth, alpha, beta) + 10.0;
     }
 
     let result_score: f64 = final_score(board);
     match opponent_passed {
         false => {
             if result_score > 0.0 {
-                result[board.board.len()] = minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta)
+                result[board.board.len()] = minimax_alphabeta(&pass_move(board), board_history, minimax_depth, alpha, beta) + 10.0;
             }
         }
         true => {
             if result_score > 0.0 {
-                result[board.board.len()] = result_score;
+                result[board.board.len()] = result_score + 10.0;
             }
         }
     }
