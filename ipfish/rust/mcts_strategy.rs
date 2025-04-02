@@ -34,7 +34,7 @@ pub type MCTree = HashMap<Vec<usize>, Node>;
 /// * `rng` - RNG used for MC playouts.
 pub fn mcts_strategy(board: Board, board_history: BoardHistory, rng: &mut RNG) -> MCTree {
     // The number of playouts to do at a time when doing evaluations.
-    let simulation_batch_size: u32 = 50;
+    let simulation_batch_size: u32 = 10;
 
     // The number of playouts to do in total.
     let playout_count: u32 = 20000;
