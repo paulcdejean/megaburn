@@ -31,16 +31,27 @@ fn main() {
 
 use hashbrown::HashMap;
 
-
 fn working() {
     struct Example {
         a: Cell<f64>,
         b: Cell<f64>,
     }
-    
+
     let mut hm: HashMap<u32, Example> = HashMap::new();
-    hm.insert(7, Example {a: Cell::new(3.14), b: Cell::new(0.0)});
-    hm.insert(8, Example {a: Cell::new(2.71), b: Cell::new(0.0)});
+    hm.insert(
+        7,
+        Example {
+            a: Cell::new(3.14),
+            b: Cell::new(0.0),
+        },
+    );
+    hm.insert(
+        8,
+        Example {
+            a: Cell::new(2.71),
+            b: Cell::new(0.0),
+        },
+    );
 
     let mut result: f64 = 0.0;
     let seven_ref = hm.get(&7).unwrap();
@@ -60,8 +71,8 @@ fn working_unsafe() {
         b: f64,
     }
     let mut hm: HashMap<u32, Example> = HashMap::new();
-    hm.insert(7, Example {a: 3.14, b: 0.0});
-    hm.insert(8, Example {a: 2.71, b: 0.0});
+    hm.insert(7, Example { a: 3.14, b: 0.0 });
+    hm.insert(8, Example { a: 2.71, b: 0.0 });
 
     unsafe {
         let seven_ref: *const Example = hm.get(&7).unwrap();

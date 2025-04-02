@@ -2,13 +2,13 @@ use core::f64;
 use std::cell::Cell;
 use std::collections::HashMap;
 
-use crate::player::Player;
 use crate::RNG;
 use crate::bitset::BitSet;
 use crate::board::{Board, BoardHistory};
 use crate::get_legal_moves::get_legal_moves;
 use crate::make_move::make_move;
 use crate::montecarlo_score::montecarlo_score;
+use crate::player::Player;
 
 const UCT_CONST: f64 = 42.0;
 
@@ -106,8 +106,8 @@ fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_coun
         let parent_node: &Node = tree.get(&sequence).expect("Parent node not found during mcts playout backpropegation!");
 
         // Update wins.
-        parent_node.blackwins.set(parent_node.blackwins.get()  + mc_wins);
-        parent_node.whitewins.set(parent_node.whitewins.get()  + mc_wins);
+        parent_node.blackwins.set(parent_node.blackwins.get() + mc_wins);
+        parent_node.whitewins.set(parent_node.whitewins.get() + mc_wins);
 
         // Pick a new favored child based on UCT score.
         let mut best_uct_score: f64 = f64::NEG_INFINITY;
@@ -115,14 +115,18 @@ fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_coun
             let mut child_sequence: Vec<usize> = sequence.clone();
             child_sequence.push(child);
             let child_node: &Node = tree.get(&child_sequence).expect("Child node not found during mcts playing backpropegation!");
-            let uct_score = uct_score(
-              child_node.board.player,
-              parent_node.blackwins.get(),
-              parent_node.whitewins.get(),
-              child_node.blackwins.get(),
-              child_node.whitewins.get(),
-              UCT_CONST,
-            );
+            let uct_score: f64 = match child_node.favored_child.get() {
+                // Unexplored nodes have a infinite score.
+                None => f64::INFINITY,
+                Some(_) => uct_score(
+                    child_node.board.player,
+                    parent_node.blackwins.get(),
+                    parent_node.whitewins.get(),
+                    child_node.blackwins.get(),
+                    child_node.whitewins.get(),
+                    UCT_CONST,
+                ),
+            };
 
             if uct_score > best_uct_score {
                 best_uct_score = uct_score;
@@ -134,15 +138,15 @@ fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_coun
 
 /// https://www.chessprogramming.org/UCT
 fn uct_score(player: Player, parent_blackwins: f64, parent_whitewins: f64, child_blackwins: f64, child_whitewins: f64, uct_constant: f64) -> f64 {
-  let number_of_times_parent_has_been_visited: f64 = parent_blackwins + parent_whitewins;
-  let number_of_times_child_has_been_visited: f64 = child_blackwins + child_whitewins;
-  let win_ratio_of_child: f64 = match player {
-    Player::Black => child_blackwins / number_of_times_child_has_been_visited,
-    Player::White => child_whitewins / number_of_times_child_has_been_visited,
-  };
-  
-  let part_under_sqrt: f64 = number_of_times_parent_has_been_visited.ln() / number_of_times_child_has_been_visited;
-  return win_ratio_of_child + uct_constant * part_under_sqrt.sqrt();
+    let number_of_times_parent_has_been_visited: f64 = parent_blackwins + parent_whitewins;
+    let number_of_times_child_has_been_visited: f64 = child_blackwins + child_whitewins;
+    let win_ratio_of_child: f64 = match player {
+        Player::Black => child_blackwins / number_of_times_child_has_been_visited,
+        Player::White => child_whitewins / number_of_times_child_has_been_visited,
+    };
+
+    let part_under_sqrt: f64 = number_of_times_parent_has_been_visited.ln() / number_of_times_child_has_been_visited;
+    return win_ratio_of_child + uct_constant * part_under_sqrt.sqrt();
 }
 
 /// Get the move sequence that we want to explore next, as per the algorithm.
@@ -152,7 +156,6 @@ fn uct_score(player: Player, parent_blackwins: f64, parent_whitewins: f64, child
 ///
 /// * `tree` - The tree to get a leaf of.
 fn get_favorite_sequence(tree: &mut MCTree) -> Vec<usize> {
-    assert!(tree.len() > 0);
     let mut sequence: Vec<usize> = Vec::new();
     loop {
         let node = match tree.get(&sequence) {

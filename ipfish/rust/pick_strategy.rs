@@ -1,7 +1,7 @@
-use crate::mcts_strategy::{mcts_strategy, MCTree, Node};
 use crate::RNG;
 use crate::board::{Board, BoardHistory};
 use crate::get_legal_moves::get_legal_moves_strict;
+use crate::mcts_strategy::{MCTree, Node, mcts_strategy};
 use crate::montecarlo_score::montecarlo_score;
 
 /// Heuristically pick a strategy based on the in game situation and give the evaluation of that strategy.
@@ -14,6 +14,8 @@ pub fn pick_strategy(board: Board, board_history: BoardHistory, opponent_passed:
     let tree: MCTree = mcts_strategy(board, board_history, rng);
     let tree_root: &Node = tree.get([].as_slice()).expect("Tree root not found!");
     let total_score: f64 = tree_root.blackwins.get() / (tree_root.blackwins.get() + tree_root.whitewins.get());
+
+    panic!("Tree dump: {:?}", tree.keys());
 
     let pass_result: usize = result.len() - 1;
     result[pass_result] = total_score;
