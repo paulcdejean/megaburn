@@ -35,7 +35,7 @@ pub fn mcts_strategy(board: Board, board_history: BoardHistory, rng: &mut RNG) -
     let simulation_batch_size: u32 = 100;
 
     // The number of playouts to do in total.
-    let playout_count: u32 = 300000;
+    let playout_count: u32 = 30000;
 
     // The number of playout batches to run.
     let playout_batches: u32 = playout_count / simulation_batch_size;
