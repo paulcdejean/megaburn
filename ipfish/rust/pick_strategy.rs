@@ -22,7 +22,7 @@ pub fn pick_strategy(board: Board, board_history: BoardHistory, opponent_passed:
     for point in legal_moves {
         let branch: &Node = tree.get([point].as_slice()).expect("Tree branch not found!");
         let branch_score: f64 = branch.blackwins.get() / (branch.blackwins.get() + branch.whitewins.get()) - 0.5;
-        result[point] = branch.blackwins.get();
+        result[point] = branch.whitewins.get();
     }
 
     return result;
