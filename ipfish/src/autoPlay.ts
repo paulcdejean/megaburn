@@ -15,6 +15,11 @@ export async function autoPlay(ns : NS, boardSize: 5 | 7 | 9 | 13, opponent : Go
       } else {
         const bestMoveColumn = Math.floor(analysis.bestMove % game.boardSize)
         const bestMoveRow = Math.floor(analysis.bestMove / game.boardSize)
+        if (analysis.analysis[analysis.bestMove] < 0.2) {
+          ns.tprint("Blunder detected, gameplay stopped!")
+          ns.exit()
+        }
+
         await game.makeMove(bestMoveRow, bestMoveColumn)
       }
     }
