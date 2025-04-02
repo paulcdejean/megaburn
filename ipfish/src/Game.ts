@@ -156,10 +156,10 @@ export class Game {
   }
 
   public async analysis() : Promise<Analysis> {
-    // const analysisStart = performance.now()
+    const analysisStart = performance.now()
     const analysis = await this.realAnalysis()
-    // const analysisTime = performance.now() - analysisStart
-    // this.ns.tprint(`Completed analysis in ${this.ns.tFormat(analysisTime, true)}`)
+    const analysisTime = performance.now() - analysisStart
+    this.ns.tprint(`Completed analysis in ${this.ns.tFormat(analysisTime, true)}`)
     return analysis
   }
 }
