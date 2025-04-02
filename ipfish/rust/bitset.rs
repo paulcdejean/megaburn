@@ -21,7 +21,7 @@ impl BitSet {
         return self.bits.count_ones() as usize;
     }
     pub fn first(&self) -> usize {
-        return self.bits.leading_zeros() as usize;
+        return self.bits.trailing_zeros() as usize;
     }
 }
 
