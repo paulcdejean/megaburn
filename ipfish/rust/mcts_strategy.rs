@@ -151,6 +151,7 @@ fn uct_score(player: Player, parent_blackwins: f64, parent_whitewins: f64, child
 ///
 /// * `tree` - The tree to get a leaf of.
 fn get_favorite_sequence(tree: &mut MCTree) -> Vec<usize> {
+    assert!(tree.len() > 0);
     let mut sequence: Vec<usize> = Vec::new();
     while let Some(node) = tree.get(&sequence) {
         match node.favored_child.get() {
