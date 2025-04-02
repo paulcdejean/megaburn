@@ -34,10 +34,10 @@ pub type MCTree = HashMap<Vec<usize>, Node>;
 /// * `rng` - RNG used for MC playouts.
 pub fn mcts_strategy(board: Board, board_history: BoardHistory, rng: &mut RNG) -> MCTree {
     // The number of playouts to do at a time when doing evaluations.
-    let simulation_batch_size: u32 = 100;
+    let simulation_batch_size: u32 = 50;
 
     // The number of playouts to do in total.
-    let playout_count: u32 = 250000;
+    let playout_count: u32 = 20000;
 
     // The number of playout batches to run.
     let playout_batches: u32 = playout_count / simulation_batch_size;
@@ -106,8 +106,9 @@ fn mcts_playout(tree: &mut MCTree, board_history: &BoardHistory, simulation_coun
         // We just do another simulation cause why not.
         Some(s) => {
             assert!(s.favored_child.get().is_none());
-            leaf_blackwins = s.blackwins.get() + montecarlo_score(&s.board, board_history, simulation_count, rng) as f64;
-            leaf_whitewins = s.whitewins.get() + simulation_count as f64 - leaf_blackwins;
+            let mc_wins: f64 = montecarlo_score(&s.board, board_history, simulation_count, rng) as f64;
+            leaf_blackwins = s.blackwins.get() + mc_wins;
+            leaf_whitewins = s.whitewins.get() + simulation_count as f64 - mc_wins;
             s.blackwins.set(leaf_blackwins);
             s.whitewins.set(leaf_whitewins);
         }
