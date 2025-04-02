@@ -12,7 +12,7 @@ use crate::make_move::make_move;
 use crate::montecarlo_score::montecarlo_score;
 use crate::player::Player;
 
-const UCT_CONST: f64 = 42.0;
+const UCT_CONST: f64 = 0.5;
 
 #[derive(Clone, Debug)]
 pub struct Node {
@@ -46,6 +46,8 @@ pub fn mcts_strategy(board: Board, board_history: BoardHistory, rng: &mut RNG) -
     for _ in 0..playout_batches {
         mcts_playout(&mut tree, &board_history, simulation_batch_size, rng);
     }
+
+    // panic!("{:?}", tree);
 
     return tree;
 }
