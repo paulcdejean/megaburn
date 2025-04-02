@@ -12,7 +12,7 @@ use crate::make_move::make_move;
 use crate::montecarlo_score::montecarlo_score;
 use crate::player::Player;
 
-const UCT_CONST: f64 = 0.05;
+const UCT_CONST: f64 = 42.0;
 
 #[derive(Clone, Debug)]
 pub struct Node {
@@ -34,10 +34,10 @@ pub type MCTree = HashMap<Vec<usize>, Node>;
 /// * `rng` - RNG used for MC playouts.
 pub fn mcts_strategy(board: Board, board_history: BoardHistory, rng: &mut RNG) -> Vec<f64> {
     // The number of playouts to do at a time when doing evaluations.
-    let simulation_batch_size: u32 = 50;
+    let simulation_batch_size: u32 = 25;
 
     // The number of playouts to do in total.
-    let playout_count: u32 = 200000;
+    let playout_count: u32 = 65000;
 
     // The number of playout batches to run.
     let playout_batches: u32 = playout_count / simulation_batch_size;
@@ -55,13 +55,17 @@ pub fn mcts_strategy(board: Board, board_history: BoardHistory, rng: &mut RNG) -
     for point in legal_moves {
         let mut score: f64 = f64::INFINITY;
         match tree.get([point].as_slice()) {
-            None => continue,
+            None => panic!("No analysis found for legal move {}", point),
             Some(node) => {
+                let average_score: f64 = node.blackwins.get() / (node.blackwins.get() + node.whitewins.get()) - 0.5;
+                score = score.min(average_score);
                 for response in node.children {
                     match tree.get([point, response].as_slice()) {
-                        None => continue,
+                        None => {
+                            continue;
+                        },
                         Some(s) => {
-                            let winrate: f64 = s.blackwins.get() / (s.whitewins.get() + s.blackwins.get());
+                            let winrate: f64 = s.blackwins.get() / (s.whitewins.get() + s.blackwins.get()) - 0.5;
                             score = score.min(winrate);
                         }
                     }
