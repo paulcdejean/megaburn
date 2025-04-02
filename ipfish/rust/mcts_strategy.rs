@@ -12,7 +12,7 @@ use crate::make_move::make_move;
 use crate::montecarlo_score::montecarlo_score;
 use crate::player::Player;
 
-const UCT_CONST: f64 = 0.5;
+const UCT_CONST: f64 = 0.05;
 
 #[derive(Clone, Debug)]
 pub struct Node {
@@ -32,24 +32,51 @@ pub type MCTree = HashMap<Vec<usize>, Node>;
 /// * `board` - The board state to have at the head of the search tree. Takes ownership of it.
 /// * `board_history` - The board history used for superko.
 /// * `rng` - RNG used for MC playouts.
-pub fn mcts_strategy(board: Board, board_history: BoardHistory, rng: &mut RNG) -> MCTree {
+pub fn mcts_strategy(board: Board, board_history: BoardHistory, rng: &mut RNG) -> Vec<f64> {
     // The number of playouts to do at a time when doing evaluations.
-    let simulation_batch_size: u32 = 10;
+    let simulation_batch_size: u32 = 50;
 
     // The number of playouts to do in total.
-    let playout_count: u32 = 20000;
+    let playout_count: u32 = 200000;
 
     // The number of playout batches to run.
     let playout_batches: u32 = playout_count / simulation_batch_size;
+
+    let legal_moves: BitSet = get_legal_moves_strict(&board, &board_history);
+    let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
+    let pass_move = board.board.len();
 
     let mut tree: MCTree = initialize_tree(board, &board_history);
     for _ in 0..playout_batches {
         mcts_playout(&mut tree, &board_history, simulation_batch_size, rng);
     }
 
+    // Be pessimistic. Look at white's best response.
+    for point in legal_moves {
+        let mut score: f64 = f64::INFINITY;
+        match tree.get([point].as_slice()) {
+            None => continue,
+            Some(node) => {
+                for response in node.children {
+                    match tree.get([point, response].as_slice()) {
+                        None => continue,
+                        Some(s) => {
+                            let winrate: f64 = s.blackwins.get() / (s.whitewins.get() + s.blackwins.get());
+                            score = score.min(winrate);
+                        }
+                    }
+                }
+            }
+        }
+        result[point] = score;
+    }
+
+    // Passing is not supported with this strategy.
+    result[pass_move] = f64::NEG_INFINITY;
+
     // panic!("{:?}", tree);
 
-    return tree;
+    return result;
 }
 
 /// Initalizes the root of a Monte Carlo Search Tree.

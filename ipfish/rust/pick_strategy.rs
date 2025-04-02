@@ -35,18 +35,6 @@ pub fn pick_strategy(board: Board, board_history: BoardHistory, opponent_passed:
     }
     // Monte Carlo Tree Search!
     else {
-        let tree: MCTree = mcts_strategy(board, board_history, rng);
-        let tree_root: &Node = tree.get([].as_slice()).expect("Tree root not found!");
-        let total_score: f64 = tree_root.blackwins.get() / (tree_root.blackwins.get() + tree_root.whitewins.get()) - 0.5;
-    
-        // Passing isn't implemented for this strategy...
-        result[pass_result] = f64::NEG_INFINITY;
-    
-        for point in legal_moves {
-            let branch: &Node = tree.get([point].as_slice()).expect("Tree branch not found!");
-            let branch_score: f64 = branch.blackwins.get() / (branch.blackwins.get() + branch.whitewins.get()) - 0.5;
-            result[point] = branch_score;
-        }
-        return result;
+        return mcts_strategy(board, board_history, rng);
     }
 }
