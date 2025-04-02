@@ -19,7 +19,7 @@ pub fn pick_strategy(board: Board, board_history: BoardHistory, opponent_passed:
     result[pass_result] = total_score;
     // result[pass_result] = f64::NEG_INFINITY;
 
-    panic!("Tree dump: {:?}", tree);
+    // panic!("Tree dump: {:?}", tree);
 
     for point in legal_moves {
         let branch: &Node = tree.get([point].as_slice()).expect("Tree branch not found!");
