@@ -14,13 +14,9 @@ pub fn pick_strategy(board: Board, board_history: BoardHistory, opponent_passed:
     let tree: MCTree = mcts_strategy(board, board_history, rng);
     let tree_root: &Node = tree.get([].as_slice()).expect("Tree root not found!");
     let total_score: f64 = tree_root.blackwins.get() / (tree_root.blackwins.get() + tree_root.whitewins.get()) - 0.5;
-    let total_score: f64 = tree_root.whitewins.get();
 
     let pass_result: usize = result.len() - 1;
     result[pass_result] = total_score;
-    // result[pass_result] = f64::NEG_INFINITY;
-
-    // panic!("Tree dump: {:?}", tree);
 
     for point in legal_moves {
         let branch: &Node = tree.get([point].as_slice()).expect("Tree branch not found!");
