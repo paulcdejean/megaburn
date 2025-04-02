@@ -15,7 +15,7 @@ pub fn pick_strategy(board: Board, board_history: BoardHistory, opponent_passed:
     // Play tengen first move on boards that only have 1 or two offline nodes.
     if board_history.len() <= 1 {
         let tengen = board.board.len() / 2;
-        if legal_moves.len() > 22 && legal_moves.contains(tengen) {
+        if legal_moves.len() > 21 && legal_moves.contains(tengen) {
             let mut result: Vec<f64> = vec![f64::NEG_INFINITY; board.board.len() + 1];
             result[tengen] = f64::INFINITY;
             return result;
