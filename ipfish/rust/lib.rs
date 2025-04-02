@@ -13,6 +13,7 @@ pub mod pass_move;
 pub mod pick_strategy;
 pub mod player;
 pub mod point_state;
+pub mod minimax_ab_strategy;
 
 use core::f64;
 use rand::SeedableRng;
