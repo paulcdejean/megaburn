@@ -16,6 +16,8 @@ export async function main(ns: NS): Promise<void> {
           }
         } else if (lastFour === "ache") {
           ns.dnet.openCache(filename, false);
+        } else {
+          ns.tprint(`Found strange file: ${filename}`)
         }
       }
     }
@@ -25,6 +27,10 @@ export async function main(ns: NS): Promise<void> {
   while (true) {
     const connectedServers = ns.dnet.probe();
     for (const server of connectedServers) {
+      if (ns.dnet.getServerDetails(server).depth > 4) {
+        ns.tprint(`Deep server ${server} connects to ${host}`);
+        ns.tprint(ns.dnet.getServerDetails(server));
+      }
       if (hasSession(ns, server) || await obtainSession(ns, server)) {
         if (ns.ps(server).length === 0) {
           ns.scp(ns.getScriptName(), server);
