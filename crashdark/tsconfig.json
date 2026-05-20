@@ -1,0 +1,13 @@
+{
+  "include": [
+    "NetscriptDefinitions.d.ts",
+    "customd.d.ts",
+    "src/**/*",
+  ],
+  "compilerOptions": {
+    "target": "esnext",
+    "paths": {
+      "@ns": ["../NetscriptDefinitions.d.ts"],
+    }
+  }
+}
