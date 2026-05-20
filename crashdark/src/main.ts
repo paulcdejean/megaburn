@@ -10,7 +10,7 @@ export async function main(ns: NS): Promise<void> {
       for (const filename of ns.ls(host)) {
         if (filename !== ns.getScriptName() && filename !== "remotes/phish.js") {
           const lastFour = filename.slice(-4);
-          if (lastFour === ".txt" || lastFour === ".lit") {
+          if (lastFour === ".txt" || lastFour === ".lit" || lastFour === ".cct") {
             const result = ns.scp(filename, "darkweb");
             if (result === false) {
               ns.tprint(`Failed to copy ${filename} from ${host} to darkweb`)
