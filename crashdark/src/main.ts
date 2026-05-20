@@ -1,12 +1,36 @@
 import { NS } from "@ns";
+import { hasSession } from "./hasSession"
+import { obtainSession } from "./obtainSession"
 
 export async function main(ns: NS): Promise<void> {
+  // LOOT!
+  const host = ns.self().server;
+  if (host !== "home") {
+    for (const filename of ns.ls(host)) {
+      if (filename !== ns.getScriptName()) {
+        const lastFour = filename.slice(-4);
+        if (lastFour === ".txt" || lastFour === ".lit") {
+          const result = ns.scp(filename, "darkweb");
+          if (result === false) {
+            ns.tprint(`Failed to copy ${filename} from ${host} to darkweb`)
+          }
+        } else if (lastFour === "ache") {
+          ns.dnet.openCache(filename, false);
+        }
+      }
+    }
+  }
+
+  // LOOP!
   while (true) {
     const connectedServers = ns.dnet.probe();
-    ns.tprint(connectedServers);
     for (const server of connectedServers) {
-      const details = ns.dnet.getServerAuthDetails(server);
-      ns.tprint(details)
+      if (hasSession(ns, server) || await obtainSession(ns, server)) {
+        if (ns.ps(server).length === 0) {
+          ns.scp(ns.getScriptName(), server);
+          ns.exec(ns.getScriptName(), server);
+        }
+      }
     }
     await ns.dnet.nextMutation();
   }
