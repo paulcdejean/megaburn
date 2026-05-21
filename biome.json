@@ -7,7 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"includes": ["**", "!NetscriptDefinitions.d.ts"]
+		"includes": ["**", "!NetscriptDefinitions.d.ts", "!**/pkg", "!**/target"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -16,7 +16,11 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"a11y": {
+				"useKeyWithClickEvents": "off",
+				"useKeyWithMouseEvents": "off"
+			}
 		}
 	},
 	"javascript": {

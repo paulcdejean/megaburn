@@ -1,7 +1,5 @@
-import type ReactType from "react"
+export {};
 
 declare global {
-  const React: typeof ReactType;
+	const React: typeof import("react");
 }
-
-export {}

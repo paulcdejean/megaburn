@@ -3,8 +3,14 @@
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"noEmit": true,
+		"jsx": "react",
+		"lib": ["esnext", "dom"],
+		"types": ["react"],
+		"skipLibCheck": true,
 		"paths": {
-			"@ns": ["./NetscriptDefinitions.d.ts"]
+			"@ns": ["./NetscriptDefinitions.d.ts"],
+			"@rust": ["./packages/rouletteburn/pkg/rouletteburn"]
 		}
-	}
+	},
+	"include": ["*.ts", "*.tsx", "packages/*/src/**/*"]
 }
