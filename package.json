@@ -3,10 +3,16 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "workspaces": [
+    "packages/rouletteburn"
+  ],
   "scripts": {
     "sync": "bitburner-filesync"
   },
   "dependencies": {
     "bitburner-filesync": "^1.1.5"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
   }
 }
