@@ -1,5 +1,5 @@
 import { NS } from "@ns";
-import RouletteHelper from "@/ui/RouletteHelper/RouletteHelper";
+import RouletteHelper from "./ui/RouletteHelper/RouletteHelper";
 
 export async function main(ns: NS): Promise<void> {
   roulette(ns)
@@ -15,12 +15,12 @@ export function roulette(ns: NS): void {
   // Cleans up react element after exit
   ns.atExit(() => {
     ns.clearLog()
-    ns.closeTail()
+    ns.ui.closeTail()
   })
 
-  ns.tail()
-  ns.resizeTail(750, 500)
-  ns.moveTail(350, 450)
+  ns.ui.openTail()
+  ns.ui.resizeTail(750, 500)
+  ns.ui.moveTail(350, 450)
 
   ns.printRaw(React.createElement(RouletteHelper))
 }

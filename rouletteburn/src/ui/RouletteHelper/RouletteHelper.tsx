@@ -2,7 +2,7 @@ import RouletteCell from "./RouletteCell"
 
 import cssInline from "./css/RouletteTable.module.css?inline"
 import css from "./css/RouletteTable.module.css"
-import { RoulettePlaythrough } from "@/roulette/RoulettePlaythrough"
+import { RoulettePlaythrough } from "../../roulette/RoulettePlaythrough"
 
 export interface GameState {
   chipLocation: number,
@@ -68,7 +68,7 @@ function RouletteHelper() {
           <RouletteCell num={27} className={`${css.cell} ${css.topmost}`} gameState={gameState} updateGameState={updateGameState} />
           <RouletteCell num={30} className={`${css.cell} ${css.topmost}`} gameState={gameState} updateGameState={updateGameState} />
           <RouletteCell num={33} className={`${css.cell} ${css.topmost}`} gameState={gameState} updateGameState={updateGameState} />
-          <RouletteCell num={36} className={`${css.cell} ${css.topmost}`} gameState={gameState} updateGameState={updateGameState} />
+  <RouletteCell num={36} className={`${css.cell} ${css.topmost}`} gameState={gameState} updateGameState={updateGameState} />
         </tr>
         <tr>
           <RouletteCell num={0} className={`${css.cell} ${css.leftmost}`} gameState={gameState} updateGameState={updateGameState} />
