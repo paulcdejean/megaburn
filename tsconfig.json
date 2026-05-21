@@ -2,9 +2,9 @@
 	"compilerOptions": {
 		"module": "ESNext",
 		"moduleResolution": "bundler",
-    "noEmit": true,
-    "paths": {
-      "@ns": ["./NetscriptDefinitions.d.ts"]
-    }
+		"noEmit": true,
+		"paths": {
+			"@ns": ["./NetscriptDefinitions.d.ts"]
+		}
 	}
 }

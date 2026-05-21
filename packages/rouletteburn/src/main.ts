@@ -1,5 +1,6 @@
 import type { NS } from "@ns";
 
 export async function main(ns: NS) {
-  ns.tprint("Hello world!");
+	ns.tprint("Hello world!");
+	await ns.asleep(0);
 }
