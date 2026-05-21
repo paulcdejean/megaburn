@@ -6,6 +6,7 @@ export default defineConfig({
 		outDir: "bitburner",
 		emptyOutDir: false,
 		rollupOptions: {
+			preserveEntrySignatures: "strict",
 			input: {
 				rouletteburn: resolve(__dirname, "packages/rouletteburn/src/main.ts"),
 			},
