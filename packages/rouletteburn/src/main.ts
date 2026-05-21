@@ -19,8 +19,8 @@ export function roulette(ns: NS): void {
 	});
 
 	ns.ui.openTail();
-	ns.ui.resizeTail(750, 500);
-	ns.ui.moveTail(350, 450);
+	ns.ui.resizeTail(650, 500);
+	ns.ui.moveTail(1050, 350);
 
 	ns.printRaw(
 		React.createElement(RouletteHelper) as unknown as Parameters<

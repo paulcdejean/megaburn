@@ -42,8 +42,8 @@ function RouletteHelper() {
 			<style>{cssInline}</style>
 			<p>
 				Click on the table one time to indicate your bet. Click a second time to
-				indicate the roulette result. Only numerical bets are supported. The
-				green square, when it appears, has a 90% chance of winning.
+				indicate the roulette result. Only place numerical bets. The green
+				square, when it appears, has a 90% chance of winning.
 			</p>
 			<p>
 				Recent gambles:{" "}

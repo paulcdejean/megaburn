@@ -8,6 +8,7 @@
 		"packages/rouletteburn"
 	],
 	"scripts": {
+		"fmt": "biome check --write .",
 		"sync": "bitburner-filesync",
 		"build": "biome check . && turbo lint && wasm-pack build --target bundler --out-dir pkg packages/rouletteburn && tsgo && vite build"
 	},
