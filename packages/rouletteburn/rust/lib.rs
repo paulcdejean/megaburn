@@ -1,4 +1,3 @@
-#![feature(convert_float_to_int)]
 use wasm_bindgen::prelude::*;
 mod whrng;
 
