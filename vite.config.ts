@@ -24,6 +24,7 @@ export default defineConfig({
 			input: {
 				rouletteburn: resolve(__dirname, "packages/rouletteburn/src/main.ts"),
 				singularity: resolve(__dirname, "packages/singularity/src/main.ts"),
+				batcher: resolve(__dirname, "packages/batcher/src/main.ts"),
 			},
 			output: {
 				entryFileNames: "[name].js",

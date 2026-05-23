@@ -1,0 +1,7 @@
+{
+	"name": "batcher",
+	"version": "1.0.0",
+	"scripts": {
+		"lint": "oxlint --type-aware src"
+	}
+}

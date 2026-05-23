@@ -6,7 +6,8 @@
 	"packageManager": "bun@1.0.0",
 	"workspaces": [
 		"packages/rouletteburn",
-		"packages/singularity"
+		"packages/singularity",
+		"packages/batcher"
 	],
 	"scripts": {
 		"fmt": "biome check --write .",
