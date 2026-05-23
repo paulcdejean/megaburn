@@ -1,5 +1,6 @@
 import type { NS } from "@ns";
 import { chooseTask } from "./chooseTask";
+import { connectToServer } from "./connectToServer";
 import { SINGULARITY_PORT } from "./constants";
 import { runTask } from "./runTask";
 import type { Task } from "./task";
@@ -15,8 +16,9 @@ async function main(ns: NS): Promise<void> {
 	// 0.01 getServerRequiredHackingLevel
 	// 0.05 getServerMaxRam
 	// 0.05 hasTorRouter
+	// 0.1 fileExists
 	// 3.71 total
-	ns.ramOverride(3.71);
+	ns.ramOverride(3.81);
 }
 
 /**

@@ -1,5 +1,10 @@
 import type { NS } from "@ns";
-import { RAM_UPGRADE_COST_PORT, TOR_ROUTER_COST } from "./constants";
+import {
+	BRUTE_SSH_COST,
+	RAM_UPGRADE_COST_PORT,
+	TOR_ROUTER_COST,
+} from "./constants";
+import { storyServerBackdoored } from "./storyServerBackdoored";
 import type { Task } from "./task";
 
 export function basicTasks(ns: NS): Task {
@@ -26,6 +31,45 @@ export function basicTasks(ns: NS): Task {
 	else if (player.money > TOR_ROUTER_COST && !ns.hasTorRouter()) {
 		return {
 			name: "purchaseTorRouter",
+			ram: 3.6,
+		};
+	}
+	// Required to have enough ports open to backdoor CSEC.
+	else if (
+		!ns.fileExists("BruteSSH.exe", "home") &&
+		player.money > BRUTE_SSH_COST &&
+		ns.hasTorRouter()
+	) {
+		return {
+			name: "purchaseBruteSSH",
+			ram: 3.6,
+		};
+	}
+	// Since this is basicTasks we probably haven't reset, so CSEC is a good first faction to work.
+	else if (
+		!storyServerBackdoored(ns, "CSEC") &&
+		player.skills.hacking > ns.getServerRequiredHackingLevel("CSEC")
+	) {
+		return {
+			name: "backdoorCSEC",
+			ram: 3.6,
+		};
+	}
+	// Backdooring, joining and working are seperate tasks for maximum RAM dodging...
+	else if (
+		!player.factions.includes("CyberSec") &&
+		storyServerBackdoored(ns, "CSEC")
+	) {
+		return {
+			name: "joinCSEC",
+			ram: 3.6,
+		};
+	}
+	// Gym and crime require us to not be busy. This should keep us busy focused and on task.
+	// Note that this does not require us to not be busy. So we will stop shoplifting and start work.
+	else if (player.factions.includes("CyberSec")) {
+		return {
+			name: "workCSEC",
 			ram: 3.6,
 		};
 	}
