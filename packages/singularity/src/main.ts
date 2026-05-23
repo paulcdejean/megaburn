@@ -8,8 +8,8 @@ import type { Task } from "./task";
  * This function is NOT the true main. It's just used for setting the static RAM.
  */
 async function main(ns: NS): Promise<void> {
-	// 1.6 base + 1 run + 0.5 getPlayer + 0.01 getServerRequiredHackingLevel + 0.05 getServerMaxRam = 3.16
-	ns.ramOverride(3.16);
+	// 1.6 base + 1 run + 0.5 getPlayer + 0.5 isBusy + 0.01 getServerRequiredHackingLevel + 0.05 getServerMaxRam = 3.16
+	ns.ramOverride(3.66);
 }
 
 /**
