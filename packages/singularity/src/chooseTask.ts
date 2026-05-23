@@ -1,17 +1,11 @@
 import type { NS } from "@ns";
-import { basicTasks } from "./basicTasks";
-import { TIER2_RAM } from "./constants";
-import type { Task } from "./task";
+import { tier1Tasks } from "./tier1Tasks";
 
-export function chooseTask(ns: NS): Task {
+export function chooseTask(ns: NS, tier: number): string {
 	// Attempt to increase your static RAM.
-	if (ns.getServerMaxRam("home") === 64) {
-		ns.ramOverride(TIER2_RAM); // TODO, lets go super saiyan!
-	}
-
-	if (ns.ramOverride() < TIER2_RAM) {
-		return basicTasks(ns);
+	if (tier === 1) {
+		return tier1Tasks(ns);
 	} else {
-		throw Error("Tier 2 functionality not implemented yet!");
+		return tier1Tasks(ns);
 	}
 }

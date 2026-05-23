@@ -2,7 +2,7 @@ import type { NS } from "@ns";
 import { chooseTask } from "./chooseTask";
 import { SINGULARITY_PORT } from "./constants";
 import { runTask } from "./runTask";
-import type { Task } from "./task";
+import { getTier } from "./tier";
 
 /**
  * This function is NOT the true main. It's just used for setting the static RAM.
@@ -24,22 +24,24 @@ async function realMain(ns: NS): Promise<void> {
 	} else {
 		// I am the controller.
 		while (true) {
-			const task: Task = chooseTask(ns);
+			const tier = getTier(ns);
 
-			if (task.name !== "wait") {
-				ns.tprint(`Current task: ${task.name}`);
+			const task: string = chooseTask(ns, tier.tier);
+
+			if (task !== "wait") {
+				ns.tprint(`Singularity task: ${task}`);
 				const result = ns.run(
 					ns.getScriptName(),
 					{
 						preventDuplicates: false,
-						ramOverride: task.ram,
+						ramOverride: tier.workerRam,
 						temporary: true,
 						threads: 1,
 					},
-					task.name,
+					task,
 				);
 				if (result === 0) {
-					throw Error(`Failed to run task ${task.name} with ram ${task.ram}`);
+					throw Error(`Failed to run task ${task} with ram ${tier.workerRam}`);
 				}
 				await ns.getPortHandle(SINGULARITY_PORT).nextWrite();
 			} else {
