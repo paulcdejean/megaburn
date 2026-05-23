@@ -19,13 +19,19 @@ export default defineConfig({
 		outDir: "bitburner",
 		emptyOutDir: false,
 		assetsInlineLimit: 1024 * 1024,
-		rollupOptions: {
+		rolldownOptions: {
 			preserveEntrySignatures: "strict",
 			input: {
 				rouletteburn: resolve(__dirname, "packages/rouletteburn/src/main.ts"),
+				singularity: resolve(__dirname, "packages/singularity/src/main.ts"),
 			},
 			output: {
 				entryFileNames: "[name].js",
+				minify: {
+					mangle: {
+						keepNames: true,
+					},
+				},
 			},
 		},
 	},

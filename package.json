@@ -5,7 +5,8 @@
 	"type": "module",
 	"packageManager": "bun@1.0.0",
 	"workspaces": [
-		"packages/rouletteburn"
+		"packages/rouletteburn",
+		"packages/singularity"
 	],
 	"scripts": {
 		"fmt": "biome check --write .",
@@ -20,7 +21,7 @@
 		"@types/node": "^25.9.1",
 		"@types/react": "18.3.23",
 		"@typescript/native-preview": "^7.0.0-dev.20260519.1",
-		"oxlint": "1.66.0",
+		"oxlint": "^1.66.0",
 		"oxlint-tsgolint": "^0.23.0",
 		"turbo": "^2.9.14",
 		"vite": "^8.0.13",
