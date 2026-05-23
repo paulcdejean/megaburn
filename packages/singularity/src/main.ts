@@ -1,6 +1,5 @@
 import type { NS } from "@ns";
 import { chooseTask } from "./chooseTask";
-import { connectToServer } from "./connectToServer";
 import { SINGULARITY_PORT } from "./constants";
 import { runTask } from "./runTask";
 import type { Task } from "./task";
@@ -9,16 +8,8 @@ import type { Task } from "./task";
  * This function is NOT the true main. It's just used for setting the static RAM.
  */
 async function main(ns: NS): Promise<void> {
-	// 1.6 base
-	// 1 run
-	// 0.5 getPlayer
-	// 0.5 isBusy
-	// 0.01 getServerRequiredHackingLevel
-	// 0.05 getServerMaxRam
-	// 0.05 hasTorRouter
-	// 0.1 fileExists
-	// 3.71 total
-	ns.ramOverride(3.81);
+	// [getServerMaxRam, getPlayer, fileExists, getServerRequiredHackingLevel, isBusy, run, hasTorRouter]
+	ns.ramOverride(3.9);
 }
 
 /**
@@ -37,7 +28,7 @@ async function realMain(ns: NS): Promise<void> {
 
 			if (task.name !== "wait") {
 				ns.tprint(`Current task: ${task.name}`);
-				ns.run(
+				const result = ns.run(
 					ns.getScriptName(),
 					{
 						preventDuplicates: false,
@@ -47,6 +38,9 @@ async function realMain(ns: NS): Promise<void> {
 					},
 					task.name,
 				);
+				if (result === 0) {
+					throw Error(`Failed to run task ${task.name} with ram ${task.ram}`);
+				}
 				await ns.getPortHandle(SINGULARITY_PORT).nextWrite();
 			} else {
 				await ns.asleep(1000);
