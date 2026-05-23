@@ -1,16 +1,15 @@
 import type { NS } from "@ns";
 import { chooseTask } from "./chooseTask";
+import { SINGULARITY_PORT } from "./constants";
 import { runTask } from "./runTask";
 import type { Task } from "./task";
-
-const SINGULARITY_PORT = 67;
 
 /**
  * This function is NOT the true main. It's just used for setting the static RAM.
  */
 async function main(ns: NS): Promise<void> {
-	// 1.6 base + 1 run + 0.5 getPlayer + 0.01 getServerRequiredHackingLevel = 4.61
-	ns.ramOverride(3.11);
+	// 1.6 base + 1 run + 0.5 getPlayer + 0.01 getServerRequiredHackingLevel + 0.05 getServerMaxRam = 3.16
+	ns.ramOverride(3.16);
 }
 
 /**
@@ -23,7 +22,7 @@ async function realMain(ns: NS): Promise<void> {
 		ns.getPortHandle(SINGULARITY_PORT).write("done");
 		ns.getPortHandle(SINGULARITY_PORT).clear();
 	} else {
-		// I am the master.
+		// I am the controller.
 		while (true) {
 			const task: Task = chooseTask(ns);
 
