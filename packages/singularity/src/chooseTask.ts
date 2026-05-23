@@ -18,10 +18,15 @@ export function chooseTask(ns: NS): Task {
 			name: "basicDexterity",
 			ram: 6.6,
 		};
+	} else if (!ns.singularity.isBusy()) {
+		return {
+			name: "shoplifting",
+			ram: 7.6,
+		};
 	} else {
 		return {
-			name: "bored",
-			ram: Infinity,
+			name: "wait",
+			ram: 1.6,
 		};
 	}
 }

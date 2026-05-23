@@ -6,7 +6,7 @@ export async function basicAgility(ns: NS): Promise<void> {
 	const success = ns.singularity.gymWorkout(
 		ns.enums.LocationName.Sector12PowerhouseGym,
 		"agi",
-		true,
+		false,
 	);
 
 	if (!success) {
@@ -16,4 +16,6 @@ export async function basicAgility(ns: NS): Promise<void> {
 	do {
 		await ns.asleep(1000);
 	} while (ns.getPlayer().skills.agility < 10);
+
+	ns.singularity.stopAction();
 }

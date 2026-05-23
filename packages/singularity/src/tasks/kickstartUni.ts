@@ -18,4 +18,6 @@ export async function kickstartUni(ns: NS): Promise<void> {
 		secs = secs + 1;
 		await ns.asleep(1000);
 	} while (ns.getHackingLevel() < 20 || secs < 5);
+
+	ns.singularity.stopAction();
 }

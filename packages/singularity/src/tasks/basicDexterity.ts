@@ -6,7 +6,7 @@ export async function basicDexterity(ns: NS): Promise<void> {
 	const success = ns.singularity.gymWorkout(
 		ns.enums.LocationName.Sector12PowerhouseGym,
 		"dex",
-		true,
+		false,
 	);
 
 	if (!success) {
@@ -16,4 +16,6 @@ export async function basicDexterity(ns: NS): Promise<void> {
 	do {
 		await ns.asleep(1000);
 	} while (ns.getPlayer().skills.dexterity < 10);
+
+	ns.singularity.stopAction();
 }

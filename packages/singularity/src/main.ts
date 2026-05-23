@@ -9,9 +9,8 @@ const SINGULARITY_PORT = 67;
  * This function is NOT the true main. It's just used for setting the static RAM.
  */
 async function main(ns: NS): Promise<void> {
-	// 1.6 base + 1 run + 2 getPlayer = 4.6
-	// ns.ramOverride(4.6);
-	ns.ramOverride(4.6);
+	// 1.6 base + 1 run + 0.5 getPlayer + 0.01 getServerRequiredHackingLevel = 4.61
+	ns.ramOverride(3.11);
 }
 
 /**
@@ -28,20 +27,24 @@ async function realMain(ns: NS): Promise<void> {
 		while (true) {
 			const task: Task = chooseTask(ns);
 
-			ns.tprint(`Current task: ${task.name}`);
+			if (task.name !== "wait") {
+				ns.tprint(`Current task: ${task.name}`);
+				ns.run(
+					ns.getScriptName(),
+					{
+						preventDuplicates: false,
+						ramOverride: task.ram,
+						temporary: true,
+						threads: 1,
+					},
+					task.name,
+				);
+				await ns.getPortHandle(SINGULARITY_PORT).nextWrite();
+			} else {
+				await ns.asleep(1000);
 
-			ns.run(
-				ns.getScriptName(),
-				{
-					preventDuplicates: false,
-					ramOverride: task.ram,
-					temporary: true,
-					threads: 1,
-				},
-				task.name,
-			);
-
-			await ns.getPortHandle(SINGULARITY_PORT).nextWrite();
+				ns.print("waiting...");
+			}
 		}
 	}
 }
