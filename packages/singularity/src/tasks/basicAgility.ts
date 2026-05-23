@@ -15,7 +15,7 @@ export async function basicAgility(ns: NS): Promise<void> {
 
 	do {
 		await ns.asleep(1000);
-	} while (ns.getPlayer().skills.agility < 20);
+	} while (ns.getPlayer().skills.agility < 15);
 
 	ns.singularity.stopAction();
 }

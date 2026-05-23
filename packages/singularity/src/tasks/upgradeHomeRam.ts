@@ -3,8 +3,9 @@ import { RAM_UPGRADE_COST_PORT } from "../constants";
 
 export async function upgradeHomeRam(ns: NS): Promise<void> {
 	const port = ns.getPortHandle(RAM_UPGRADE_COST_PORT);
+	const upgradeCost = ns.singularity.getUpgradeHomeRamCost();
 	if (port.empty()) {
-		port.write(ns.singularity.getUpgradeHomeRamCost());
+		port.write(upgradeCost);
 	}
 
 	const result = ns.singularity.upgradeHomeRam();
@@ -14,5 +15,9 @@ export async function upgradeHomeRam(ns: NS): Promise<void> {
 		);
 		port.clear();
 		port.write(ns.singularity.getUpgradeHomeRamCost());
+	} else {
+		ns.tprint(
+			`Home RAM not upgraded, $${ns.format.number(upgradeCost)} required`,
+		);
 	}
 }
