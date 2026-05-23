@@ -15,7 +15,7 @@ export async function basicDexterity(ns: NS): Promise<void> {
 
 	do {
 		await ns.asleep(1000);
-	} while (ns.getPlayer().skills.dexterity < 10);
+	} while (ns.getPlayer().skills.dexterity < 20);
 
 	ns.singularity.stopAction();
 }
