@@ -23,12 +23,25 @@ async function realMain(ns: NS): Promise<void> {
 		ns.getPortHandle(SINGULARITY_PORT).clear();
 	} else {
 		// I am the controller.
+
+		// Temp timing.
+		const startTime = performance.now();
+		let csecSplit = false;
+
 		while (true) {
 			const tier = getTier(ns);
 
 			const task: string = chooseTask(ns, tier.tier);
 
 			if (task !== "wait") {
+				if (task === "workCSEC" && !csecSplit) {
+					ns.tprint(`===== SPLIT =====`);
+					ns.tprint(
+						`Started working for CSEC: ${ns.format.time(performance.now() - startTime)}`,
+					);
+					ns.tprint(`===== SPLIT =====`);
+					csecSplit = true;
+				}
 				ns.tprint(`Singularity task: ${task}`);
 				const result = ns.run(
 					ns.getScriptName(),
