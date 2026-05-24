@@ -10,7 +10,9 @@ export function initNetwork(ns: NS): Network {
 			result.set(server, ns.getServer(server) as Required<Server>);
 		} else {
 			const home = ns.getServer("home") as Required<Server>;
-			home.maxRam = home.maxRam - 32;
+			// This reserves the first 128GB of home for actually being able to do stuff.
+			// Using that RAM for batching is too much of a micro optimization, and leads to great frustration.
+			home.maxRam = home.maxRam - 128;
 			result.set(server, home);
 		}
 	}

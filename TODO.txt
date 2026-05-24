@@ -3,3 +3,7 @@ Manual hack foodnstuff
 Fix share takes too long bug (promise any?)
 
 Fix warnings
+
+11k in 1 minutes, joes guns
+
+Batcher strategy change. Sushi is good!

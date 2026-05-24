@@ -24,7 +24,7 @@ export async function runBatcherAlgo(ns: NS, algo: BatcherAlgo): Promise<void> {
 		);
 	}
 	const batchStartTime = performance.now();
-	const batchStartMoney = ns.getServerMoneyAvailable("home");
+
 	await Promise.all(farm.startupPromises);
 	const scriptLaunchTime = performance.now();
 	ns.tprint(
@@ -33,15 +33,12 @@ export async function runBatcherAlgo(ns: NS, algo: BatcherAlgo): Promise<void> {
 
 	await Promise.all(farm.completionPromises);
 	const batchFinishTime = performance.now();
-	const batchFinishMoney = ns.getServerMoneyAvailable("home");
+
 	ns.tprint(
 		`Batch finished in ${ns.format.time(batchFinishTime - scriptLaunchTime, true)}`,
 	);
 	ns.tprint(
 		`Target ${target} security ${ns.getServerSecurityLevel(target)} / ${ns.getServerMinSecurityLevel(target)}, ` +
 			`money $${ns.format.number(ns.getServerMoneyAvailable(target))} / $${ns.format.number(ns.getServerMaxMoney(target))}`,
-	);
-	ns.tprint(
-		`$${ns.format.number(batchFinishMoney - batchStartMoney)} money hacked`,
 	);
 }

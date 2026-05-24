@@ -1,9 +1,10 @@
 import type { NS } from "@ns";
 import type { Network } from "../types";
 
+// oxlint-disable-next-line no-unused-vars
 export function wildGuess(ns: NS, network: Network): string {
-	if (ns.getHackingLevel() < 50) {
-		return "n00dles";
+	if (ns.getHackingLevel() < 200) {
+		return "harakiri-sushi";
 	} else if (ns.getHackingLevel() < 400) {
 		return "joesguns";
 	} else if (
