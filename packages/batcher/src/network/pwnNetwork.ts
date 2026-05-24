@@ -41,6 +41,11 @@ export function pwnNetwork(ns: NS): Network {
 
 export function pwnAndPurchase(ns: NS): Network {
 	const result: Network = pwnNetwork(ns);
-	managePurchasedServers(ns, result);
+	if (
+		ns.fileExists(ns.enums.ProgramName.bruteSsh) &&
+		ns.fileExists(ns.enums.ProgramName.ftpCrack)
+	) {
+		managePurchasedServers(ns, result);
+	}
 	return result;
 }

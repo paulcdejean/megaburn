@@ -21,7 +21,8 @@ export function basicHGW(
 	}
 
 	const amountHacked = ns.hackAnalyze(target) * hackThreads;
-	const growthRequired = 1 / (1 - amountHacked);
+	const overGrowth = 1.1;
+	const growthRequired = (1 / (1 - amountHacked)) * overGrowth;
 	const growThreads = Math.ceil(ns.growthAnalyze(target, growthRequired));
 	const weakenThreads = Math.ceil(
 		((hackThreads + growThreads) * HG_SEC) / WEAKEN_SEC,

@@ -5,7 +5,7 @@ import { wildGuess } from "./algos/wildGuess";
 import { pwnAndPurchase } from "./network/pwnNetwork";
 import { runBatcherAlgo } from "./runBatcherAlgo";
 import { basicGrowToMaxMoney } from "./tasks/basicGrowToMaxMoney";
-import { basicHWGW } from "./tasks/basicHWGW";
+import { basicHGW } from "./tasks/basicHGW";
 import { basicWeakenToMinSecurity } from "./tasks/basicWeakenToMinSecurity";
 import { fullWeaken } from "./tasks/fullWeaken";
 import { shareExtra } from "./tasks/shareExtra";
@@ -19,7 +19,7 @@ export async function mainMode(ns: NS): Promise<void> {
 			pickHackThreads: hardcodedHackThreads,
 			pickCycleTime: weakenTimeRoundedUp,
 			tasks: [
-				basicHWGW,
+				basicHGW,
 				basicWeakenToMinSecurity,
 				basicGrowToMaxMoney,
 				shareExtra,
