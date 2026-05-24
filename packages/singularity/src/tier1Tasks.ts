@@ -2,7 +2,9 @@ import type { NS } from "@ns";
 import {
 	BATCHER_FILENAME,
 	BRUTE_SSH_COST,
+	FTP_CRACK_COST,
 	RAM_UPGRADE_COST_PORT,
+	RELAY_SMTP_COST,
 	TOR_ROUTER_COST,
 } from "./constants";
 import { storyServerBackdoored } from "./storyServerBackdoored";
@@ -36,6 +38,18 @@ export function tier1Tasks(ns: NS): string {
 		ns.hasTorRouter()
 	) {
 		return "purchaseBruteSSH";
+	} else if (
+		!ns.fileExists("FTPCrack.exe", "home") &&
+		player.money > FTP_CRACK_COST &&
+		ns.hasTorRouter()
+	) {
+		return "purchaseFTPCrack";
+	} else if (
+		!ns.fileExists("relaySMTP.exe", "home") &&
+		player.money > RELAY_SMTP_COST &&
+		ns.hasTorRouter()
+	) {
+		return "purchaseRelaySMTP";
 	}
 	// Since this is basicTasks we probably haven't reset, so CSEC is a good first faction to work.
 	else if (

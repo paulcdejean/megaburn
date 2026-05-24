@@ -5,6 +5,8 @@ import { basicDexterity } from "./tasks/basicDexterity";
 import { joinCSEC } from "./tasks/joinCSEC";
 import { kickstartUni } from "./tasks/kickstartUni";
 import { purchaseBruteSSH } from "./tasks/purchaseBruteSSH";
+import { purchaseFTPCrack } from "./tasks/purchaseFTPCrack";
+import { purchaseRelaySMTP } from "./tasks/purchaseRelaySMTP";
 import { purchaseTorRouter } from "./tasks/purchaseTorRouter";
 import { shoplifting } from "./tasks/shoplifting";
 import { startBatcher } from "./tasks/startBatcher";
@@ -26,6 +28,10 @@ export async function runTask(ns: NS, task: string) {
 		await upgradeHomeRam(ns);
 	} else if (task === "purchaseBruteSSH") {
 		await purchaseBruteSSH(ns);
+	} else if (task === "purchaseFTPCrack") {
+		await purchaseFTPCrack(ns);
+	} else if (task === "purchaseRelaySMTP") {
+		await purchaseRelaySMTP(ns);
 	} else if (task === "backdoorCSEC") {
 		await backdoorCSEC(ns);
 	} else if (task === "joinCSEC") {
