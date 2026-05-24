@@ -1,5 +1,6 @@
 import type { NS } from "@ns";
 import {
+	BATCHER_FILENAME,
 	BRUTE_SSH_COST,
 	RAM_UPGRADE_COST_PORT,
 	TOR_ROUTER_COST,
@@ -12,6 +13,10 @@ export function tier1Tasks(ns: NS): string {
 	// This needs to run before the batcher is started so that we're not waiting around to weaken n00dles too long.
 	if (player.skills.hacking < 20 && player.city === "Sector-12") {
 		return "kickstartUni";
+	}
+	// We want to launch the batcher only after some university time.
+	else if (!ns.isRunning(BATCHER_FILENAME, "home")) {
+		return "startBatcher";
 	}
 	// Since this is basicTasks, it means we only have 32GB of home RAM, so upgrading is a top priority.
 	else if (

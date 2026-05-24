@@ -7,6 +7,7 @@ import { kickstartUni } from "./tasks/kickstartUni";
 import { purchaseBruteSSH } from "./tasks/purchaseBruteSSH";
 import { purchaseTorRouter } from "./tasks/purchaseTorRouter";
 import { shoplifting } from "./tasks/shoplifting";
+import { startBatcher } from "./tasks/startBatcher";
 import { upgradeHomeRam } from "./tasks/upgradeHomeRam";
 import { workCSEC } from "./tasks/workCSEC";
 
@@ -31,6 +32,8 @@ export async function runTask(ns: NS, task: string) {
 		await joinCSEC(ns);
 	} else if (task === "workCSEC") {
 		await workCSEC(ns);
+	} else if (task === "startBatcher") {
+		await startBatcher(ns);
 	} else {
 		throw Error(`Unimplemented task: ${task}`);
 	}

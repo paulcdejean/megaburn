@@ -16,4 +16,6 @@ export const TIER1_WORKER_RAM = 7.6;
 export const TOR_ROUTER_COST = 200e3;
 /** Constant in the game's source code, and getting it dynamically is 0.5GB RAM. */
 export const BRUTE_SSH_COST = 500e3;
-/** Constant in the game's source code, and getting it dynamically is 0.5GB RAM. */
+
+/** The hardcoded name for our batcher script. */
+export const BATCHER_FILENAME = "batcher.js";

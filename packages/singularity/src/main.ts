@@ -9,7 +9,7 @@ import { getTier } from "./tier";
  */
 async function main(ns: NS): Promise<void> {
 	// [getServerMaxRam, getPlayer, fileExists, getServerRequiredHackingLevel, isBusy, run, hasTorRouter]
-	ns.ramOverride(3.9);
+	ns.ramOverride(3.95);
 }
 
 /**
