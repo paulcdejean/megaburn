@@ -43,7 +43,8 @@ export function pwnAndPurchase(ns: NS): Network {
 	const result: Network = pwnNetwork(ns);
 	if (
 		ns.fileExists(ns.enums.ProgramName.bruteSsh) &&
-		ns.fileExists(ns.enums.ProgramName.ftpCrack)
+		ns.fileExists(ns.enums.ProgramName.ftpCrack) &&
+		ns.fileExists(ns.enums.ProgramName.relaySmtp)
 	) {
 		managePurchasedServers(ns, result);
 	}

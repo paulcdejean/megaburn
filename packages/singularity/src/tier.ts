@@ -10,7 +10,7 @@ export interface Tier {
 export const TIER_ONE: Tier = {
 	tier: 1,
 	workerRam: 7.6,
-	controllerRam: 3.95,
+	controllerRam: 4,
 	homeRam: 32,
 };
 
