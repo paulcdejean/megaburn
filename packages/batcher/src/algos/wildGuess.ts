@@ -2,10 +2,7 @@ import type { NS } from "@ns";
 import type { Network } from "../types";
 
 export function wildGuess(ns: NS, network: Network): string {
-	if (
-		ns.getHackingLevel() < 100 ||
-		ns.getServerMoneyAvailable("home") < 10000000
-	) {
+	if (ns.getHackingLevel() < 50) {
 		return "n00dles";
 	} else if (ns.getHackingLevel() < 400) {
 		return "joesguns";
