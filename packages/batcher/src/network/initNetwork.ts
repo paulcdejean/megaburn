@@ -5,9 +5,13 @@ import type { Network } from "../types";
 export function initNetwork(ns: NS): Network {
 	const result: Network = new Map();
 	for (const server of getServerList(ns)) {
-		result.set(server, ns.getServer(server) as Required<Server>);
 		if (server !== "home") {
 			ns.scp(ns.getScriptName(), server);
+			result.set(server, ns.getServer(server) as Required<Server>);
+		} else {
+			const home = ns.getServer("home") as Required<Server>;
+			home.maxRam = home.maxRam - 32;
+			result.set(server, home);
 		}
 	}
 	return result;
