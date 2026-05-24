@@ -59,7 +59,7 @@ export function tier1Tasks(ns: NS): string {
 	// With lack of anything better to do, we will train to shoplift.
 	else if (
 		!ns.singularity.isBusy() &&
-		player.skills.agility < 10 &&
+		player.skills.agility < 15 &&
 		player.city === "Sector-12"
 	) {
 		return "basicAgility";
@@ -67,7 +67,7 @@ export function tier1Tasks(ns: NS): string {
 	// With lack of anything better to do, we will train to shoplift.
 	else if (
 		!ns.singularity.isBusy() &&
-		player.skills.dexterity < 10 &&
+		player.skills.dexterity < 15 &&
 		player.city === "Sector-12"
 	) {
 		return "basicDexterity";

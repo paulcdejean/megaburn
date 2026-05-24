@@ -44,6 +44,7 @@ async function realMain(ns: NS): Promise<void> {
 					throw Error(`Failed to run task ${task} with ram ${tier.workerRam}`);
 				}
 				await ns.getPortHandle(SINGULARITY_PORT).nextWrite();
+				await ns.asleep(0);
 			} else {
 				await ns.asleep(1000);
 
