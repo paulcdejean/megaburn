@@ -7,3 +7,22 @@ Fix warnings
 11k in 1 minutes, joes guns
 
 Batcher strategy change. Sushi is good!
+
+
+Notes:
+
+n00dles with brutessh + ftpcrack = $1.494m in 1 minute 11 seconds
+
+sushi growth: around 2 minutes each
+1: $4.284m / $100.000m
+2: $6.028m / $100.000m
+3: $8.482m / $100.000m
+4: $11.935m / $100.000m
+5: $16.794m / $100.000m
+6: $23.631m / $100.000m
+7: $33.251m / $100.000m
+8: $46.788m / $100.000m
+9: $65.835m / $100.000m
+10: $92.637m / $100.000m
+
+
