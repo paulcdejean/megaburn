@@ -67,9 +67,9 @@ export function tier1Tasks(ns: NS): string {
 	}
 	// Gym and crime require us to not be busy. This should keep us busy focused and on task.
 	// Note that this does not require us to not be busy. So we will stop shoplifting and start work.
-	else if (!ns.singularity.isBusy() && player.factions.includes("CyberSec")) {
-		return "workCSEC";
-	}
+	// else if (!ns.singularity.isBusy() && player.factions.includes("CyberSec")) {
+	// 	return "workCSEC";
+	// }
 	// With lack of anything better to do, we will train to shoplift.
 	else if (
 		!ns.singularity.isBusy() &&

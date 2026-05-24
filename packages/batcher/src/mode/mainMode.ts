@@ -9,7 +9,7 @@ export async function mainMode(ns: NS): Promise<void> {
 		!ns.fileExists(ns.enums.ProgramName.bruteSsh, "home") ||
 		!ns.fileExists(ns.enums.ProgramName.ftpCrack, "home") ||
 		!ns.fileExists(ns.enums.ProgramName.relaySmtp, "home") ||
-		ns.getHackingLevel() < 50
+		ns.getHackingLevel() < 1000
 	) {
 		await nineN00dles(ns);
 	} else {
