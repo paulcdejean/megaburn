@@ -5,6 +5,7 @@ import { basicCrime } from "./tasks/basicCrime";
 import { basicDefense } from "./tasks/basicDefense";
 import { basicDexterity } from "./tasks/basicDexterity";
 import { basicStrength } from "./tasks/basicStrength";
+import { eatFood } from "./tasks/eatFood";
 import { joinCSEC } from "./tasks/joinCSEC";
 import { kickstartUni } from "./tasks/kickstartUni";
 import { purchaseBruteSSH } from "./tasks/purchaseBruteSSH";
@@ -44,6 +45,8 @@ export async function runTask(ns: NS, task: string) {
 		await joinCSEC(ns);
 	} else if (task === "workCSEC") {
 		await workCSEC(ns);
+	} else if (task === "eatFood") {
+		await eatFood(ns);
 	} else if (task === "startBatcher") {
 		await startBatcher(ns);
 	} else {

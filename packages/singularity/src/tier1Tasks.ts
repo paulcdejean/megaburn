@@ -89,8 +89,8 @@ export function tier1Tasks(ns: NS): string {
 	else if (!ns.singularity.isBusy()) {
 		return "basicCrime";
 	}
-	// This isn't strictly an idle state. The player will continue to work their job but while looking for a better one.
+	// Yummy foodnstuff.
 	else {
-		return "wait";
+		return "eatFood";
 	}
 }
