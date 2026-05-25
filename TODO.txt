@@ -10,6 +10,8 @@ Batcher waits for singularity to buy program before continuing
 
 Cloud servers buy equally
 
+Switch to joe after ftpcrack???
+
 Current split:
 ec55b9e66db55788628223b3f5933ff46a749930
 1 hour 7 minutes for relaySMTP

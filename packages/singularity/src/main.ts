@@ -25,7 +25,7 @@ async function realMain(ns: NS): Promise<void> {
 		// I am the controller.
 
 		// Temp timing.
-		const startTime = performance.now();
+		const startTime = Date.now();
 		let smtpSplit = false;
 
 		while (true) {
@@ -37,7 +37,7 @@ async function realMain(ns: NS): Promise<void> {
 				if (task === "purchaseRelaySMTP" && !smtpSplit) {
 					ns.tprint(`===== SPLIT =====`);
 					ns.tprint(
-						`Purchased relaySMTP.exe: ${ns.format.time(performance.now() - startTime)}`,
+						`Purchased relaySMTP.exe: ${ns.format.time(Date.now() - startTime)}`,
 					);
 					ns.tprint(`===== SPLIT =====`);
 					smtpSplit = true;
