@@ -1,14 +1,16 @@
 import type { NS } from "@ns";
 import { backdoorCSEC } from "./tasks/backdoorCSEC";
 import { basicAgility } from "./tasks/basicAgility";
+import { basicCrime } from "./tasks/basicCrime";
+import { basicDefense } from "./tasks/basicDefense";
 import { basicDexterity } from "./tasks/basicDexterity";
+import { basicStrength } from "./tasks/basicStrength";
 import { joinCSEC } from "./tasks/joinCSEC";
 import { kickstartUni } from "./tasks/kickstartUni";
 import { purchaseBruteSSH } from "./tasks/purchaseBruteSSH";
 import { purchaseFTPCrack } from "./tasks/purchaseFTPCrack";
 import { purchaseRelaySMTP } from "./tasks/purchaseRelaySMTP";
 import { purchaseTorRouter } from "./tasks/purchaseTorRouter";
-import { shoplifting } from "./tasks/shoplifting";
 import { startBatcher } from "./tasks/startBatcher";
 import { upgradeHomeRam } from "./tasks/upgradeHomeRam";
 import { workCSEC } from "./tasks/workCSEC";
@@ -22,8 +24,12 @@ export async function runTask(ns: NS, task: string) {
 		await basicAgility(ns);
 	} else if (task === "basicDexterity") {
 		await basicDexterity(ns);
-	} else if (task === "shoplifting") {
-		await shoplifting(ns);
+	} else if (task === "basicStrength") {
+		await basicStrength(ns);
+	} else if (task === "basicDefense") {
+		await basicDefense(ns);
+	} else if (task === "basicCrime") {
+		await basicCrime(ns);
 	} else if (task === "upgradeHomeRam") {
 		await upgradeHomeRam(ns);
 	} else if (task === "purchaseBruteSSH") {

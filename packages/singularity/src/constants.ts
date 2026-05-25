@@ -21,3 +21,6 @@ export const RELAY_SMTP_COST = 5e6;
 
 /** The hardcoded name for our batcher script. */
 export const BATCHER_FILENAME = "batcher.js";
+
+/** How much to train at the gym before going off and doing crimes. */
+export const GYM_TARGET_SKILL = 25;

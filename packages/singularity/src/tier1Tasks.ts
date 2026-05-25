@@ -3,6 +3,7 @@ import {
 	BATCHER_FILENAME,
 	BRUTE_SSH_COST,
 	FTP_CRACK_COST,
+	GYM_TARGET_SKILL,
 	RAM_UPGRADE_COST_PORT,
 	RELAY_SMTP_COST,
 	TOR_ROUTER_COST,
@@ -73,22 +74,32 @@ export function tier1Tasks(ns: NS): string {
 	// With lack of anything better to do, we will train to shoplift.
 	else if (
 		!ns.singularity.isBusy() &&
-		player.skills.agility < 15 &&
+		player.skills.agility < GYM_TARGET_SKILL &&
 		player.city === "Sector-12"
 	) {
 		return "basicAgility";
-	}
-	// With lack of anything better to do, we will train to shoplift.
-	else if (
+	} else if (
 		!ns.singularity.isBusy() &&
-		player.skills.dexterity < 15 &&
+		player.skills.dexterity < GYM_TARGET_SKILL &&
 		player.city === "Sector-12"
 	) {
 		return "basicDexterity";
+	} else if (
+		!ns.singularity.isBusy() &&
+		player.skills.strength < GYM_TARGET_SKILL &&
+		player.city === "Sector-12"
+	) {
+		return "basicStrength";
+	} else if (
+		!ns.singularity.isBusy() &&
+		player.skills.defense < GYM_TARGET_SKILL &&
+		player.city === "Sector-12"
+	) {
+		return "basicDefense";
 	}
 	// The lowest priority job to work.
 	else if (!ns.singularity.isBusy()) {
-		return "shoplifting";
+		return "basicCrime";
 	}
 	// This isn't strictly an idle state. The player will continue to work their job but while looking for a better one.
 	else {

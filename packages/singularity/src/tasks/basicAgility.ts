@@ -1,4 +1,5 @@
 import type { NS } from "@ns";
+import { GYM_TARGET_SKILL } from "../constants";
 
 export async function basicAgility(ns: NS): Promise<void> {
 	ns.singularity.stopAction();
@@ -15,7 +16,7 @@ export async function basicAgility(ns: NS): Promise<void> {
 
 	do {
 		await ns.asleep(1000);
-	} while (ns.getPlayer().skills.agility < 15);
+	} while (ns.getPlayer().skills.agility < GYM_TARGET_SKILL);
 
 	ns.singularity.stopAction();
 }

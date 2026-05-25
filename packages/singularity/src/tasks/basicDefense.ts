@@ -1,12 +1,12 @@
 import type { NS } from "@ns";
 import { GYM_TARGET_SKILL } from "../constants";
 
-export async function basicDexterity(ns: NS): Promise<void> {
+export async function basicDefense(ns: NS): Promise<void> {
 	ns.singularity.stopAction();
 
 	const success = ns.singularity.gymWorkout(
 		ns.enums.LocationName.Sector12PowerhouseGym,
-		"dex",
+		"def",
 		false,
 	);
 
@@ -16,7 +16,7 @@ export async function basicDexterity(ns: NS): Promise<void> {
 
 	do {
 		await ns.asleep(1000);
-	} while (ns.getPlayer().skills.dexterity < GYM_TARGET_SKILL);
+	} while (ns.getPlayer().skills.defense < GYM_TARGET_SKILL);
 
 	ns.singularity.stopAction();
 }
