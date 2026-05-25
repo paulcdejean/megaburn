@@ -2,11 +2,13 @@ import type { NS } from "@ns";
 
 export async function remotesMode(ns: NS): Promise<void> {
 	if (ns.args[0] === "hack") {
-		await ns.hack(ns.args[1] as string, {
+		// oxlint-disable-next-line no-unused-vars
+		const result = await ns.hack(ns.args[1] as string, {
 			additionalMsec: ns.args[2] as number,
 			stock: ns.args[3] as boolean,
 			threads: ns.args[4] as number,
 		});
+		// ns.tprint(`Hacked ${ns.format.number(result)} from ${ns.args[1]}`);
 	} else if (ns.args[0] === "grow") {
 		await ns.grow(ns.args[1] as string, {
 			additionalMsec: ns.args[2] as number,

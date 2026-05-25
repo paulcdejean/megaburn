@@ -26,7 +26,7 @@ async function realMain(ns: NS): Promise<void> {
 
 		// Temp timing.
 		const startTime = performance.now();
-		let csecSplit = false;
+		let smtpSplit = false;
 
 		while (true) {
 			const tier = getTier(ns);
@@ -34,13 +34,13 @@ async function realMain(ns: NS): Promise<void> {
 			const task: string = chooseTask(ns, tier.tier);
 
 			if (task !== "wait") {
-				if (task === "workCSEC" && !csecSplit) {
+				if (task === "purchaseRelaySMTP" && !smtpSplit) {
 					ns.tprint(`===== SPLIT =====`);
 					ns.tprint(
-						`Started working for CSEC: ${ns.format.time(performance.now() - startTime)}`,
+						`Purchased relaySMTP.exe: ${ns.format.time(performance.now() - startTime)}`,
 					);
 					ns.tprint(`===== SPLIT =====`);
-					csecSplit = true;
+					smtpSplit = true;
 				}
 				ns.tprint(`Singularity task: ${task}`);
 				const result = ns.run(
