@@ -1,4 +1,5 @@
 import type { NS } from "@ns";
+import { GYM_TARGET_SKILL } from "../constants";
 
 export async function basicStrength(ns: NS): Promise<void> {
 	ns.singularity.stopAction();
