@@ -25,3 +25,6 @@ around 13m a cycle at 1 minute 20 sec cycles
 
 hikari-sushi = 13m in 1 minute 20 sec
 n00dles = 3m in 40 seconds
+
+For 4.1  with brutessh + ftpcrack + relaysmtp + SF1.1:
+n00dles: $59.349k in 1 minute 30 seconds
