@@ -1,5 +1,9 @@
-894f0fd33774825a1ca1982507fc12b49036ac75
-
+c5cb8306ed1953c7e8c9e0ac0902bb4bfdc0a7b7
 singularity.js: ===== SPLIT =====
 singularity.js: Purchased relaySMTP.exe: 58 minutes 21 seconds
+singularity.js: ===== SPLIT =====
+
+c20b748a2afa9d55f82b474f3b40b19136d4025f
+singularity.js: ===== SPLIT =====
+singularity.js: Purchased relaySMTP.exe: 59 minutes 32 seconds
 singularity.js: ===== SPLIT =====
