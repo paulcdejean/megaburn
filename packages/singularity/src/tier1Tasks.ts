@@ -84,18 +84,6 @@ export function tier1Tasks(ns: NS): string {
 		player.city === "Sector-12"
 	) {
 		return "basicDexterity";
-	} else if (
-		!ns.singularity.isBusy() &&
-		player.skills.strength < GYM_TARGET_SKILL &&
-		player.city === "Sector-12"
-	) {
-		return "basicStrength";
-	} else if (
-		!ns.singularity.isBusy() &&
-		player.skills.defense < GYM_TARGET_SKILL &&
-		player.city === "Sector-12"
-	) {
-		return "basicDefense";
 	}
 	// The lowest priority job to work.
 	else if (!ns.singularity.isBusy()) {
