@@ -8,7 +8,7 @@ export function pickHackDownTarget(ns: NS, network: Network): string {
 			serverName !== "home" &&
 			serverData.requiredHackingSkill < ns.getHackingLevel() &&
 			serverData.hasAdminRights &&
-			serverData.serverGrowth < 40
+			serverData.serverGrowth < 30
 		) {
 			potentialTargets.push(serverName);
 		}
