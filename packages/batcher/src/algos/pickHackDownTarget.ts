@@ -22,7 +22,6 @@ export function pickHackDownTarget(ns: NS, network: Network): string {
 		const score =
 			(ns.getServerMoneyAvailable(target) * ns.hackAnalyze(target)) /
 			ns.getWeakenTime(target);
-		ns.tprint(`${target} score = ${score}`);
 		if (score > bestScore) {
 			bestScore = score;
 			result = target;
