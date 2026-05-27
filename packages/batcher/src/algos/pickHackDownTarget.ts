@@ -5,8 +5,9 @@ export function pickHackDownTarget(ns: NS, network: Network): string {
 	const potentialTargets: string[] = [];
 	for (const [serverName, serverData] of network) {
 		if (
+			serverName !== "home" &&
 			serverData.requiredHackingSkill < ns.getHackingLevel() &&
-			serverData.backdoorInstalled &&
+			serverData.hasAdminRights &&
 			serverData.serverGrowth < 40
 		) {
 			potentialTargets.push(serverName);
@@ -21,6 +22,7 @@ export function pickHackDownTarget(ns: NS, network: Network): string {
 		const score =
 			(ns.getServerMoneyAvailable(target) * ns.hackAnalyze(target)) /
 			ns.getWeakenTime(target);
+		ns.tprint(`${target} score = ${score}`);
 		if (score > bestScore) {
 			bestScore = score;
 			result = target;
