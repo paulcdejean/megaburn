@@ -13,7 +13,7 @@ export async function mainMode(ns: NS): Promise<void> {
 		!ns.fileExists(ns.enums.ProgramName.relaySmtp, "home") ||
 		ns.getHackingLevel() < 100
 	) {
-		if (n00dlesYucky(ns)) {
+		if (n00dlesYucky(ns) && ns.getServerMaxRam("home") < 4096) {
 			await hackDown(ns);
 		} else {
 			await nineN00dles(ns);
