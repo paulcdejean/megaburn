@@ -3,6 +3,9 @@ export const STARTING_PORT = 2000;
 export const WEAKEN_SEC = 0.05;
 export const HG_SEC = 0.004;
 
+// An guess as to whether n00dles are worth...
+export const YUMMY_N00DLE_THRESHOLD = 2000;
+
 export enum Action {
 	hack = "hack",
 	grow = "grow",

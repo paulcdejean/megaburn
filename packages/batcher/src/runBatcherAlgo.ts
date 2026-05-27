@@ -38,7 +38,7 @@ export async function runBatcherAlgo(ns: NS, algo: BatcherAlgo): Promise<void> {
 		`Batch finished in ${ns.format.time(batchFinishTime - scriptLaunchTime, true)}`,
 	);
 	ns.tprint(
-		`Target ${target} security ${ns.getServerSecurityLevel(target)} / ${ns.getServerMinSecurityLevel(target)}, ` +
+		`Target ${target} security ${ns.format.number(ns.getServerSecurityLevel(target))} / ${ns.getServerMinSecurityLevel(target)}, ` +
 			`money $${ns.format.number(ns.getServerMoneyAvailable(target))} / $${ns.format.number(ns.getServerMaxMoney(target))}`,
 	);
 }
