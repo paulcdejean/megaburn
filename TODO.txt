@@ -1,14 +1,8 @@
-Cloud servers up to 64GB are NOT softcapped
+Micro optimizations:
+* Manual hack foodnstuff when bored
+* Batcher waits for singularity to buy program before continuing
 
-Manual hack foodnstuff
-
-Fix share takes too long bug (promise any?)
-
-Degenerate drain only batch type for foodnstuff???
-
-Batcher waits for singularity to buy program before continuing
-
-Cloud servers buy equally
-
-Try hack only instead of hack + weaken for hackdown
-For the greatly reduced cycle times
+Next phase:
+* Cloud servers up to 64GB are NOT softcapped
+* Cloud servers buy equally
+* Fix share takes too long bug (promise any?)

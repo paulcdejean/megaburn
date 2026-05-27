@@ -7,3 +7,6 @@ singularity.js: Purchased relaySMTP.exe: 59 minutes 32 seconds
 b190227eb899e76dc4967403b250c5ac4278dbae changed from n00dles batching to looting (pass)
 singularity.js: Purchased relaySMTP.exe: 38 minutes 38 seconds
 
+9d348994ab4e3ee7020a58579b531708c7790647 changed from hack + weaken looting to hack only looting (pass)
+Purchased relaySMTP.exe: 17 minutes 12 seconds
+
