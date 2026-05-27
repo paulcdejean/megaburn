@@ -18,7 +18,7 @@ export function fullWeaken(
 			const weakenBatch: Batch = [
 				{ host: serverName, threads: weakenThreads, action: Action.weaken },
 			];
-			if (farm.exec(ns, network, "foodnstuff", weakenBatch)) {
+			if (farm.exec(ns, network, target, weakenBatch)) {
 				result = result + weakenBatch.length;
 			} else {
 				return result;

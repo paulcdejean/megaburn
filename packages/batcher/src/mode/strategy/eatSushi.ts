@@ -15,6 +15,7 @@ import { fullWeaken } from "../../tasks/fullWeaken";
  * This allows fitting grows on to smaller servers, allowing more batches to be run.
  */
 export async function eatSushi(ns: NS) {
+	ns.tprint("Running a very sushi based strategy");
 	await runBatcherAlgo(ns, {
 		buildNetwork: pwnNetwork,
 		selectTarget: targetSushi,

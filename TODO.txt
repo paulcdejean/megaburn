@@ -1,8 +1,8 @@
+Cloud servers up to 64GB are NOT softcapped
+
 Manual hack foodnstuff
 
 Fix share takes too long bug (promise any?)
-
-Mugging instead of shoplifting for more money???
 
 Degenerate drain only batch type for foodnstuff???
 

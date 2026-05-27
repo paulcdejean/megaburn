@@ -89,8 +89,8 @@ export function tier1Tasks(ns: NS): string {
 	else if (!ns.singularity.isBusy()) {
 		return "basicCrime";
 	}
-	// Yummy foodnstuff.
+	// zzz
 	else {
-		return "eatFood";
+		return "wait";
 	}
 }

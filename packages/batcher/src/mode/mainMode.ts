@@ -1,4 +1,5 @@
 import type { NS } from "@ns";
+import { cookFood } from "./strategy/cookFood";
 import { eatSushi } from "./strategy/eatSushi";
 import { nineN00dles } from "./strategy/nineN00dles";
 
