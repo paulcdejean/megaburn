@@ -17,11 +17,11 @@ export function pickHackDownTarget(ns: NS, network: Network): string {
 	let result = "foodnstuff";
 	let bestScore =
 		(ns.getServerMoneyAvailable(result) * ns.hackAnalyze(result)) /
-		ns.getWeakenTime(result);
+		ns.getHackTime(result);
 	for (const target of potentialTargets) {
 		const score =
 			(ns.getServerMoneyAvailable(target) * ns.hackAnalyze(target)) /
-			ns.getWeakenTime(target);
+			ns.getHackTime(target);
 		if (score > bestScore) {
 			bestScore = score;
 			result = target;
