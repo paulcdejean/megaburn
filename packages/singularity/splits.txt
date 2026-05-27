@@ -1,14 +1,9 @@
 c5cb8306ed1953c7e8c9e0ac0902bb4bfdc0a7b7 first working run
-singularity.js: ===== SPLIT =====
 singularity.js: Purchased relaySMTP.exe: 58 minutes 21 seconds
-singularity.js: ===== SPLIT =====
 
 c20b748a2afa9d55f82b474f3b40b19136d4025f changed from shoplifting to mugging (fail)
-singularity.js: ===== SPLIT =====
 singularity.js: Purchased relaySMTP.exe: 59 minutes 32 seconds
-singularity.js: ===== SPLIT =====
 
 b190227eb899e76dc4967403b250c5ac4278dbae changed from n00dles batching to looting (pass)
-singularity.js: ===== SPLIT =====
 singularity.js: Purchased relaySMTP.exe: 38 minutes 38 seconds
-singularity.js: ===== SPLIT =====
+

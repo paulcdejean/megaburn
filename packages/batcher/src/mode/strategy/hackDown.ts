@@ -1,12 +1,10 @@
 import type { NS } from "@ns";
+import { hackTimeRoundedUp } from "../../algos/hackTimeRoundedUp";
 import { oneThread } from "../../algos/oneThread";
 import { pickHackDownTarget } from "../../algos/pickHackDownTarget";
-import { weakenTimeRoundedUp } from "../../algos/weakenTimeRoundedUp";
 import { pwnNetwork } from "../../network/pwnNetwork";
 import { runBatcherAlgo } from "../../runBatcherAlgo";
-import { basicWeakenToMinSecurity } from "../../tasks/basicWeakenToMinSecurity";
-import { fullWeaken } from "../../tasks/fullWeaken";
-import { hackDownOnly } from "../../tasks/hackDownOnly";
+import { fullHack } from "../../tasks/fullHack";
 
 /**
  * The theory behind this strategy, is that some bitnodes have a harsh penalty to maximum money.
@@ -18,7 +16,7 @@ export async function hackDown(ns: NS) {
 		buildNetwork: pwnNetwork,
 		selectTarget: pickHackDownTarget,
 		pickHackThreads: oneThread, // Doesn't matter for hackDownOnly
-		pickCycleTime: weakenTimeRoundedUp,
-		tasks: [basicWeakenToMinSecurity, hackDownOnly, fullWeaken],
+		pickCycleTime: hackTimeRoundedUp,
+		tasks: [fullHack],
 	});
 }
