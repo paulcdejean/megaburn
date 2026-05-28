@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-import { Action, ActionRam } from "../constants";
+import { Action, ActionBatcherRam } from "../constants";
 import type { Farm } from "../Farm";
 import type { Batch, Network } from "../types";
 
@@ -12,8 +12,7 @@ export function fullHack(
 ): number {
 	let result = 0;
 	for (const [serverName, serverData] of network) {
-		const serverRam = serverData.maxRam - serverData.ramUsed;
-		const threads = Math.floor(serverRam / ActionRam.hack);
+		const threads = Number(serverData.batcherRam / ActionBatcherRam.hack);
 		if (serverData.hasAdminRights && threads > 0) {
 			const hackBatch: Batch = [
 				{ host: serverName, threads: threads, action: Action.hack },
@@ -23,7 +22,6 @@ export function fullHack(
 			} else {
 				return result;
 			}
-			serverData.ramUsed += threads * ActionRam.hack;
 		}
 	}
 	return result;

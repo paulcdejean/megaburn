@@ -1,5 +1,11 @@
 import type { NS } from "@ns";
-import { Action, ActionRam, SCRIPT_LIMIT, STARTING_PORT } from "./constants";
+import {
+	Action,
+	ActionBatcherRam,
+	ActionRam,
+	SCRIPT_LIMIT,
+	STARTING_PORT,
+} from "./constants";
 import type { Batch, Network } from "./types";
 
 export class Farm {
@@ -21,7 +27,17 @@ export class Farm {
 		if (this.scriptLimit < batch.length) {
 			return false;
 		} else {
+			// Script limit is immediately updated.
 			this.scriptLimit = this.scriptLimit - batch.length;
+			// RAM is immediately updated.
+			for (const operation of batch) {
+				const server = network.get(operation.host);
+				if (server !== undefined) {
+					server.batcherRam =
+						server.batcherRam -
+						ActionBatcherRam[operation.action] * BigInt(operation.threads);
+				}
+			}
 			this.startupPromises.push(
 				new Promise<void>((resolve, reject) => {
 					setTimeout(() => {

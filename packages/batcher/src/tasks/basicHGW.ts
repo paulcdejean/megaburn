@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-import { Action, ActionRam, HG_SEC, WEAKEN_SEC } from "../constants";
+import { Action, ActionBatcherRam, HG_SEC, WEAKEN_SEC } from "../constants";
 import type { Farm } from "../Farm";
 import type { Batch, Network } from "../types";
 
@@ -31,6 +31,10 @@ export function basicHGW(
 		((hackThreads + growThreads) * HG_SEC) / WEAKEN_SEC,
 	);
 
+	const hackBatcherRam = ActionBatcherRam.hack * BigInt(hackThreads);
+	const growBatcherRam = ActionBatcherRam.grow * BigInt(growThreads);
+	const weakenBatcherRam = ActionBatcherRam.weaken * BigInt(weakenThreads);
+
 	while (true) {
 		let hackHost = "invalid";
 		let weakenHost = "invalid";
@@ -38,26 +42,17 @@ export function basicHGW(
 
 		for (const [serverName, serverData] of network) {
 			if (serverData.hasAdminRights) {
-				let serverRam = serverData.maxRam - serverData.ramUsed;
+				let serverBatcherRam = serverData.batcherRam;
 
-				if (
-					hackHost === "invalid" &&
-					Math.floor(serverRam / ActionRam.hack) >= hackThreads
-				) {
+				if (hackHost === "invalid" && serverBatcherRam >= hackBatcherRam) {
 					hackHost = serverName;
-					serverRam = serverRam - ActionRam.hack * hackThreads;
+					serverBatcherRam -= hackBatcherRam;
 				}
-				if (
-					growHost === "invalid" &&
-					Math.floor(serverRam / ActionRam.grow) >= growThreads
-				) {
+				if (growHost === "invalid" && serverBatcherRam >= growBatcherRam) {
 					growHost = serverName;
-					serverRam = serverRam - ActionRam.hack * growThreads;
+					serverBatcherRam -= growBatcherRam;
 				}
-				if (
-					weakenHost === "invalid" &&
-					Math.floor(serverRam / ActionRam.weaken) >= weakenThreads
-				) {
+				if (weakenHost === "invalid" && serverBatcherRam >= weakenBatcherRam) {
 					weakenHost = serverName;
 				}
 			}
@@ -79,9 +74,6 @@ export function basicHGW(
 			} else {
 				return result;
 			}
-			network.get(hackHost)!.ramUsed += ActionRam.hack * hackThreads;
-			network.get(growHost)!.ramUsed += ActionRam.grow * growThreads;
-			network.get(weakenHost)!.ramUsed += ActionRam.weaken * weakenThreads;
 		}
 	}
 }

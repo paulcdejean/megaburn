@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-import { Action, ActionRam, WEAKEN_SEC } from "../constants";
+import { Action, ActionBatcherRam, WEAKEN_SEC } from "../constants";
 import type { Farm } from "../Farm";
 import type { Batch, Network } from "../types";
 
@@ -23,8 +23,7 @@ export function basicWeakenToMinSecurity(
 	let weakenThreadsRequired = Math.ceil(weakeningRequired / WEAKEN_SEC);
 
 	for (const [serverName, serverData] of network) {
-		const serverRam = serverData.maxRam - serverData.ramUsed;
-		const weakenThreads = Math.floor(serverRam / ActionRam.weaken);
+		const weakenThreads = Number(serverData.batcherRam / ActionBatcherRam.weaken);
 		if (serverData.hasAdminRights && weakenThreads > 0) {
 			if (weakenThreadsRequired <= 0) {
 				return result;
@@ -41,7 +40,6 @@ export function basicWeakenToMinSecurity(
 				} else {
 					return result;
 				}
-				serverData.ramUsed += weakenThreads * ActionRam.weaken;
 				weakenThreadsRequired = weakenThreadsRequired - weakenThreads;
 			}
 		}

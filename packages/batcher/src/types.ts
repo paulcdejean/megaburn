@@ -2,7 +2,11 @@ import type { NS, Server } from "@ns";
 import type { Action } from "./constants";
 import type { Farm } from "./Farm";
 
-export type Network = Map<string, Required<Server>>;
+export interface NetworkServer extends Required<Server> {
+	batcherRam: bigint;
+}
+
+export type Network = Map<string, NetworkServer>;
 
 export interface Operation {
 	host: string;

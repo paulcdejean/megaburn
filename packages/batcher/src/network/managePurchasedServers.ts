@@ -1,5 +1,5 @@
-import type { NS, Server } from "@ns";
-import type { Network } from "../types";
+import type { NS } from "@ns";
+import type { Network, NetworkServer } from "../types";
 
 export function managePurchasedServers(ns: NS, network: Network): void {
 	const servers = [];
@@ -12,7 +12,9 @@ export function managePurchasedServers(ns: NS, network: Network): void {
 	while (servers.length < ns.cloud.getServerLimit()) {
 		const newServer = purchaseServer(ns, servers.length);
 		if (newServer !== "") {
-			network.set(newServer, ns.getServer(newServer) as Required<Server>);
+			const serverData = ns.getServer(newServer) as NetworkServer;
+			serverData.batcherRam = BigInt(serverData.maxRam * 20);
+			network.set(newServer, serverData);
 			servers.push(newServer);
 			ns.scp(ns.getScriptName(), newServer);
 		} else {

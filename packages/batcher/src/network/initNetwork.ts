@@ -1,19 +1,22 @@
-import type { NS, Server } from "@ns";
+import type { NS } from "@ns";
+import { HOME_RESERVED_RAM } from "../constants";
 import { getServerList } from "../getServerList";
-import type { Network } from "../types";
+import type { Network, NetworkServer } from "../types";
 
 export function initNetwork(ns: NS): Network {
 	const result: Network = new Map();
 	for (const server of getServerList(ns)) {
 		if (server !== "home") {
 			ns.scp(ns.getScriptName(), server);
-			result.set(server, ns.getServer(server) as Required<Server>);
+			const serverData = ns.getServer(server) as NetworkServer;
+			serverData.batcherRam = BigInt(serverData.maxRam * 20);
+			result.set(server, serverData);
 		} else {
-			const home = ns.getServer("home") as Required<Server>;
-			// This reserves the first 128GB of home for actually being able to do stuff.
-			// Using that RAM for batching is too much of a micro optimization, and leads to great frustration.
-			home.maxRam = home.maxRam - 128;
-			result.set(server, home);
+			const serverData = ns.getServer(server) as NetworkServer;
+			serverData.batcherRam = BigInt(
+				(serverData.maxRam - HOME_RESERVED_RAM) * 20,
+			);
+			result.set(server, serverData);
 		}
 	}
 	return result;
@@ -22,7 +25,7 @@ export function initNetwork(ns: NS): Network {
 export function povertyInitNetwork(ns: NS): Network {
 	const result: Network = new Map();
 	for (const server of getServerList(ns)) {
-		const newServer: Required<Server> = {
+		const newServer: NetworkServer = {
 			hostname: server,
 			ip: "poverty",
 			sshPortOpen: false,
@@ -47,6 +50,7 @@ export function povertyInitNetwork(ns: NS): Network {
 			openPortCount: 0,
 			requiredHackingSkill: 9999,
 			serverGrowth: 0.67,
+			batcherRam: BigInt(ns.getServerMaxRam(server) * 20),
 		};
 		result.set(server, newServer);
 		if (server !== "home") {

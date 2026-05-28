@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-import { Action, ActionRam } from "../constants";
+import { Action, ActionBatcherRam } from "../constants";
 import type { Farm } from "../Farm";
 import type { Batch, Network } from "../types";
 
@@ -22,16 +22,14 @@ export function basicGrowToMaxMoney(
 		if (growThreads <= 12) {
 			weakenThreads = 1;
 		}
-		const growRam = growThreads * ActionRam.grow;
-		const weakenRam = weakenThreads * ActionRam.weaken;
+		const growBatcherRam = ActionBatcherRam.grow * BigInt(growThreads);
+		const weakenBatcherRam = ActionBatcherRam.weaken * BigInt(weakenThreads);
 
 		let growHost = "invalid";
 		let weakenHost = "invalid";
 		for (const [serverName, serverData] of network) {
-			const serverRam = serverData.maxRam - serverData.ramUsed;
-			if (serverData.hasAdminRights && serverRam >= growRam) {
+			if (serverData.hasAdminRights && serverData.batcherRam >= growBatcherRam) {
 				growHost = serverName;
-				serverData.ramUsed += growRam;
 				break;
 			}
 		}
@@ -39,10 +37,11 @@ export function basicGrowToMaxMoney(
 			growThreads = growThreads - 1;
 		} else {
 			for (const [serverName, serverData] of network) {
-				const serverRam = serverData.maxRam - serverData.ramUsed;
-				if (serverData.hasAdminRights && serverRam >= weakenRam) {
+				if (
+					serverData.hasAdminRights &&
+					serverData.batcherRam >= weakenBatcherRam
+				) {
 					weakenHost = serverName;
-					serverData.ramUsed += weakenRam;
 					break;
 				}
 			}

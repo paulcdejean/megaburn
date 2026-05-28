@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-import { Action, ActionRam } from "../constants";
+import { Action, ActionBatcherRam } from "../constants";
 import type { Farm } from "../Farm";
 import type { Batch, Network } from "../types";
 
@@ -22,16 +22,17 @@ export function hackDownOnly(
 		if (threads <= 12) {
 			weakenThreads = 1;
 		}
-		const hackRam = threads * ActionRam.hack;
-		const weakenRam = weakenThreads * ActionRam.weaken;
+		const hackBatcherRam = ActionBatcherRam.hack * BigInt(threads);
+		const weakenBatcherRam = ActionBatcherRam.weaken * BigInt(weakenThreads);
 
 		let hackHost = "invalid";
 		let weakenHost = "invalid";
 		for (const [serverName, serverData] of network) {
-			const serverRam = serverData.maxRam - serverData.ramUsed;
-			if (serverData.hasAdminRights && serverRam >= hackRam) {
+			if (
+				serverData.hasAdminRights &&
+				serverData.batcherRam >= hackBatcherRam
+			) {
 				hackHost = serverName;
-				serverData.ramUsed += hackRam;
 				break;
 			}
 		}
@@ -39,10 +40,11 @@ export function hackDownOnly(
 			threads = threads - 1;
 		} else {
 			for (const [serverName, serverData] of network) {
-				const serverRam = serverData.maxRam - serverData.ramUsed;
-				if (serverData.hasAdminRights && serverRam >= weakenRam) {
+				if (
+					serverData.hasAdminRights &&
+					serverData.batcherRam >= weakenBatcherRam
+				) {
 					weakenHost = serverName;
-					serverData.ramUsed += weakenRam;
 					break;
 				}
 			}

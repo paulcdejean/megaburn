@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-import { Action, ActionRam, HG_SEC, WEAKEN_SEC } from "../constants";
+import { Action, ActionBatcherRam, HG_SEC, WEAKEN_SEC } from "../constants";
 import type { Farm } from "../Farm";
 import type { Batch, Network } from "../types";
 
@@ -27,6 +27,13 @@ export function basicHWGW(
 	const firstWeakenThreads = Math.ceil((hackThreads * HG_SEC) / WEAKEN_SEC);
 	const secondWeakenThreads = Math.ceil((growThreads * HG_SEC) / WEAKEN_SEC);
 
+	const hackBatcherRam = ActionBatcherRam.hack * BigInt(hackThreads);
+	const firstWeakenBatcherRam =
+		ActionBatcherRam.weaken * BigInt(firstWeakenThreads);
+	const growBatcherRam = ActionBatcherRam.grow * BigInt(growThreads);
+	const secondWeakenBatcherRam =
+		ActionBatcherRam.weaken * BigInt(secondWeakenThreads);
+
 	while (farm.scriptLimit > 100) {
 		let hackHost = "invalid";
 		let firstWeakenHost = "invalid";
@@ -35,32 +42,26 @@ export function basicHWGW(
 
 		for (const [serverName, serverData] of network) {
 			if (serverData.hasAdminRights) {
-				let serverRam = serverData.maxRam - serverData.ramUsed;
+				let serverBatcherRam = serverData.batcherRam;
 
-				if (
-					hackHost === "invalid" &&
-					Math.floor(serverRam / ActionRam.hack) >= hackThreads
-				) {
+				if (hackHost === "invalid" && serverBatcherRam >= hackBatcherRam) {
 					hackHost = serverName;
-					serverRam = serverRam - ActionRam.hack * hackThreads;
+					serverBatcherRam -= hackBatcherRam;
 				}
 				if (
 					firstWeakenHost === "invalid" &&
-					Math.floor(serverRam / ActionRam.weaken) >= firstWeakenThreads
+					serverBatcherRam >= firstWeakenBatcherRam
 				) {
 					firstWeakenHost = serverName;
-					serverRam = serverRam - ActionRam.weaken * firstWeakenThreads;
+					serverBatcherRam -= firstWeakenBatcherRam;
 				}
-				if (
-					growHost === "invalid" &&
-					Math.floor(serverRam / ActionRam.grow) >= growThreads
-				) {
+				if (growHost === "invalid" && serverBatcherRam >= growBatcherRam) {
 					growHost = serverName;
-					serverRam = serverRam - ActionRam.grow * growThreads;
+					serverBatcherRam -= growBatcherRam;
 				}
 				if (
 					secondWeakenHost === "invalid" &&
-					Math.floor(serverRam / ActionRam.weaken) >= secondWeakenThreads
+					serverBatcherRam >= secondWeakenBatcherRam
 				) {
 					secondWeakenHost = serverName;
 				}
@@ -93,12 +94,6 @@ export function basicHWGW(
 			} else {
 				return result;
 			}
-			network.get(hackHost)!.ramUsed += ActionRam.hack * hackThreads;
-			network.get(firstWeakenHost)!.ramUsed +=
-				ActionRam.weaken * firstWeakenThreads;
-			network.get(growHost)!.ramUsed += ActionRam.grow * growThreads;
-			network.get(secondWeakenHost)!.ramUsed +=
-				ActionRam.weaken * secondWeakenThreads;
 		}
 	}
 	return result;

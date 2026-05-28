@@ -6,6 +6,9 @@ export const HG_SEC = 0.004;
 // An guess as to whether n00dles are worth...
 export const YUMMY_N00DLE_THRESHOLD = 2000;
 
+// The amount of home RAM that shouldn't be used by the batcher.
+export const HOME_RESERVED_RAM = 128;
+
 export enum Action {
 	hack = "hack",
 	grow = "grow",
@@ -14,8 +17,15 @@ export enum Action {
 }
 
 export const ActionRam = {
-	hack: 1.75, // Not actually, but 1.7 leads to rounding errors everywhere...
+	hack: 1.7,
 	grow: 1.75,
 	weaken: 1.75,
 	share: 4,
+};
+
+export const ActionBatcherRam = {
+	hack: 34n,
+	grow: 35n,
+	weaken: 35n,
+	share: 80n,
 };

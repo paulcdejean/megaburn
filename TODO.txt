@@ -1,8 +1,12 @@
 Micro optimizations:
-* Manual hack foodnstuff when bored
-* Batcher waits for singularity to buy program before continuing
+Put hack ram back to 1.7 via:
+interface NetworkServer extends Required<Server> {
+  batcherRam: BigInt;
+}
 
 Next phase:
 * Cloud servers up to 64GB are NOT softcapped
 * Cloud servers buy equally
 * Fix share takes too long bug (promise any?)
+
+

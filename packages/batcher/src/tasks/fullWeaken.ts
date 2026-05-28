@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-import { Action, ActionRam } from "../constants";
+import { Action, ActionBatcherRam } from "../constants";
 import type { Farm } from "../Farm";
 import type { Batch, Network } from "../types";
 
@@ -12,8 +12,9 @@ export function fullWeaken(
 ): number {
 	let result = 0;
 	for (const [serverName, serverData] of network) {
-		const serverRam = serverData.maxRam - serverData.ramUsed;
-		const weakenThreads = Math.floor(serverRam / ActionRam.weaken);
+		const weakenThreads = Number(
+			serverData.batcherRam / ActionBatcherRam.weaken,
+		);
 		if (serverData.hasAdminRights && weakenThreads > 0) {
 			const weakenBatch: Batch = [
 				{ host: serverName, threads: weakenThreads, action: Action.weaken },
@@ -23,7 +24,6 @@ export function fullWeaken(
 			} else {
 				return result;
 			}
-			serverData.ramUsed += weakenThreads * ActionRam.weaken;
 		}
 	}
 	return result;

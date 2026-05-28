@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-import { Action, ActionRam } from "../constants";
+import { Action, ActionBatcherRam } from "../constants";
 import type { Farm } from "../Farm";
 import type { Batch, Network } from "../types";
 
@@ -12,8 +12,7 @@ export function shareExtra(
 ): number {
 	let result = 0;
 	for (const [serverName, serverData] of network) {
-		const serverRam = serverData.maxRam - serverData.ramUsed;
-		const shareThreads = Math.floor(serverRam / ActionRam.share);
+		const shareThreads = Number(serverData.batcherRam / ActionBatcherRam.share);
 		if (serverData.hasAdminRights && shareThreads > 0) {
 			const batch: Batch = [
 				{ host: serverName, threads: shareThreads, action: Action.share },
@@ -23,7 +22,6 @@ export function shareExtra(
 			} else {
 				return result;
 			}
-			serverData.ramUsed += shareThreads * ActionRam.share;
 		}
 	}
 	return result;
