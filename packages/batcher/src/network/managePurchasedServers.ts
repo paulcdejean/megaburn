@@ -72,7 +72,7 @@ function purchaseServer(ns: NS, purchasedServerCount: number): string {
  */
 function upgradeServer(ns: NS, server: string): boolean {
 	const currentRam = ns.getServerMaxRam(server);
-	let ram = Math.max(ns.cloud.getRamLimit(), currentRam * 2);
+	let ram = Math.max(64, currentRam * 2);
 	while (ram > currentRam) {
 		if (ns.cloud.upgradeServer(server, ram)) {
 			ns.tprint(
