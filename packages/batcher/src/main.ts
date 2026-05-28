@@ -40,6 +40,7 @@ export async function realMain(ns: NS): Promise<void> {
 				// Attempt to upgrade to full functionality, but if we can't launch limitd mode.
 				if (ns.getServerMaxRam("home") >= 32) {
 					ns.ramOverride(20);
+					await mainMode(ns);
 				} else {
 					await limitedMode(ns);
 				}
