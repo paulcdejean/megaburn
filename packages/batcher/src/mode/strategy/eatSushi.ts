@@ -2,7 +2,7 @@ import type { NS } from "@ns";
 import { smallBites } from "../../algos/smallBites";
 import { targetSushi } from "../../algos/targetSushi";
 import { weakenTimeRoundedUp } from "../../algos/weakenTimeRoundedUp";
-import { pwnNetwork } from "../../network/pwnNetwork";
+import { pwnAndPurchase } from "../../network/pwnNetwork";
 import { runBatcherAlgo } from "../../runBatcherAlgo";
 import { basicGrowToMaxMoney } from "../../tasks/basicGrowToMaxMoney";
 import { basicHGW } from "../../tasks/basicHGW";
@@ -17,7 +17,7 @@ import { fullWeaken } from "../../tasks/fullWeaken";
 export async function eatSushi(ns: NS) {
 	ns.tprint("Running a very sushi based strategy");
 	await runBatcherAlgo(ns, {
-		buildNetwork: pwnNetwork,
+		buildNetwork: pwnAndPurchase,
 		selectTarget: targetSushi,
 		pickHackThreads: smallBites,
 		pickCycleTime: weakenTimeRoundedUp,

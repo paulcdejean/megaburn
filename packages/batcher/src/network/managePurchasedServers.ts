@@ -20,9 +20,18 @@ export function managePurchasedServers(ns: NS, network: Network): void {
 		}
 	}
 
-	let smallestServer = "";
-	let leastRam = ns.cloud.getRamLimit();
-	for (const server of servers) {
+	while (true) {
+		let smallestServer = "";
+		let leastRam = ns.cloud.getRamLimit();
+		for (const server of servers) {
+			if (ns.getServerMaxRam(server) < leastRam) {
+				smallestServer = server;
+				leastRam = ns.getServerMaxRam(server);
+			}
+		}
+		if (!upgradeServer(ns, smallestServer)) {
+			return;
+		}
 	}
 }
 
@@ -52,7 +61,7 @@ function purchaseServer(ns: NS, purchasedServerCount: number): string {
 	return result;
 }
 
-function upgradeServer(ns: NS, server: string): void {
+function upgradeServer(ns: NS, server: string): boolean {
 	let ram = ns.cloud.getRamLimit();
 	const currentRam = ns.getServerMaxRam(server);
 	while (ram > currentRam) {
@@ -60,7 +69,7 @@ function upgradeServer(ns: NS, server: string): void {
 			ns.tprint(
 				`Upgraded ${server} from ${ns.format.ram(currentRam)} RAM to ${ns.format.ram(ram)} RAM`,
 			);
-			return;
+			return true;
 		} else {
 			ram /= 2;
 		}
@@ -70,4 +79,5 @@ function upgradeServer(ns: NS, server: string): void {
 	ns.tprint(
 		`Need $${ns.format.number(upgradeCost)} to upgrade cloud server ${server}`,
 	);
+	return false;
 }
