@@ -14,7 +14,7 @@ export enum Action {
 }
 
 export const ActionRam = {
-	hack: 1.7,
+	hack: 1.75,
 	grow: 1.75,
 	weaken: 1.75,
 	share: 4,
