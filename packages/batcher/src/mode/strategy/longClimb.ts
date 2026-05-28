@@ -1,6 +1,6 @@
 import type { NS } from "@ns";
 import { smallBites } from "../../algos/smallBites";
-import { targetSushi } from "../../algos/targetSushi";
+import { targetPhantasy } from "../../algos/targetPhantasy";
 import { weakenTimeRoundedUp } from "../../algos/weakenTimeRoundedUp";
 import { pwnAndPurchase } from "../../network/pwnNetwork";
 import { runBatcherAlgo } from "../../runBatcherAlgo";
@@ -16,7 +16,7 @@ export async function longClimb(ns: NS) {
 	ns.tprint("Running a very sushi based strategy");
 	await runBatcherAlgo(ns, {
 		buildNetwork: pwnAndPurchase,
-		selectTarget: targetSushi,
+		selectTarget: targetPhantasy,
 		pickHackThreads: smallBites,
 		pickCycleTime: weakenTimeRoundedUp,
 		tasks: [
