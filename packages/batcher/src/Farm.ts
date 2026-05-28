@@ -36,6 +36,11 @@ export class Farm {
 					server.batcherRam =
 						server.batcherRam -
 						ActionBatcherRam[operation.action] * BigInt(operation.threads);
+					if (server.batcherRam < 0) {
+						throw Error(
+							`Tried to schedule ${operation.action} on ${operation.host} with ${operation.threads} threads, but insufficent RAM available`,
+						);
+					}
 				}
 			}
 			this.startupPromises.push(
@@ -100,9 +105,7 @@ export class Farm {
 								if (execResult === 0) {
 									reject(
 										new Error(
-											`Failed to exec ${operation.action} on ${operation.host} with ${operation.threads} threads\n` +
-												`${JSON.stringify(network.get(operation.host))}` +
-												`${JSON.stringify(ns.getServer(operation.host))}`,
+											`Failed to exec ${operation.action} on ${operation.host} with ${operation.threads} threads`,
 										),
 									);
 								}

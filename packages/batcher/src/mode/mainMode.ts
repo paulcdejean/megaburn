@@ -16,6 +16,7 @@ export async function mainMode(ns: NS): Promise<void> {
 		if (n00dlesYucky(ns) && ns.getServerMaxRam("home") < 4096) {
 			await hackDown(ns);
 		} else {
+			ns.tprint("HERE???");
 			await nineN00dles(ns);
 		}
 	} else {

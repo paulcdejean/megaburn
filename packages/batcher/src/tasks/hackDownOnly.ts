@@ -40,10 +40,11 @@ export function hackDownOnly(
 			threads = threads - 1;
 		} else {
 			for (const [serverName, serverData] of network) {
-				if (
-					serverData.hasAdminRights &&
-					serverData.batcherRam >= weakenBatcherRam
-				) {
+				const available =
+					serverName === hackHost
+						? serverData.batcherRam - hackBatcherRam
+						: serverData.batcherRam;
+				if (serverData.hasAdminRights && available >= weakenBatcherRam) {
 					weakenHost = serverName;
 					break;
 				}

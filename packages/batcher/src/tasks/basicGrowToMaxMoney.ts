@@ -40,10 +40,11 @@ export function basicGrowToMaxMoney(
 			growThreads = growThreads - 1;
 		} else {
 			for (const [serverName, serverData] of network) {
-				if (
-					serverData.hasAdminRights &&
-					serverData.batcherRam >= weakenBatcherRam
-				) {
+				const available =
+					serverName === growHost
+						? serverData.batcherRam - growBatcherRam
+						: serverData.batcherRam;
+				if (serverData.hasAdminRights && available >= weakenBatcherRam) {
 					weakenHost = serverName;
 					break;
 				}
