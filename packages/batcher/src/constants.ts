@@ -14,7 +14,7 @@ export enum Action {
 }
 
 export const ActionRam = {
-	hack: 1.75,
+	hack: 1.75, // Not actually, but 1.7 leads to rounding errors everywhere...
 	grow: 1.75,
 	weaken: 1.75,
 	share: 4,
