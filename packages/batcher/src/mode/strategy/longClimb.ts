@@ -13,7 +13,7 @@ import { fullWeaken } from "../../tasks/fullWeaken";
  * The no augment climb to try and not be poor...
  */
 export async function longClimb(ns: NS) {
-	ns.tprint("Running a very sushi based strategy");
+	ns.tprint("The long climb of hacking phantasy");
 	await runBatcherAlgo(ns, {
 		buildNetwork: pwnAndPurchase,
 		selectTarget: targetPhantasy,
