@@ -14,11 +14,11 @@ export function tier1Tasks(ns: NS): string {
 	const player = ns.getPlayer();
 	// The highest priority task.
 	// This needs to run before the batcher is started so that we're not waiting around to weaken n00dles too long.
-	if (player.skills.hacking < 15 && player.city === "Sector-12") {
+	if (player.skills.hacking < 20 && player.city === "Sector-12") {
 		return "kickstartUni";
 	}
 	// We want to launch the batcher only after some university time.
-	else if (!ns.isRunning(BATCHER_FILENAME, "home", "single")) {
+	else if (!ns.isRunning(BATCHER_FILENAME, "home")) {
 		return "startBatcher";
 	}
 	// Since this is basicTasks, it means we only have 32GB of home RAM, so upgrading is a top priority.

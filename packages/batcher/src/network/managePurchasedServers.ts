@@ -2,31 +2,36 @@ import type { NS, Server } from "@ns";
 import type { Network } from "../types";
 
 export function managePurchasedServers(ns: NS, network: Network): void {
-	let purchasedServerCount = 0;
+	const servers = [];
 	for (const [server, data] of network) {
 		if (data.purchasedByPlayer && server !== "home") {
-			purchasedServerCount++;
+			servers.push(server);
 		}
 	}
 
-	while (purchasedServerCount < ns.cloud.getServerLimit()) {
-		const newServer = purchaseServer(ns, purchasedServerCount);
-		if (newServer !== null) {
+	while (servers.length < ns.cloud.getServerLimit()) {
+		const newServer = purchaseServer(ns, servers.length);
+		if (newServer !== "") {
 			network.set(newServer, ns.getServer(newServer) as Required<Server>);
-			purchasedServerCount++;
+			servers.push(newServer);
 			ns.scp(ns.getScriptName(), newServer);
 		} else {
 			break;
 		}
+	}
+
+	let smallestServer = "";
+	let leastRam = ns.cloud.getRamLimit();
+	for (const server of servers) {
 	}
 }
 
 /**
  * Purchases a 64GB of smaller server.
  * We only go up to 64GB because that's where the cloud server softcap kicks in.
- * Returns the name of the purchased server, or null if we failed to purchase anything.
+ * Returns the name of the purchased server, or empty string if we failed to purchase anything.
  */
-function purchaseServer(ns: NS, purchasedServerCount: number): string | null {
+function purchaseServer(ns: NS, purchasedServerCount: number): string {
 	const name = `purchased-${String(purchasedServerCount).padStart(2, "0")}`;
 
 	let ram = 64;
