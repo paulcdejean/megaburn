@@ -35,7 +35,7 @@ export async function realMain(ns: NS): Promise<void> {
 		});
 		ns.disableLog("ALL");
 		// By passing "single" to the batcher it won't loop. This can allow singularity to buy programs between batches.
-		while (ns.args[0] !== "single") {
+		do {
 			if (ns.ramOverride() <= 8) {
 				// Attempt to upgrade to full functionality, but if we can't launch limitd mode.
 				if (ns.getServerMaxRam("home") >= 32) {
@@ -46,7 +46,7 @@ export async function realMain(ns: NS): Promise<void> {
 			} else {
 				await mainMode(ns);
 			}
-		}
+		} while (ns.args[0] !== "single");
 	}
 }
 
