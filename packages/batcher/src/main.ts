@@ -39,7 +39,9 @@ export async function realMain(ns: NS): Promise<void> {
 			if (ns.ramOverride() <= 8) {
 				// Attempt to upgrade to full functionality, but if we can't launch limitd mode.
 				if (ns.getServerMaxRam("home") >= 32) {
-					ns.ramOverride(20);
+					if (ns.ramOverride(20) !== 20) {
+						throw Error("Insufficent RAM to upgrade batcher script to 20GB");
+					}
 					await mainMode(ns);
 				} else {
 					await limitedMode(ns);
