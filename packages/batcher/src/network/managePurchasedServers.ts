@@ -67,9 +67,12 @@ function purchaseServer(ns: NS, purchasedServerCount: number): string {
 	return result;
 }
 
+/**
+ * Tries to upgrade a server to twice its current size or 64GB which ever is larger.
+ */
 function upgradeServer(ns: NS, server: string): boolean {
-	let ram = ns.cloud.getRamLimit();
 	const currentRam = ns.getServerMaxRam(server);
+	let ram = Math.max(ns.cloud.getRamLimit(), currentRam * 2);
 	while (ram > currentRam) {
 		if (ns.cloud.upgradeServer(server, ram)) {
 			ns.tprint(
