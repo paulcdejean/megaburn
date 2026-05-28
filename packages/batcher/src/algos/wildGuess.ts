@@ -7,10 +7,7 @@ export function wildGuess(ns: NS, network: Network): string {
 		return "harakiri-sushi";
 	} else if (ns.getHackingLevel() < 400) {
 		return "joesguns";
-	} else if (
-		ns.hasRootAccess("phantasy") &&
-		ns.cloud.getServerLimit() !== ns.cloud.getServerNames().length
-	) {
+	} else if (ns.hasRootAccess("phantasy")) {
 		return "phantasy";
 	} else if (ns.hasRootAccess("omega-net") && ns.getHackingLevel() < 1000) {
 		return "omega-net";

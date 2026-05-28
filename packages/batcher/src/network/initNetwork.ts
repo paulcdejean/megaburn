@@ -24,7 +24,7 @@ export function povertyInitNetwork(ns: NS): Network {
 	for (const server of getServerList(ns)) {
 		const newServer: Required<Server> = {
 			hostname: server,
-			ip: "povrty",
+			ip: "poverty",
 			sshPortOpen: false,
 			ftpPortOpen: false,
 			smtpPortOpen: false,
