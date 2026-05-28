@@ -68,12 +68,3 @@ async function realMain(ns: NS): Promise<void> {
 }
 
 export { main as notMain, realMain as main };
-
-// if (
-// 	!ns
-// 		.ps()
-// 		.map((x) => x.filename)
-// 		.includes("batcher.js")
-// ) {
-// 	ns.run("batcher.js", 1);
-// }
