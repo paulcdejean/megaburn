@@ -85,6 +85,7 @@ export class Farm {
 									reject(
 										new Error(
 											`Failed to exec ${operation.action} on ${operation.host} with ${operation.threads} threads\n` +
+												`${JSON.stringify(network.get(operation.host))}` +
 												`${JSON.stringify(ns.getServer(operation.host))}`,
 										),
 									);
