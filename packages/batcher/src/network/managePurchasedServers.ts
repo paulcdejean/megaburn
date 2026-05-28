@@ -37,6 +37,12 @@ export function managePurchasedServers(
 		}
 		if (smallestServer === "" || !upgradeServer(ns, smallestServer)) {
 			return;
+		} else {
+			const serverData = network.get(smallestServer);
+			if (serverData !== undefined) {
+				serverData.maxRam = ns.getServerMaxRam(smallestServer);
+				serverData.batcherRam = BigInt(serverData.maxRam * 20);
+			}
 		}
 	}
 }
