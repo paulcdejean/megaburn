@@ -8,7 +8,7 @@ export async function remotesMode(ns: NS): Promise<void> {
 			stock: ns.args[3] as boolean,
 			threads: ns.args[4] as number,
 		});
-		// ns.tprint(`Hacked ${ns.format.number(result)} from ${ns.args[1]}`);
+		ns.tprint(`Hacked ${ns.format.number(result)} from ${ns.args[1]}`);
 	} else if (ns.args[0] === "grow") {
 		await ns.grow(ns.args[1] as string, {
 			additionalMsec: ns.args[2] as number,
