@@ -23,7 +23,9 @@ export function basicWeakenToMinSecurity(
 	let weakenThreadsRequired = Math.ceil(weakeningRequired / WEAKEN_SEC);
 
 	for (const [serverName, serverData] of network) {
-		const weakenThreads = Number(serverData.batcherRam / ActionBatcherRam.weaken);
+		const weakenThreads = Number(
+			serverData.batcherRam / ActionBatcherRam.weaken,
+		);
 		if (serverData.hasAdminRights && weakenThreads > 0) {
 			if (weakenThreadsRequired <= 0) {
 				return result;

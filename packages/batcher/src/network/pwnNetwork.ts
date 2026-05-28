@@ -41,6 +41,12 @@ export function pwnNetwork(ns: NS): Network {
 
 export function pwnAndPurchase(ns: NS): Network {
 	const result: Network = pwnNetwork(ns);
-	managePurchasedServers(ns, result);
+	managePurchasedServers(ns, result, ns.cloud.getRamLimit());
+	return result;
+}
+
+export function pwnBuyMini(ns: NS): Network {
+	const result: Network = pwnNetwork(ns);
+	managePurchasedServers(ns, result, 64);
 	return result;
 }

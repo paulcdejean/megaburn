@@ -1,7 +1,11 @@
 import type { NS } from "@ns";
 import type { Network, NetworkServer } from "../types";
 
-export function managePurchasedServers(ns: NS, network: Network): void {
+export function managePurchasedServers(
+	ns: NS,
+	network: Network,
+	ramLimit: number,
+): void {
 	const servers = [];
 	for (const [server, data] of network) {
 		if (data.purchasedByPlayer && server !== "home") {
@@ -24,14 +28,14 @@ export function managePurchasedServers(ns: NS, network: Network): void {
 
 	while (true) {
 		let smallestServer = "";
-		let leastRam = ns.cloud.getRamLimit();
+		let leastRam = ramLimit;
 		for (const server of servers) {
 			if (ns.getServerMaxRam(server) < leastRam) {
 				smallestServer = server;
 				leastRam = ns.getServerMaxRam(server);
 			}
 		}
-		if (!upgradeServer(ns, smallestServer)) {
+		if (smallestServer === "" || !upgradeServer(ns, smallestServer)) {
 			return;
 		}
 	}

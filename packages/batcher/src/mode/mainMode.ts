@@ -1,7 +1,7 @@
 import type { NS } from "@ns";
 import { YUMMY_N00DLE_THRESHOLD } from "../constants";
-import { eatSushi } from "./strategy/eatSushi";
 import { hackDown } from "./strategy/hackDown";
+import { longClimb } from "./strategy/longClimb";
 import { nineN00dles } from "./strategy/nineN00dles";
 
 export async function mainMode(ns: NS): Promise<void> {
@@ -19,7 +19,7 @@ export async function mainMode(ns: NS): Promise<void> {
 			await nineN00dles(ns);
 		}
 	} else {
-		await eatSushi(ns);
+		await longClimb(ns);
 	}
 
 	const batchFinishMoney = ns.getMoneySources().sinceInstall.hacking;

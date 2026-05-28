@@ -10,11 +10,9 @@ import { basicWeakenToMinSecurity } from "../../tasks/basicWeakenToMinSecurity";
 import { fullWeaken } from "../../tasks/fullWeaken";
 
 /**
- * The theory behind this strategy, is that harakiri-sushi has a higher growth component than other servers.
- * For severe RAM limited situations this means the growth threads can be 9 or less.
- * This allows fitting grows on to smaller servers, allowing more batches to be run.
+ * The no augment climb to try and not be poor...
  */
-export async function eatSushi(ns: NS) {
+export async function longClimb(ns: NS) {
 	ns.tprint("Running a very sushi based strategy");
 	await runBatcherAlgo(ns, {
 		buildNetwork: pwnAndPurchase,

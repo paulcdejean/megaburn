@@ -28,7 +28,10 @@ export function basicGrowToMaxMoney(
 		let growHost = "invalid";
 		let weakenHost = "invalid";
 		for (const [serverName, serverData] of network) {
-			if (serverData.hasAdminRights && serverData.batcherRam >= growBatcherRam) {
+			if (
+				serverData.hasAdminRights &&
+				serverData.batcherRam >= growBatcherRam
+			) {
 				growHost = serverName;
 				break;
 			}
