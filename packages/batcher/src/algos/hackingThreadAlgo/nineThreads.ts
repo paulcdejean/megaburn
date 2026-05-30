@@ -3,5 +3,9 @@ import type { Network } from "../../types";
 
 // oxlint-disable-next-line no-unused-vars
 export function nineThreads(ns: NS, network: Network, target: string): number {
-	return 9;
+	let threads = 9;
+	while (threads * ns.hackAnalyze(target) > 0.8) {
+		threads = threads - 1;
+	}
+	return threads;
 }

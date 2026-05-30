@@ -35,7 +35,7 @@ export function bigHGW(
 	const growBatcherRam = ActionBatcherRam.grow * BigInt(growThreads);
 	const weakenBatcherRam = ActionBatcherRam.weaken * BigInt(weakenThreads);
 
-	while (true) {
+	while (farm.scriptLimit > 100) {
 		let hackHost = "invalid";
 		let weakenHost = "invalid";
 		let growHost = "invalid";
@@ -76,4 +76,5 @@ export function bigHGW(
 			}
 		}
 	}
+	return result;
 }

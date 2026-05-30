@@ -8,18 +8,22 @@ import type { Network } from "../../types";
 export function largeBites(ns: NS, network: Network, target: string): number {
 	let hackThreads = 603;
 
-	while (ns.hackAnalyze(target) * hackThreads > 0.5) {
+	while (ns.hackAnalyze(target) * hackThreads > 0.5 && hackThreads > 1) {
 		hackThreads = hackThreads - 1;
 	}
 
 	let growThreads;
-	do {
-		hackThreads = hackThreads - 1;
+	while (true) {
 		const amountHacked = ns.hackAnalyze(target) * hackThreads;
 		const overGrowth = 1.2;
 		const growthRequired = (1 / (1 - amountHacked)) * overGrowth;
 		growThreads = Math.ceil(ns.growthAnalyze(target, growthRequired));
-	} while (growThreads > 585);
+		if (growThreads < 585) {
+			break;
+		} else {
+			hackThreads = hackThreads - 1;
+		}
+	}
 
 	return hackThreads;
 }
