@@ -1,10 +1,10 @@
 import type { NS } from "@ns";
 import { YUMMY_N00DLE_THRESHOLD } from "../constants";
+import { hackDown } from "../strategy/hackDown";
+import { longClimb } from "../strategy/longClimb";
+import { nineN00dles } from "../strategy/nineN00dles";
+import { peak } from "../strategy/peak";
 import { getRamTotal } from "../utils/getRamTotal";
-import { hackDown } from "./strategy/hackDown";
-import { longClimb } from "./strategy/longClimb";
-import { nineN00dles } from "./strategy/nineN00dles";
-import { peak } from "./strategy/peak";
 
 export async function mainMode(ns: NS): Promise<void> {
 	const batchStartMoney = ns.getMoneySources().sinceInstall.hacking;

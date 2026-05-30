@@ -1,5 +1,5 @@
 import type { NS } from "@ns";
-import { anyLengthShare } from "../utils/anyLengthShare";
+import { shareForLessThan } from "../utils/shareForLessThan";
 
 export async function remotesMode(ns: NS): Promise<void> {
 	if (ns.args[0] === "hack") {
@@ -23,9 +23,7 @@ export async function remotesMode(ns: NS): Promise<void> {
 			threads: ns.args[4] as number,
 		});
 	} else if (ns.args[0] === "share") {
-		for (let n = 0; n < (ns.args[2] as number); n++) {
-			await anyLengthShare(ns, ns.args[2] as number);
-		}
+		await shareForLessThan(ns, ns.args[2] as number);
 	} else {
 		throw Error(
 			"Invalid remotes mode action, valid actions are hack, grow, weaken and share",

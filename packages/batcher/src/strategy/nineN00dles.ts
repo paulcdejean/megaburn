@@ -5,23 +5,18 @@ import { basicWeakenToMinSecurity } from "../algos/batcherTask/basicWeakenToMinS
 import { fullWeaken } from "../algos/batcherTask/fullWeaken";
 import { weakenTimeRoundedUp } from "../algos/cycleTimeAlgo/weakenTimeRoundedUp";
 import { nineThreads } from "../algos/hackingThreadAlgo/nineThreads";
-import { povertyPwnNetwork } from "../algos/networkBuilderAlgo/pwnNetwork";
+import { pwnNetwork } from "../algos/networkBuilderAlgo/pwnNetwork";
 import { targetN00dles } from "../algos/targetSelectionAlgo/targetN00dles";
 import { runBatcherAlgo } from "../runBatcherAlgo";
 
 /**
- * This batcher mode is for when you have less than 32GB of home RAM.
- * All these functions are tuned to use very little RAM.
- * Also only n00dles is hacked and it's done with a pretty hardcoded algorithm.
+ * The theory behind this strategy, is that 9 hack threads can fit on to a 8GB server.
+ * Also with n00dles 1 grow is enough for 9 hack threads, so you want to maximize hack threads.
  */
-export async function limitedMode(ns: NS): Promise<void> {
-	ns.tprint(
-		"Batcher running in limited mode. Upgrade your home RAM to 32GB or higher to unlock full functionality.",
-	);
-	// We can't use ns.getMoneySources due to the RAM requirement in limited mode.
-	const batchStartMoney = ns.getServerMoneyAvailable("home");
+export async function nineN00dles(ns: NS) {
+	ns.tprint("Running a basic n00dle eating strategy");
 	await runBatcherAlgo(ns, {
-		buildNetwork: povertyPwnNetwork,
+		buildNetwork: pwnNetwork,
 		selectTarget: targetN00dles,
 		pickHackThreads: nineThreads,
 		pickCycleTime: weakenTimeRoundedUp,
@@ -32,8 +27,4 @@ export async function limitedMode(ns: NS): Promise<void> {
 			fullWeaken,
 		],
 	});
-	const batchFinishMoney = ns.getServerMoneyAvailable("home");
-	ns.tprint(
-		`$${ns.format.number(batchFinishMoney - batchStartMoney)} money gained from all sources since batch start`,
-	);
 }
