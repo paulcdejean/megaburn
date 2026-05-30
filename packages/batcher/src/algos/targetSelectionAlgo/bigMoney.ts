@@ -4,7 +4,7 @@ import type { Network } from "../../types";
 // oxlint-disable-next-line no-unused-vars
 export function bigMoney(ns: NS, network: Network): string {
 	let bestServer = "phantasy";
-	let bestTime = 180000; // 3 minutes I'm impatient!
+	let bestTime = 360000; // 3 minutes I'm impatient!
 	for (const [serverName, serverData] of network) {
 		// Selective criteria for a phantasy upgrade.
 		if (
