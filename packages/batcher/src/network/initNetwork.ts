@@ -1,7 +1,7 @@
 import type { NS } from "@ns";
 import { HOME_RESERVED_RAM } from "../constants";
-import { getServerList } from "../getServerList";
 import type { Network, NetworkServer } from "../types";
+import { getServerList } from "../utils/getServerList";
 
 export function initNetwork(ns: NS): Network {
 	const result: Network = new Map();

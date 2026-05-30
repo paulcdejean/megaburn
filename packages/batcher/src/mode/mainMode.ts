@@ -1,8 +1,10 @@
 import type { NS } from "@ns";
 import { YUMMY_N00DLE_THRESHOLD } from "../constants";
+import { getRamTotal } from "../utils/getRamTotal";
 import { hackDown } from "./strategy/hackDown";
 import { longClimb } from "./strategy/longClimb";
 import { nineN00dles } from "./strategy/nineN00dles";
+import { peak } from "./strategy/peak";
 
 export async function mainMode(ns: NS): Promise<void> {
 	const batchStartMoney = ns.getMoneySources().sinceInstall.hacking;
@@ -16,11 +18,14 @@ export async function mainMode(ns: NS): Promise<void> {
 		if (n00dlesYucky(ns) && ns.getServerMaxRam("home") < 4096) {
 			await hackDown(ns);
 		} else {
-			ns.tprint("HERE???");
 			await nineN00dles(ns);
 		}
 	} else {
-		await longClimb(ns);
+		if (getRamTotal(ns) < 1e6) {
+			await longClimb(ns);
+		} else {
+			await peak(ns);
+		}
 	}
 
 	const batchFinishMoney = ns.getMoneySources().sinceInstall.hacking;

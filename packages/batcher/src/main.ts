@@ -1,9 +1,9 @@
 import type { NS } from "@ns";
 import { Action } from "./constants";
-import { getServerList } from "./getServerList";
 import { limitedMode } from "./mode/limitedMode";
 import { mainMode } from "./mode/mainMode";
 import { remotesMode } from "./mode/remotesMode";
+import { getServerList } from "./utils/getServerList";
 
 /**
  * This function is NOT the true main. It's just used for setting the static RAM.
