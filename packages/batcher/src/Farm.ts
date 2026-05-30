@@ -63,7 +63,7 @@ export class Farm {
 										this.cycleTime - ns.getWeakenTime(target) + 0.5;
 									ramOverride = ActionRam.weaken;
 								} else if (operation.action === Action.share) {
-									additionalMsecs = Math.floor(this.cycleTime / 10000);
+									additionalMsecs = this.cycleTime;
 									ramOverride = ActionRam.share;
 								} else {
 									reject(new Error("typescript says this is unreachable"));

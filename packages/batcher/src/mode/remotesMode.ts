@@ -1,4 +1,5 @@
 import type { NS } from "@ns";
+import { anyLengthShare } from "../utils/anyLengthShare";
 
 export async function remotesMode(ns: NS): Promise<void> {
 	if (ns.args[0] === "hack") {
@@ -23,7 +24,7 @@ export async function remotesMode(ns: NS): Promise<void> {
 		});
 	} else if (ns.args[0] === "share") {
 		for (let n = 0; n < (ns.args[2] as number); n++) {
-			await ns.share();
+			await anyLengthShare(ns, ns.args[2] as number);
 		}
 	} else {
 		throw Error(
