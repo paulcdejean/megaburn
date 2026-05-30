@@ -4,10 +4,11 @@ import { largeBites } from "../../algos/largeBites";
 import { weakenTimeRoundedUp } from "../../algos/weakenTimeRoundedUp";
 import { pwnAndPurchase } from "../../network/pwnNetwork";
 import { runBatcherAlgo } from "../../runBatcherAlgo";
-import { basicGrowToMaxMoney } from "../../tasks/basicGrowToMaxMoney";
 import { basicHGW } from "../../tasks/basicHGW";
 import { basicWeakenToMinSecurity } from "../../tasks/basicWeakenToMinSecurity";
+import { bigGrowToMaxMoney } from "../../tasks/bigGrowToMaxMoney";
 import { fullWeaken } from "../../tasks/fullWeaken";
+import { shareExtra } from "../../tasks/shareExtra";
 
 /**
  * Nearing the top now!
@@ -22,7 +23,8 @@ export async function peak(ns: NS) {
 		tasks: [
 			basicHGW,
 			basicWeakenToMinSecurity,
-			basicGrowToMaxMoney,
+			bigGrowToMaxMoney,
+			shareExtra,
 			fullWeaken,
 		],
 	});

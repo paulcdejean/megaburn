@@ -16,7 +16,8 @@ export function largeBites(ns: NS, network: Network, target: string): number {
 	do {
 		hackThreads = hackThreads - 1;
 		const amountHacked = ns.hackAnalyze(target) * hackThreads;
-		const overGrowth = 1.05;
+		// Large bites = large over growth!
+		const overGrowth = 1.2;
 		const growthRequired = (1 / (1 - amountHacked)) * overGrowth;
 		growThreads = Math.ceil(ns.growthAnalyze(target, growthRequired));
 	} while (growThreads > 585);
